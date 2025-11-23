@@ -80,7 +80,7 @@ video {
 @media (max-width: 600px) {
 
   .hero-overlay {
-    bottom: 70px;
+    bottom: 90px;
   }
 
   .enter-btn {
