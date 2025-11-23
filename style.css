@@ -47,3 +47,49 @@ video{
 @media(max-width:768px){
   .enter-btn{font-size:32px;bottom:40px;}
 }
+
+/* MOBILE RESPONSIVE FIXES */
+@media (max-width: 600px) {
+
+  .logo {
+    font-size: 32px;
+    letter-spacing: 2px;
+    margin-top: 40px;
+  }
+
+  .enter-btn {
+    font-size: 18px;
+    padding: 14px 28px;
+    bottom: 40px;
+    width: 80%;
+  }
+
+  h1 {
+    font-size: 42px;
+    line-height: 48px;
+  }
+
+  .title-text {
+    font-size: 38px;
+    text-align: center;
+  }
+
+  .button-container {
+    display: flex;
+    justify-content: center;
+  }
+
+  /* Reduce spacing */
+  .landing-content {
+    padding-top: 60px;
+  }
+}
+
+.landing-content {
+  position: absolute;
+  top: 55%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  width: 100%;
+}
