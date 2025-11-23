@@ -15,9 +15,19 @@
 
   <div class="overlay"></div>
 
-  <a href="home.html" class="enter-btn" id="enterBtn">THE VOICES</a>
+  <!-- HERO WRAPPER -->
+  <div class="hero-overlay">
+    <a href="home.html" class="enter-btn" id="enterBtn">THE VOICES</a>
+  </div>
+
 </div>
 
-<script src="script.js"></script>
+<script>
+  // Activate button after 6s & shrink text
+  setTimeout(() => {
+    document.getElementById("enterBtn").classList.add("active");
+  }, 6000);
+</script>
+
 </body>
 </html>

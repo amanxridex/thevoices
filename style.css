@@ -1,95 +1,95 @@
-*{margin:0;padding:0;box-sizing:border-box;}
-
-body,html{
-  height:100%;width:100%;overflow:hidden;
-  font-family:"Poppins",sans-serif;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.video-container{
-  position:relative;width:100%;height:100vh;
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: "Poppins", sans-serif;
 }
 
-video{
-  width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;
+/* VIDEO SECTION */
+.video-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
 }
 
-.overlay{
-  position:absolute;top:0;left:0;width:100%;height:100%;
-  background:rgba(0,0,0,0.45);
+video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
-/* BUTTON / TEXT */
-.enter-btn{
-  position:absolute;bottom:60px;left:50%;transform:translateX(-50%);
-  padding:14px 38px;
-  font-size:45px;
-  text-decoration:none;
-  font-weight:700;
-  color:#ADFF5D;
-  opacity:1;
-  pointer-events:none;
-  transition:all 1s ease;
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.45);
 }
 
-/* After transformation to clickable button */
-.enter-btn.active{
-  background:#ADFF5D;
-  color:#000;
-  font-size:22px;
-  border-radius:50px;
-  pointer-events:auto;
+/* HERO CENTER BOX */
+.hero-overlay {
+  position: absolute;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  text-align: center;
+  z-index: 10;
 }
 
-.enter-btn:hover{
-  box-shadow:0 0 25px #ADFF5D;
+/* INITIAL THE VOICES TEXT */
+.enter-btn {
+  text-decoration: none;
+  font-size: 58px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: #BAFF69;
+  transition: .8s ease;
+  pointer-events: none;
 }
 
-@media(max-width:768px){
-  .enter-btn{font-size:32px;bottom:40px;}
+/* AFTER 6 SECONDS, TURN INTO BUTTON */
+.enter-btn.active {
+  background: #BAFF69;
+  color: #000;
+  font-size: 22px;
+  font-weight: 700;
+  border-radius: 40px;
+  padding: 14px 36px;
+  pointer-events: auto;
+  box-shadow: 0 0 12px rgba(186, 255, 105, 0.7);
 }
 
-/* MOBILE RESPONSIVE FIXES */
+.enter-btn.active:hover {
+  transform: scale(1.06);
+  box-shadow: 0 0 20px #BAFF69;
+}
+
+/* RESPONSIVE MOBILE */
 @media (max-width: 600px) {
 
-  .logo {
-    font-size: 32px;
-    letter-spacing: 2px;
-    margin-top: 40px;
+  .hero-overlay {
+    bottom: 70px;
   }
 
   .enter-btn {
+    font-size: 36px;
+  }
+
+  .enter-btn.active {
     font-size: 18px;
-    padding: 14px 28px;
-    bottom: 40px;
-    width: 80%;
+    padding: 14px 26px;
+    width: 72%;
   }
-
-  h1 {
-    font-size: 42px;
-    line-height: 48px;
-  }
-
-  .title-text {
-    font-size: 38px;
-    text-align: center;
-  }
-
-  .button-container {
-    display: flex;
-    justify-content: center;
-  }
-
-  /* Reduce spacing */
-  .landing-content {
-    padding-top: 60px;
-  }
-}
-
-.landing-content {
-  position: absolute;
-  top: 55%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-  width: 100%;
 }
