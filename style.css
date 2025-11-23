@@ -1,0 +1,49 @@
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body,html{
+  height:100%;width:100%;overflow:hidden;
+  font-family:"Poppins",sans-serif;
+}
+
+.video-container{
+  position:relative;width:100%;height:100vh;
+}
+
+video{
+  width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;
+}
+
+.overlay{
+  position:absolute;top:0;left:0;width:100%;height:100%;
+  background:rgba(0,0,0,0.45);
+}
+
+/* BUTTON / TEXT */
+.enter-btn{
+  position:absolute;bottom:60px;left:50%;transform:translateX(-50%);
+  padding:14px 38px;
+  font-size:45px;
+  text-decoration:none;
+  font-weight:700;
+  color:#ADFF5D;
+  opacity:1;
+  pointer-events:none;
+  transition:all 1s ease;
+}
+
+/* After transformation to clickable button */
+.enter-btn.active{
+  background:#ADFF5D;
+  color:#000;
+  font-size:22px;
+  border-radius:50px;
+  pointer-events:auto;
+}
+
+.enter-btn:hover{
+  box-shadow:0 0 25px #ADFF5D;
+}
+
+@media(max-width:768px){
+  .enter-btn{font-size:32px;bottom:40px;}
+}

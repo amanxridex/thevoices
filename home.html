@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Voices - Prebook Now</title>
+  <link rel="stylesheet" href="home.css">
+</head>
+<body>
+<div id="particles"></div>
+
+<!-- BACKGROUND VIDEO -->
+<div class="bg-container">
+  <video class="bg-video" autoplay muted loop playsinline>
+    <source src="/videos/loopbg.mov" type="video/mov">
+  </video>
+</div>
+<div class="bg-overlay"></div>
+
+
+<!-- HEADER -->
+<header class="reveal">
+  <h1 class="logo" id="logo">
+  <span>T</span><span>H</span><span>E</span>
+  <span class="space"></span>
+  <span>V</span><span>O</span><span>I</span><span>C</span><span>E</span><span>S</span>
+</h1>
+</header>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+  <!-- TWO-CARD LAYOUT -->
+  <section class="card-row reveal">
+    
+    <!-- LEFT CARD: HERO PRODUCT VIDEO -->
+    <div class="card card-video">
+      <video autoplay muted loop playsinline>
+        <source src="/videos/launchvideo.mp4" type="video/mp4">
+      </video>
+    </div>
+
+    <!-- RIGHT CARD: PREBOOK ACTION -->
+    <div class="card card-prebook">
+      <h2 class="title">Pre-Book Now</h2>
+      <p class="subtitle">Secure your pair at just <span class="price">₹19</span></p>
+      <button class="book-btn" id="openPopup">Book Yours</button>
+    </div>
+
+  </section>
+
+  <!-- TRUST SECTION -->
+  <section class="card card-trust reveal">
+    <h3>Building the Trust</h3>
+    <p class="trust-sub">You’re in safe hands when you pre-book "THE VOICES".</p>
+
+    <div class="trust-icons">
+      <div>🔒 Secure Payment</div>
+      <div>⚡ Priority on launch</div>
+      <div>🔁 7-Day Replacement</div>
+      <div>⭐ Premium Quality</div>
+    </div>
+  </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="reveal">
+  <p>© 2025 THE VOICES • All Rights Reserved</p>
+</footer>
+
+<!-- PAYMENT POPUP -->
+<div class="popup" id="popup">
+  <div class="popup-box">
+    <h2>Complete Pre-Booking</h2>
+    <p>Pay only <span class="price">₹19</span> to reserve your spot</p>
+
+    <input type="text" placeholder="Full Name" class="input">
+    <input type="tel" placeholder="Phone Number" class="input">
+
+    <button class="pay-btn">Proceed to Pay ₹19</button>
+    <button class="close-btn" id="closePopup">Close</button>
+  </div>
+</div>
+
+<script src="home.js"></script>
+</body>
+</html>
