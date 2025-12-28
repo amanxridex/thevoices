@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Jodi Betting</title>
+  <link rel="stylesheet" href="jodi.css">
+</head>
+<body>
+
+<header class="top-bar">
+  <div class="logo">WB WINBUZZ</div>
+  <div class="phone">📞 8360915532</div>
+</header>
+
+<div class="container">
+  <div class="header-row">
+    <div>
+      <label>DATE</label>
+      <input type="date" value="2025-12-28">
+    </div>
+    <div>
+      <label>MARKET</label>
+      <div class="market-btns">
+        <button class="active">OPEN (03:15 PM)</button>
+        <button>CLOSE (05:30 PM)</button>
+      </div>
+    </div>
+    <div>
+      <label>Rate</label>
+      <div class="rate-val">90</div>
+    </div>
+  </div>
+
+  <div class="bet-types">
+    <button onclick="window.location.href='index.html'">🎲 SINGLE</button>
+    <button>♠ SINGLE PATTI</button>
+    <button>♣ DOUBLE PATTI</button>
+    <button>♥ TRIPLE PATTI</button>
+    <button class="active">🎲 JODI</button>
+  </div>
+
+  <h3 class="section-title">Select Digits & Enter Amount</h3>
+
+  <div class="jodi-grid" id="jodiGrid">
+    <!-- Dynamically populated by JS -->
+  </div>
+
+  <div class="action-buttons">
+    <button class="clear-btn" onclick="clearAll()">CLEAR ALL</button>
+    <button class="submit-btn" onclick="submitBets()">SUBMIT</button>
+  </div>
+</div>
+
+<script>
+  const grid = document.getElementById('jodiGrid');
+
+  for (let i = 0; i <= 99; i++) {
+    const jodi = i < 10 ? '0' + i : '' + i;
+    const div = document.createElement('div');
+    div.className = 'jodi-box';
+    div.innerHTML = `
+      <label>${jodi}</label>
+      <input type="number" min="0" placeholder="₹" />
+    `;
+    grid.appendChild(div);
+  }
+
+  function clearAll() {
+    document.querySelectorAll('.jodi-box input').forEach(input => input.value = '');
+  }
+
+  function submitBets() {
+    let bets = [];
+    document.querySelectorAll('.jodi-box').forEach(box => {
+      const digit = box.querySelector('label').innerText;
+      const amount = box.querySelector('input').value;
+      if (amount) {
+        bets.push({ digit, amount: parseInt(amount) });
+      }
+    });
+    if (bets.length === 0) {
+      alert("Please enter at least one amount.");
+    } else {
+      console.log("Submitting bets:", bets);
+      alert("Bets submitted successfully!");
+      // You can send `bets` to the backend here.
+    }
+  }
+</script>
+
+</body>
+</html>

@@ -1,33 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Voices</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <title>Betting UI</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-<div class="video-container">
-  <video autoplay muted loop playsinline>
-    <source src="/videos/launchvideo.mp4" type="video/mp4">
-  </video>
+<header class="top-bar">
+  <div class="logo">SUPER D</div>
+  <div class="phone">📞 8529637410</div>
+</header>
 
-  <div class="overlay"></div>
+<div class="container">
 
-  <!-- HERO WRAPPER -->
-  <div class="hero-overlay">
-    <a href="home.html" class="enter-btn" id="enterBtn">THE VOICES</a>
+  <div class="tabs">
+    <button class="tab active">GHAZIABAD</button>
+    <button class="tab">BETS</button>
+    <button class="back">← Back</button>
   </div>
 
+  <div class="row">
+    <div>
+      <label>DATE</label>
+      <input type="date" value="2025-12-28">
+    </div>
+
+    <div class="market">
+      <label>MARKET</label>
+      <div class="market-btns">
+        <button class="active">OPEN (11:20 AM)</button>
+        <button>CLOSE (12:20 PM)</button>
+      </div>
+    </div>
+
+    <div class="rate">
+      <label>Rate</label>
+      <div class="rate-val">9.5</div>
+    </div>
+  </div>
+
+  <div class="bet-types">
+    <button class="active">🎲 SINGLE</button>
+    <button>♠ SINGLE PATTI</button>
+    <button>♣ DOUBLE PATTI</button>
+    <button>♥ TRIPLE PATTI</button>
+    <a href="jodi.html" class="bet-link">
+  <button class="active">🎲 JODI</button>
+</a>
+
+  </div>
+
+  <h3 class="section-title">Select Amounts</h3>
+  <div class="grid">
+    <button>₹ 5</button>
+    <button>₹ 10</button>
+    <button>₹ 50</button>
+    <button>₹ 100</button>
+    <button>₹ 200</button>
+    <button>₹ 500</button>
+    <button>₹ 1000</button>
+    <button>₹ 5000</button>
+  </div>
+
+  <h3 class="section-title">Select Digits</h3>
+  <div class="digits">
+    <button>0</button><button>1</button><button>2</button><button>3</button>
+    <button>4</button><button>5</button><button>6</button><button>7</button>
+    <button>8</button><button>9</button>
+  </div>
+
+  <div class="footer">
+    <strong>SELECTED DIGITS:</strong>
+    <span>Total Stake : 0</span>
+  </div>
+
+  <div class="action-buttons">
+  <button class="clear-btn">CLEAR ALL</button>
+  <button class="submit-btn">SUBMIT</button>
 </div>
 
-<script>
-  // Activate button after 6s & shrink text
-  setTimeout(() => {
-    document.getElementById("enterBtn").classList.add("active");
-  }, 6000);
-</script>
+</div>
 
 </body>
 </html>

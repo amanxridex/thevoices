@@ -1,11 +1,7 @@
-* {
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
-}
-
 body {
+  font-family: Arial, sans-serif;
+  background: #f7f7f7;
   margin: 0;
-  background: #f5f5f5;
 }
 
 .top-bar {
@@ -13,63 +9,28 @@ body {
   padding: 12px 20px;
   display: flex;
   justify-content: space-between;
-  color: #fff;
   font-weight: bold;
+  color: white;
 }
 
 .container {
-  background: #fff;
   max-width: 1200px;
   margin: 20px auto;
+  background: #fff;
   padding: 20px;
-  border-radius: 8px;
+  border-radius: 10px;
 }
 
-.tabs {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.tab {
-  background: #000;
-  color: #fff;
-  padding: 10px 20px;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
-}
-
-.tab.active {
-  background: #d3d3d3;
-  color: #000;
-}
-
-.back {
-  margin-left: auto;
-  background: #000;
-  color: #fff;
-  padding: 10px 15px;
-  border-radius: 6px;
-  border: none;
-}
-
-.row {
+.header-row {
   display: grid;
   grid-template-columns: 1fr 2fr 1fr;
   gap: 20px;
   margin-bottom: 20px;
 }
 
-label {
-  font-weight: bold;
-  display: block;
-  margin-bottom: 5px;
-}
-
-input {
-  padding: 10px;
+input[type="date"] {
   width: 100%;
+  padding: 10px;
 }
 
 .market-btns button {
@@ -93,46 +54,55 @@ input {
 .bet-types {
   display: flex;
   gap: 10px;
-  margin-bottom: 20px;
+  margin: 20px 0;
 }
 
 .bet-types button {
   flex: 1;
   padding: 12px;
   border-radius: 6px;
-  border: 1px solid #ddd;
+  border: 1px solid #ccc;
   background: #fff;
+  cursor: pointer;
 }
 
 .bet-types .active {
   border: 2px solid #4a90e2;
+  background: #f0f8ff;
 }
 
 .section-title {
   text-align: center;
   color: red;
-  margin: 20px 0 10px;
+  margin-bottom: 20px;
 }
 
-.grid, .digits {
+.jodi-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 15px;
 }
 
-.grid button, .digits button {
-  padding: 15px;
+.jodi-box {
+  background: #f9f9f9;
+  padding: 10px;
   border-radius: 6px;
+  text-align: center;
   border: 1px solid #ccc;
-  background: #fff;
-  font-size: 16px;
 }
 
-.footer {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 20px;
+.jodi-box label {
+  display: block;
   font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.jodi-box input {
+  width: 100%;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #bbb;
+  text-align: center;
 }
 
 .action-buttons {
