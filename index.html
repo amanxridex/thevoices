@@ -1,50 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Play - Matka Bazar</title>
+<link rel="stylesheet" href="play.css">
+</head>
+
+<body>
+
+<header class="top-bar">
+  <div class="logo">SUPER D</div>
+  <div class="phone">👤 8529637410</div>
+</header>
+
+<nav class="menu">
+  <span class="active">PLAY</span>
+  <span>BET HISTORY</span>
+  <span>RESULTS</span>
+</nav>
+
+<div class="bazar-title">MATKA BAZAR</div>
+
+<!-- 🔥 VERY IMPORTANT: id="marketList" -->
+<div class="market-list" id="marketList">
+  <p style="text-align:center;">Loading markets...</p>
+</div>
+
+<!-- ✅ SCRIPT MUST BE HERE (BOTTOM) -->
 <script>
-const API_URL = "https://matka-backend-4fy1.onrender.com/api/markets";
+document.addEventListener("DOMContentLoaded", function () {
 
-fetch(API_URL)
-  .then(res => res.json())
-  .then(markets => {
-    const list = document.getElementById("marketList");
-    list.innerHTML = "";
+  const API_URL = "https://matka-backend-4fy1.onrender.com/api/markets";
+  const list = document.getElementById("marketList");
 
-    markets.forEach(market => {
-      let statusClass = "closed";
-      let statusText = "Betting is Closed for Today";
+  if (!list) {
+    console.error("marketList div not found");
+    return;
+  }
 
-      if (market.status === "OPEN") {
-        statusClass = "live";
-        statusText = "Betting is Running Now";
-      }
+  fetch(API_URL)
+    .then(res => res.json())
+    .then(markets => {
+      list.innerHTML = "";
 
-      const card = document.createElement("div");
-      card.className = `market-card ${statusClass}`;
+      markets.forEach(market => {
+        let statusClass = "closed";
+        let statusText = "Betting is Closed for Today";
 
-      card.innerHTML = `
-        <div class="time">${formatTime(market.openTime)}</div>
-        <div class="center">
-          <h3>${market.name}</h3>
-          <p class="${statusClass}-text">${statusText}</p>
-          <p class="result">${market.status === "OPEN" ? "***-**-***" : "--"}</p>
-        </div>
-        <div class="time">Close Time<br><b>${formatTime(market.closeTime)}</b></div>
-      `;
+        if (market.status === "OPEN") {
+          statusClass = "live";
+          statusText = "Betting is Running Now";
+        }
 
-      if (market.status === "OPEN") {
-        card.onclick = () => {
-          window.location.href = `jodi.html?marketId=${market._id}`;
-        };
-      }
+        const card = document.createElement("div");
+        card.className = `market-card ${statusClass}`;
 
-      list.appendChild(card);
+        card.innerHTML = `
+          <div class="time">${market.openTime}</div>
+          <div class="center">
+            <h3>${market.name}</h3>
+            <p class="${statusClass}-text">${statusText}</p>
+            <p class="result">${market.status === "OPEN" ? "***-**-***" : "--"}</p>
+          </div>
+          <div class="time">Close Time<br><b>${market.closeTime}</b></div>
+        `;
+
+        if (market.status === "OPEN") {
+          card.onclick = () => {
+            window.location.href = "jodi.html?marketId=" + market._id;
+          };
+        }
+
+        list.appendChild(card);
+      });
+    })
+    .catch(err => {
+      list.innerHTML = "<p style='color:red;text-align:center;'>Server not reachable</p>";
+      console.error(err);
     });
-  })
-  .catch(err => {
-    document.getElementById("marketList").innerHTML =
-      "<p style='color:red'>Server not reachable</p>";
-    console.error(err);
-  });
 
-function formatTime(time) {
-  return time;
-}
+});
 </script>
+
+</body>
+</html>
