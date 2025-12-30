@@ -10,7 +10,7 @@
 <!-- TOP BAR -->
 <header class="topbar">
   <div class="logo">SUPER <span>D</span></div>
-  <button class="logout">Logout</button>
+  <button class="logout" onclick="logout()">Logout</button>
 </header>
 
 <!-- PAGE -->
@@ -19,49 +19,61 @@
   <h1 class="title">🎯 Market Control Room</h1>
   <p class="subtitle">Open, close & dominate the game</p>
 
-  <!-- MARKET GRID -->
-  <div class="market-grid">
-
-    <!-- MARKET CARD -->
-    <div class="market-card closed">
-      <div class="market-name">MADHUR MORNING</div>
-      <div class="market-time">11:20 AM – 12:20 PM</div>
-
-      <div class="status closed">CLOSED</div>
-
-      <button class="action open">OPEN MARKET</button>
-    </div>
-
-    <div class="market-card open">
-      <div class="market-name">MADHUR NIGHT</div>
-      <div class="market-time">11:20 PM – 02:20 AM</div>
-
-      <div class="status open">LIVE 🔥</div>
-
-      <button class="action close">CLOSE MARKET</button>
-    </div>
-
-    <div class="market-card closed">
-      <div class="market-name">SRIDEVI MORNING</div>
-      <div class="market-time">08:30 AM – 09:30 AM</div>
-
-      <div class="status closed">CLOSED</div>
-
-      <button class="action open">OPEN MARKET</button>
-    </div>
-
-    <div class="market-card open">
-      <div class="market-name">KALYAN NIGHT</div>
-      <div class="market-time">09:30 PM – 11:30 PM</div>
-
-      <div class="status open">LIVE 🔥</div>
-
-      <button class="action close">CLOSE MARKET</button>
-    </div>
-
+  <!-- MARKET GRID (IMPORTANT ID) -->
+  <div class="market-grid" id="marketGrid">
+    <p style="color:#aaa">Loading markets...</p>
   </div>
 
 </div>
+
+<script>
+const API = "https://matka-backend-4fy1.onrender.com";
+
+/* LOGOUT */
+function logout() {
+  localStorage.removeItem("adminToken");
+  location.href = "login.html";
+}
+
+/* LOAD MARKETS FROM DB */
+fetch(API + "/api/markets", {
+  headers: {
+    "Authorization": "Bearer " + localStorage.getItem("adminToken")
+  }
+})
+.then(res => res.json())
+.then(markets => {
+  const grid = document.getElementById("marketGrid");
+  grid.innerHTML = "";
+
+  markets.forEach(m => {
+    const isOpen = m.status === "OPEN";
+
+    const card = document.createElement("div");
+    card.className = `market-card ${isOpen ? "open" : "closed"}`;
+
+    card.innerHTML = `
+      <div class="market-name">${m.name}</div>
+      <div class="market-time">${m.openTime} – ${m.closeTime}</div>
+
+      <div class="status ${isOpen ? "open" : "closed"}">
+        ${isOpen ? "LIVE 🔥" : "CLOSED"}
+      </div>
+
+      <button class="action ${isOpen ? "close" : "open"}">
+        ${isOpen ? "CLOSE MARKET" : "OPEN MARKET"}
+      </button>
+    `;
+
+    grid.appendChild(card);
+  });
+})
+.catch(err => {
+  document.getElementById("marketGrid").innerHTML =
+    "<p style='color:red'>Server not reachable</p>";
+  console.error(err);
+});
+</script>
 
 </body>
 </html>
