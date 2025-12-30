@@ -166,3 +166,80 @@ td button {
   margin-right: 6px;
   font-weight: bold;
 }
+
+.view-btn {
+  background: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* MODAL */
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal-box {
+  background: #111;
+  padding: 25px;
+  width: 380px;
+  border-radius: 12px;
+  color: white;
+}
+
+.wallet-actions input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+}
+
+.btn-row {
+  display: flex;
+  gap: 10px;
+}
+
+.add-btn {
+  flex: 1;
+  background: #2ecc71;
+  border: none;
+  padding: 10px;
+  font-weight: bold;
+}
+
+.deduct-btn {
+  flex: 1;
+  background: #e74c3c;
+  border: none;
+  padding: 10px;
+  font-weight: bold;
+}
+
+.close-btn {
+  width: 100%;
+  margin-top: 15px;
+  padding: 8px;
+  background: #444;
+  border: none;
+}
+
+#txnList {
+  margin-top: 10px;
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+#txnList li.plus {
+  color: #2ecc71;
+}
+
+#txnList li.minus {
+  color: #e74c3c;
+}
