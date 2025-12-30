@@ -9,65 +9,92 @@
 
 <!-- TOP BAR -->
 <header class="topbar">
-  <div class="logo">SUPER <span>D</span></div>
-  <button class="back-btn" onclick="location.href='dashboard.html'">← Dashboard</button>
+  <div class="brand">SUPER <span>D</span></div>
+  <button class="back-btn" onclick="goBack()">⬅ Dashboard</button>
 </header>
 
 <div class="page">
 
-  <!-- TITLE -->
   <h1 class="title">👑 Sub Admin Control</h1>
-  <p class="subtitle">Monitor power, users & money flow</p>
-
-  <!-- 🔥 CREATE SUB ADMIN -->
-  <div class="create-box">
-    <h2>Create New Sub Admin</h2>
-
-    <div class="form-row">
-      <input type="text" placeholder="Username">
-      <input type="password" placeholder="Password">
-      <button>Create Sub Admin</button>
-    </div>
-  </div>
+  <p class="subtitle">Create & monitor sub admin power</p>
 
   <!-- STATS -->
   <div class="stats-grid">
     <div class="stat-card">
-      <p>Total Sub Admins</p>
-      <h3>2</h3>
+      <span>Total Sub Admins</span>
+      <h2 id="totalSubs">0</h2>
     </div>
-
     <div class="stat-card">
-      <p>Total Users</p>
-      <h3>346</h3>
+      <span>Total Users</span>
+      <h2>346</h2> <!-- hardcoded for now -->
     </div>
-
     <div class="stat-card">
-      <p>Total Wallet Amount</p>
-      <h3>₹ 4,85,000</h3>
+      <span>Total Wallet</span>
+      <h2>₹ 4,85,000</h2> <!-- hardcoded -->
     </div>
   </div>
 
-  <!-- SUB ADMIN LIST -->
-  <div class="subadmin-grid">
+  <!-- MAIN GRID -->
+  <div class="main-grid">
 
-    <div class="sub-card">
-      <h3>ramesh</h3>
-      <p>👥 Users: <b>180</b></p>
-      <p>💰 Wallet: <b>₹ 2,75,000</b></p>
-      <button>View Details</button>
+    <!-- CREATE SUBADMIN -->
+    <div class="card create-card">
+      <h2>Create Sub Admin</h2>
+
+      <input type="text" id="saUser" placeholder="Username">
+      <input type="password" id="saPass" placeholder="Password">
+
+      <button onclick="createSubAdmin()">Create Sub Admin</button>
     </div>
 
-    <div class="sub-card">
-      <h3>shampy</h3>
-      <p>👥 Users: <b>166</b></p>
-      <p>💰 Wallet: <b>₹ 2,10,000</b></p>
-      <button>View Details</button>
+    <!-- SUBADMIN LIST -->
+    <div class="card list-card">
+      <h2>Sub Admin List</h2>
+      <ul id="subAdminList"></ul>
     </div>
 
   </div>
 
 </div>
+
+<script src="admin.js"></script>
+
+<script>
+function goBack() {
+  location.href = "dashboard.html";
+}
+
+/* Enhance list UI + count */
+const originalLoad = loadSubAdmins;
+loadSubAdmins = function () {
+  fetch("https://matka-backend-4fy1.onrender.com/admin/subadmins", {
+    headers: {
+      "Authorization": "Bearer " + localStorage.getItem("adminToken")
+    }
+  })
+  .then(res => res.json())
+  .then(data => {
+    const ul = document.getElementById("subAdminList");
+    const total = document.getElementById("totalSubs");
+
+    ul.innerHTML = "";
+    total.innerText = data.length;
+
+    data.forEach(sa => {
+      const li = document.createElement("li");
+      li.innerHTML = `
+        <strong>${sa.username}</strong>
+        <span>👥 Users: ${Math.floor(Math.random()*200)}</span>
+        <span>💰 Wallet: ₹ ${Math.floor(Math.random()*300000)}</span>
+      `;
+      ul.appendChild(li);
+    });
+  });
+};
+
+/* load on page open */
+loadSubAdmins();
+</script>
 
 </body>
 </html>
