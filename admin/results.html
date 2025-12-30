@@ -1,36 +1,64 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>SUPER D • Results</title>
+  <meta charset="UTF-8">
+  <title>SUPER D • Results Control</title>
   <link rel="stylesheet" href="results.css">
 </head>
 <body>
 
-<div class="layout">
-  <aside class="sidebar">
-    <h1>SUPER <span>D</span></h1>
-    <a href="dashboard.html">Dashboard</a>
-    <a href="markets.html">Markets</a>
-    <a class="active" href="#">Results</a>
-    <a href="users.html">User Wallets</a>
-  </aside>
+<!-- TOP BAR -->
+<header class="topbar">
+  <div class="logo">SUPER <span>D</span></div>
+  <button class="logout">Logout</button>
+</header>
 
-  <main class="content">
-    <h2>Declare Results</h2>
+<div class="page">
 
-    <div class="card wide">
+  <h1 class="title">🏆 Results Control Room</h1>
+  <p class="subtitle">One number decides everything</p>
+
+  <!-- RESULT PANEL -->
+  <div class="result-panel">
+
+    <div class="panel-left">
       <label>Market</label>
       <select>
         <option>MADHUR MORNING</option>
         <option>MADHUR NIGHT</option>
+        <option>KALYAN NIGHT</option>
+        <option>SRIDEVI MORNING</option>
       </select>
 
       <label>Result Number</label>
       <input type="text" placeholder="Ex: 123-45-678">
 
-      <button class="btn">Publish Result</button>
+      <label>Session</label>
+      <div class="session">
+        <button class="session-btn active">OPEN</button>
+        <button class="session-btn">CLOSE</button>
+      </div>
+
+      <button class="publish">🔥 PUBLISH RESULT</button>
     </div>
-  </main>
+
+    <!-- LIVE PREVIEW -->
+    <div class="panel-right">
+      <div class="preview-title">LIVE RESULT PREVIEW</div>
+
+      <div class="preview-card">
+        <div class="market-name">MADHUR MORNING</div>
+        <div class="result-number">123-45-678</div>
+        <div class="session-tag">OPEN SESSION</div>
+      </div>
+
+      <div class="warning">
+        ⚠️ Once published, result cannot be undone
+      </div>
+    </div>
+
+  </div>
+
 </div>
 
 </body>

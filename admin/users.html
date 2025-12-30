@@ -1,36 +1,68 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>SUPER D • User Wallets</title>
+  <meta charset="UTF-8">
+  <title>SUPER D • User Wallet Control</title>
   <link rel="stylesheet" href="users.css">
 </head>
 <body>
 
-<div class="layout">
-  <aside class="sidebar">
-    <h1>SUPER <span>D</span></h1>
-    <a href="dashboard.html">Dashboard</a>
-    <a href="markets.html">Markets</a>
-    <a href="results.html">Results</a>
-    <a class="active" href="#">User Wallets</a>
-  </aside>
+<!-- TOP BAR -->
+<header class="topbar">
+  <div class="logo">SUPER <span>D</span></div>
+  <button class="logout">Logout</button>
+</header>
 
-  <main class="content">
-    <h2>User Wallet Control</h2>
+<div class="page">
 
-    <div class="card wide">
+  <h1 class="title">💰 User Wallet Control</h1>
+  <p class="subtitle">Add, deduct & monitor every rupee</p>
+
+  <div class="wallet-panel">
+
+    <!-- LEFT: USER SEARCH & ACTION -->
+    <div class="panel-left">
       <label>User ID / Mobile</label>
-      <input type="text" placeholder="Enter user id">
+      <input type="text" placeholder="Enter user id or mobile">
+
+      <label>Current Balance</label>
+      <div class="balance-box">₹ 25,480</div>
 
       <label>Amount</label>
-      <input type="number" placeholder="Amount">
+      <input type="number" placeholder="Enter amount">
 
-      <div class="row">
-        <button class="btn">Add Balance</button>
-        <button class="btn danger">Deduct Balance</button>
+      <div class="actions">
+        <button class="add">➕ ADD BALANCE</button>
+        <button class="deduct">➖ DEDUCT BALANCE</button>
       </div>
     </div>
-  </main>
+
+    <!-- RIGHT: ACTIVITY / POWER VIEW -->
+    <div class="panel-right">
+      <div class="power-title">LAST WALLET ACTIONS</div>
+
+      <div class="log add-log">
+        <span>+ ₹5,000</span>
+        <small>Admin • 2 mins ago</small>
+      </div>
+
+      <div class="log deduct-log">
+        <span>- ₹1,200</span>
+        <small>Admin • 10 mins ago</small>
+      </div>
+
+      <div class="log add-log">
+        <span>+ ₹10,000</span>
+        <small>Super Admin • Today</small>
+      </div>
+
+      <div class="warning">
+        ⚠️ Wallet changes are permanent & logged
+      </div>
+    </div>
+
+  </div>
+
 </div>
 
 </body>
