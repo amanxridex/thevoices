@@ -1,19 +1,23 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Admin Login</title>
-  <link rel="stylesheet" href="admin.css">
+  <meta charset="UTF-8">
+  <title>SUPER D • Admin Login</title>
+  <link rel="stylesheet" href="login.css">
 </head>
 <body>
 
-<div class="login-box">
-  <h2>ADMIN LOGIN</h2>
+<div class="login-wrapper">
+  <div class="login-box">
+    <h1 class="brand">SUPER <span>D</span></h1>
+    <h2>Admin Login</h2>
 
-  <input type="text" id="username" placeholder="Username">
-  <input type="password" id="password" placeholder="Password">
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
 
-  <button onclick="login()">LOGIN</button>
-  <p id="error"></p>
+    <button onclick="login()">LOGIN</button>
+    <p id="error"></p>
+  </div>
 </div>
 
 <script src="admin.js"></script>
