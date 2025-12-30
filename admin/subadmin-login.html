@@ -25,27 +25,35 @@
 </div>
 
 <script>
+const API = "https://matka-backend-4fy1.onrender.com";
+
 function togglePassword() {
-  password.type = password.type === "password" ? "text" : "password";
+  const pass = document.getElementById("password");
+  pass.type = pass.type === "password" ? "text" : "password";
 }
 
 function loginSubAdmin() {
-  fetch("https://matka-backend-4fy1.onrender.com/admin/subadmin/login", {
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+  const error = document.getElementById("error");
+
+  fetch(API + "/admin/subadmin/login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      username: username.value,
-      password: password.value
-    })
+    body: JSON.stringify({ username, password })
   })
   .then(res => res.json())
   .then(data => {
     if (data.token) {
       localStorage.setItem("subToken", data.token);
-      location.href = "subadmin-dashboard.html";
+      // IMPORTANT: same /admin/ folder
+      window.location.href = "subadmin-dashboard.html";
     } else {
       error.innerText = "Invalid credentials";
     }
+  })
+  .catch(() => {
+    error.innerText = "Server error";
   });
 }
 </script>
