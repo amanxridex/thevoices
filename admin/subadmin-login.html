@@ -37,7 +37,7 @@ function loginSubAdmin() {
   const password = document.getElementById("password").value;
   const error = document.getElementById("error");
 
-  fetch(API + "/admin/subadmin/login", {
+  fetch(API + "/subadmin/login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ username, password })
@@ -46,7 +46,9 @@ function loginSubAdmin() {
   .then(data => {
     if (data.token) {
       localStorage.setItem("subToken", data.token);
-      // IMPORTANT: same /admin/ folder
+      localStorage.setItem("subUsername", data.username);
+
+      // same /admin folder
       window.location.href = "subadmin-dashboard.html";
     } else {
       error.innerText = "Invalid credentials";

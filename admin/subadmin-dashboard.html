@@ -11,7 +11,10 @@
 <header class="topbar">
   <div class="logo">SUPER <span>D</span></div>
   <div class="right">
-    <span class="admin-name">👤 Sub Admin: ramesh</span>
+    <span class="admin-name">
+      👤 Sub Admin: <span id="subAdminName"></span>
+    </span>
+
     <button class="logout">Logout</button>
   </div>
 </header>
@@ -100,6 +103,23 @@
   </div>
 
 </div>
+
+<script>
+  const name = localStorage.getItem("subUsername");
+  if (!name) {
+    // agar direct open kiya without login
+    window.location.href = "subadmin-login.html";
+  } else {
+    document.getElementById("subAdminName").innerText = name;
+  }
+
+  // logout
+  document.querySelector(".logout").onclick = () => {
+    localStorage.removeItem("subToken");
+    localStorage.removeItem("subUsername");
+    window.location.href = "subadmin-login.html";
+  };
+</script>
 
 </body>
 </html>
