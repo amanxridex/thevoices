@@ -80,3 +80,29 @@ body {
   color: red;
   font-size: 14px;
 }
+
+.password-box {
+  position: relative;
+}
+
+.password-box input {
+  width: 100%;
+  padding: 14px 45px 14px 14px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+}
+
+.password-box .eye {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 18px;
+  opacity: 0.6;
+}
+
+.password-box .eye:hover {
+  opacity: 1;
+}
