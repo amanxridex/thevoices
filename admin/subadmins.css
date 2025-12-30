@@ -6,97 +6,132 @@
 }
 
 body {
-  background: #f4f6f9;
+  background: radial-gradient(circle at top, #1a1a1a, #000);
+  color: #fff;
+  min-height: 100vh;
 }
 
 /* TOP BAR */
 .topbar {
-  height: 60px;
-  background: linear-gradient(90deg, #000, #222);
-  color: white;
+  height: 65px;
+  background: linear-gradient(90deg, #000, #111);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 25px;
+  padding: 0 30px;
+  border-bottom: 1px solid #222;
 }
 
-.brand {
+.logo {
   font-size: 22px;
-  font-weight: bold;
-  letter-spacing: 2px;
+  letter-spacing: 3px;
 }
 
-.brand span {
+.logo span {
   color: gold;
 }
 
-.topbar button {
+.back {
   background: gold;
   border: none;
-  padding: 8px 14px;
-  font-weight: bold;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 600;
   cursor: pointer;
-  border-radius: 5px;
 }
 
-/* CONTAINER */
-.container {
-  padding: 30px;
+/* PAGE */
+.page {
+  padding: 40px;
+}
+
+.title {
+  font-size: 30px;
+  margin-bottom: 5px;
+}
+
+.subtitle {
+  color: #aaa;
+  margin-bottom: 30px;
+}
+
+/* STATS */
+.stats {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 30px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  margin-bottom: 40px;
 }
 
-/* CARD */
-.card {
-  background: white;
+.stat-card {
+  background: linear-gradient(145deg, #0d0d0d, #151515);
+  border-radius: 14px;
   padding: 25px;
-  border-radius: 12px;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+  border: 1px solid #222;
 }
 
-.card h2 {
-  margin-bottom: 20px;
+.stat-card span {
+  color: #aaa;
+  font-size: 14px;
 }
 
-/* INPUTS */
-.create-card input {
-  width: 100%;
-  padding: 12px;
-  margin-bottom: 15px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  font-size: 15px;
-}
-
-/* BUTTON */
-.create-card button {
-  width: 100%;
-  padding: 12px;
-  background: black;
+.stat-card h2 {
+  margin-top: 10px;
+  font-size: 28px;
   color: gold;
-  border: none;
-  border-radius: 6px;
+}
+
+/* SUB ADMINS */
+.subadmin-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 25px;
+}
+
+.subadmin-card {
+  background: linear-gradient(160deg, #0b0b0b, #141414);
+  border-radius: 18px;
+  padding: 25px;
+  box-shadow: inset 0 0 0 1px #222,
+              0 15px 35px rgba(0,0,0,0.7);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.subadmin-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 25px 60px rgba(255,215,0,0.15);
+}
+
+.subadmin-card .name {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 15px;
+  letter-spacing: 1px;
+}
+
+.subadmin-card .meta {
+  color: #ccc;
+  margin-bottom: 10px;
   font-size: 15px;
+}
+
+.subadmin-card .meta b {
+  color: #fff;
+}
+
+.view {
+  margin-top: 15px;
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, gold, #ffcc00);
+  color: #000;
+  font-weight: 700;
   cursor: pointer;
 }
 
-/* LIST */
-.list-card ul {
-  list-style: none;
-}
-
-.list-card li {
-  padding: 12px;
-  border-radius: 6px;
-  background: #f1f1f1;
-  margin-bottom: 10px;
-  font-weight: 500;
-  display: flex;
-  justify-content: space-between;
-}
-
-.list-card li span {
-  color: gray;
-  font-size: 13px;
+.view:hover {
+  filter: brightness(1.1);
 }

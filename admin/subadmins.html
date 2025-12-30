@@ -8,35 +8,51 @@
 <body>
 
 <header class="topbar">
-  <div class="brand">SUPER <span>D</span></div>
-  <button onclick="goBack()">⬅ Dashboard</button>
+  <div class="logo">SUPER <span>D</span></div>
+  <button class="back">← Dashboard</button>
 </header>
 
-<div class="container">
+<section class="page">
 
-  <!-- CREATE BOX -->
-  <div class="card create-card">
-    <h2>Create Sub Admin</h2>
+  <h1 class="title">👑 Sub Admin Control</h1>
+  <p class="subtitle">Monitor power, users & money flow</p>
 
-    <input type="text" id="saUser" placeholder="Username">
-    <input type="password" id="saPass" placeholder="Password">
-
-    <button onclick="createSubAdmin()">Create Sub Admin</button>
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat-card">
+      <span>Total Sub Admins</span>
+      <h2>2</h2>
+    </div>
+    <div class="stat-card">
+      <span>Total Users</span>
+      <h2>346</h2>
+    </div>
+    <div class="stat-card">
+      <span>Total Wallet Amount</span>
+      <h2>₹ 4,85,000</h2>
+    </div>
   </div>
 
-  <!-- LIST BOX -->
-  <div class="card list-card">
-    <h2>Sub Admin List</h2>
-    <ul id="subAdminList"></ul>
+  <!-- SUB ADMINS -->
+  <div class="subadmin-grid">
+
+    <div class="subadmin-card">
+      <div class="name">ramesh</div>
+      <div class="meta">👥 Users: <b>180</b></div>
+      <div class="meta">💰 Wallet: <b>₹ 2,75,000</b></div>
+      <button class="view">View Details</button>
+    </div>
+
+    <div class="subadmin-card">
+      <div class="name">shampy</div>
+      <div class="meta">👥 Users: <b>166</b></div>
+      <div class="meta">💰 Wallet: <b>₹ 2,10,000</b></div>
+      <button class="view">View Details</button>
+    </div>
+
   </div>
 
-</div>
+</section>
 
-<script src="admin.js"></script>
-<script>
-function goBack() {
-  location.href = "dashboard.html";
-}
-</script>
 </body>
 </html>
