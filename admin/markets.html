@@ -13,21 +13,35 @@
   <button class="logout" onclick="logout()">Logout</button>
 </header>
 
-<!-- PAGE -->
 <div class="page">
-
   <h1 class="title">🎯 Market Control Room</h1>
   <p class="subtitle">Open, close & dominate the game</p>
 
-  <!-- MARKET GRID (IMPORTANT ID) -->
+  <!-- MARKET GRID -->
   <div class="market-grid" id="marketGrid">
     <p style="color:#aaa">Loading markets...</p>
   </div>
+</div>
 
+<!-- EDIT MODAL -->
+<div id="editModal" class="modal" style="display:none">
+  <div class="modal-box">
+    <h3>Edit Market</h3>
+
+    <input id="editName" placeholder="Market Name">
+    <input id="editOpen" type="time">
+    <input id="editClose" type="time">
+
+    <div class="modal-actions">
+      <button onclick="saveMarket()">Save</button>
+      <button onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
 </div>
 
 <script>
 const API = "https://matka-backend-4fy1.onrender.com";
+let currentMarketId = null;
 
 /* LOGOUT */
 function logout() {
@@ -35,7 +49,7 @@ function logout() {
   location.href = "login.html";
 }
 
-/* LOAD MARKETS FROM DB */
+/* LOAD MARKETS */
 fetch(API + "/api/markets", {
   headers: {
     "Authorization": "Bearer " + localStorage.getItem("adminToken")
@@ -54,25 +68,57 @@ fetch(API + "/api/markets", {
 
     card.innerHTML = `
       <div class="market-name">${m.name}</div>
-      <div class="market-time">${m.openTime} – ${m.closeTime}</div>
+      <div class="market-time">${m.openAt} – ${m.closeAt}</div>
 
       <div class="status ${isOpen ? "open" : "closed"}">
         ${isOpen ? "LIVE 🔥" : "CLOSED"}
       </div>
 
-      <button class="action ${isOpen ? "close" : "open"}">
-        ${isOpen ? "CLOSE MARKET" : "OPEN MARKET"}
-      </button>
+      <button class="action edit" onclick="editMarket(
+        '${m._id}',
+        '${m.name}',
+        '${m.openAt}',
+        '${m.closeAt}'
+      )">EDIT</button>
     `;
 
     grid.appendChild(card);
   });
 })
-.catch(err => {
+.catch(() => {
   document.getElementById("marketGrid").innerHTML =
     "<p style='color:red'>Server not reachable</p>";
-  console.error(err);
 });
+
+/* EDIT */
+function editMarket(id, name, openAt, closeAt) {
+  currentMarketId = id;
+  editName.value = name;
+  editOpen.value = openAt;
+  editClose.value = closeAt;
+  document.getElementById("editModal").style.display = "flex";
+}
+
+/* SAVE */
+function saveMarket() {
+  fetch(API + "/admin/market/" + currentMarketId, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + localStorage.getItem("adminToken")
+    },
+    body: JSON.stringify({
+      name: editName.value,
+      openAt: editOpen.value,
+      closeAt: editClose.value
+    })
+  }).then(() => location.reload());
+}
+
+/* CLOSE MODAL */
+function closeModal() {
+  document.getElementById("editModal").style.display = "none";
+}
 </script>
 
 </body>
