@@ -76,6 +76,8 @@ document.querySelector(".logout").onclick = () => {
   location.href = "subadmin-login.html";
 };
 
+let activeUserId = null;
+
 /* LOAD USERS */
 function loadUsers() {
   fetch(API + "/subadmin/users", {
@@ -94,9 +96,10 @@ function loadUsers() {
       tbody.innerHTML += `
         <tr>
           <td>${u.username}</td>
-          <td>₹ ${u.balance}</td>
+          <td id="balance-${u._id}">₹ ${u.balance}</td>
           <td>
-            <button class ="view-btn" onclick="openWallet('${u.username}', ${u.balance})"
+            <button class="view-btn"
+              onclick="openWallet('${u._id}', '${u.username}', ${u.balance})">
               View
             </button>
           </td>
@@ -122,101 +125,81 @@ function createUser() {
       password: newPass.value
     })
   })
-  .then(res => res.json())
   .then(() => {
     newUser.value = "";
     newPass.value = "";
-    loadUsers(); // 🔥 refresh data
+    loadUsers();
   });
 }
 
-loadUsers();
-</script>
-
-<div id="walletModal" class="modal">
-  <div class="modal-box">
-
-    <h2 id="modalUser">User Wallet</h2>
-    <h3>Total Balance: ₹ <span id="modalBalance">0</span></h3>
-
-    <div class="wallet-actions">
-      <input type="number" id="amountInput" placeholder="Enter amount">
-
-      <div class="btn-row">
-        <button class="add-btn" onclick="addBalance()">+ Add</button>
-        <button class="deduct-btn" onclick="deductBalance()">- Deduct</button>
-      </div>
-    </div>
-
-    <h4>Transaction History</h4>
-    <ul id="txnList"></ul>
-
-    <button class="close-btn" onclick="closeModal()">Close</button>
-
-  </div>
-</div>
-
-<script>
-let currentUser = "";
-let currentBalance = 0;
-let transactions = [];
-
-function openWallet(username, balance) {
-  currentUser = username;
-  currentBalance = balance;
-  transactions = [];
+/* WALLET MODAL */
+function openWallet(id, username, balance) {
+  activeUserId = id;
 
   document.getElementById("modalUser").innerText =
     "Wallet • " + username;
 
-  document.getElementById("modalBalance").innerText =
-    currentBalance;
-
-  document.getElementById("txnList").innerHTML = "";
-
+  document.getElementById("modalBalance").innerText = balance;
   document.getElementById("walletModal").style.display = "flex";
+
+  loadTransactions(id);
 }
 
-function addBalance() {
-  const amt = Number(amountInput.value);
-  if (!amt) return alert("Enter amount");
+/* ADD / DEDUCT */
+function updateWallet(type) {
+  const amount = Number(amountInput.value);
+  if (!amount) return alert("Enter amount");
 
-  currentBalance += amt;
-  transactions.unshift("+" + amt);
+  fetch(API + "/subadmin/users/wallet/" + activeUserId, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token
+    },
+    body: JSON.stringify({ amount, type })
+  })
+  .then(res => res.json())
+  .then(user => {
+    document.getElementById("modalBalance").innerText = user.balance;
+    document.getElementById("balance-" + user._id).innerText =
+      "₹ " + user.balance;
 
-  refreshWallet();
-}
-
-function deductBalance() {
-  const amt = Number(amountInput.value);
-  if (!amt) return alert("Enter amount");
-
-  currentBalance -= amt;
-  transactions.unshift("-" + amt);
-
-  refreshWallet();
-}
-
-function refreshWallet() {
-  document.getElementById("modalBalance").innerText =
-    currentBalance;
-
-  const ul = document.getElementById("txnList");
-  ul.innerHTML = "";
-
-  transactions.forEach(t => {
-    const li = document.createElement("li");
-    li.innerText = t;
-    li.className = t.startsWith("+") ? "plus" : "minus";
-    ul.appendChild(li);
+    loadTransactions(user._id);
+    loadUsers();
+    amountInput.value = "";
   });
+}
 
-  amountInput.value = "";
+function addBalance() { updateWallet("ADD"); }
+function deductBalance() { updateWallet("DEDUCT"); }
+
+/* TRANSACTIONS */
+function loadTransactions(id) {
+  fetch(API + "/subadmin/users", {
+    headers: { Authorization: "Bearer " + token }
+  })
+  .then(res => res.json())
+  .then(users => {
+    const user = users.find(u => u._id === id);
+    const ul = document.getElementById("txnList");
+    ul.innerHTML = "";
+
+    user.transactions.forEach(t => {
+      ul.innerHTML += `
+        <li class="${t.type === "ADD" ? "plus" : "minus"}">
+          ${t.type === "ADD" ? "+" : "-"}${t.amount}
+          <small>${new Date(t.date).toLocaleString()}</small>
+        </li>
+      `;
+    });
+  });
 }
 
 function closeModal() {
   document.getElementById("walletModal").style.display = "none";
 }
+
+loadUsers();
 </script>
 
 </body>
