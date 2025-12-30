@@ -1,37 +1,66 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>SUPER D • Markets</title>
+  <meta charset="UTF-8">
+  <title>SUPER D • Markets Control</title>
   <link rel="stylesheet" href="markets.css">
 </head>
 <body>
 
-<div class="layout">
-  <aside class="sidebar">
-    <h1>SUPER <span>D</span></h1>
-    <a href="dashboard.html">Dashboard</a>
-    <a class="active" href="#">Markets</a>
-    <a href="results.html">Results</a>
-    <a href="users.html">User Wallets</a>
-  </aside>
+<!-- TOP BAR -->
+<header class="topbar">
+  <div class="logo">SUPER <span>D</span></div>
+  <button class="logout">Logout</button>
+</header>
 
-  <main class="content">
-    <h2>Markets Control</h2>
+<!-- PAGE -->
+<div class="page">
 
-    <div class="grid">
-      <div class="card">
-        <h3>MADHUR MORNING</h3>
-        <p>Status: <b class="closed">Closed</b></p>
-        <button class="btn">Open</button>
-      </div>
+  <h1 class="title">🎯 Market Control Room</h1>
+  <p class="subtitle">Open, close & dominate the game</p>
 
-      <div class="card">
-        <h3>MADHUR NIGHT</h3>
-        <p>Status: <b class="open">Open</b></p>
-        <button class="btn danger">Close</button>
-      </div>
+  <!-- MARKET GRID -->
+  <div class="market-grid">
+
+    <!-- MARKET CARD -->
+    <div class="market-card closed">
+      <div class="market-name">MADHUR MORNING</div>
+      <div class="market-time">11:20 AM – 12:20 PM</div>
+
+      <div class="status closed">CLOSED</div>
+
+      <button class="action open">OPEN MARKET</button>
     </div>
-  </main>
+
+    <div class="market-card open">
+      <div class="market-name">MADHUR NIGHT</div>
+      <div class="market-time">11:20 PM – 02:20 AM</div>
+
+      <div class="status open">LIVE 🔥</div>
+
+      <button class="action close">CLOSE MARKET</button>
+    </div>
+
+    <div class="market-card closed">
+      <div class="market-name">SRIDEVI MORNING</div>
+      <div class="market-time">08:30 AM – 09:30 AM</div>
+
+      <div class="status closed">CLOSED</div>
+
+      <button class="action open">OPEN MARKET</button>
+    </div>
+
+    <div class="market-card open">
+      <div class="market-name">KALYAN NIGHT</div>
+      <div class="market-time">09:30 PM – 11:30 PM</div>
+
+      <div class="status open">LIVE 🔥</div>
+
+      <button class="action close">CLOSE MARKET</button>
+    </div>
+
+  </div>
+
 </div>
 
 </body>

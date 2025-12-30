@@ -1,65 +1,136 @@
-body {
+* {
   margin: 0;
-  font-family: "Poppins", sans-serif;
-  background: radial-gradient(circle at top, #111 0%, #000 60%);
-  color: #fff;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", sans-serif;
 }
 
-h1 {
-  text-align: center;
-  color: #ffd700;
-  letter-spacing: 2px;
-  margin: 30px 0;
+body {
+  background: radial-gradient(circle at top, #111, #000);
+  color: white;
+  min-height: 100vh;
 }
 
+/* TOP BAR */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 30px;
+  background: linear-gradient(to right, #000, #111);
+  border-bottom: 1px solid #222;
+}
+
+.logo {
+  font-size: 26px;
+  letter-spacing: 3px;
+  font-weight: bold;
+}
+
+.logo span {
+  color: gold;
+}
+
+.logout {
+  background: gold;
+  color: black;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+/* PAGE */
+.page {
+  padding: 40px;
+}
+
+.title {
+  font-size: 32px;
+  margin-bottom: 6px;
+}
+
+.subtitle {
+  color: #aaa;
+  margin-bottom: 35px;
+}
+
+/* GRID */
+.market-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 25px;
+}
+
+/* CARD */
 .market-card {
-  background: linear-gradient(145deg, #111, #1a1a1a);
-  border: 1px solid #2a2a2a;
-  border-radius: 14px;
-  padding: 20px;
-  margin: 20px auto;
-  width: 80%;
-  box-shadow: 0 10px 30px rgba(0,0,0,.8);
-  transition: transform .3s, box-shadow .3s;
+  background: linear-gradient(145deg, #111, #000);
+  border-radius: 16px;
+  padding: 22px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+  position: relative;
+  border: 1px solid #1f1f1f;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .market-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 20px 40px rgba(255,215,0,.15);
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.8);
 }
 
 .market-name {
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 600;
-  color: #fff;
+  letter-spacing: 1px;
 }
 
+.market-time {
+  margin-top: 6px;
+  font-size: 13px;
+  color: #999;
+}
+
+/* STATUS */
 .status {
-  margin-top: 8px;
+  margin: 18px 0;
+  font-weight: bold;
+  letter-spacing: 2px;
   font-size: 14px;
 }
 
 .status.open {
   color: #00ff88;
+  text-shadow: 0 0 8px rgba(0,255,136,0.6);
 }
 
 .status.closed {
   color: #ff4444;
 }
 
-.market-btn {
-  margin-top: 15px;
-  padding: 12px 30px;
+/* ACTION BUTTON */
+.action {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
   border: none;
-  border-radius: 30px;
-  font-weight: 600;
+  font-weight: bold;
   cursor: pointer;
-  background: linear-gradient(135deg, #ffd700, #ffb700);
-  color: #000;
-  transition: all .3s;
+  letter-spacing: 1px;
 }
 
-.market-btn:hover {
-  background: #fff;
-  box-shadow: 0 0 20px #ffd700;
+.action.open {
+  background: linear-gradient(to right, gold, #ffb300);
+  color: black;
+}
+
+.action.close {
+  background: linear-gradient(to right, #ff3c3c, #b30000);
+  color: white;
+}
+
+/* OPEN CARD GLOW */
+.market-card.open {
+  border: 1px solid gold;
+  box-shadow: 0 0 25px rgba(255,215,0,0.25);
 }
