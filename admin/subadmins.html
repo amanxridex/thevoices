@@ -7,7 +7,6 @@
 </head>
 <body>
 
-<!-- TOP BAR -->
 <header class="topbar">
   <div class="brand">SUPER <span>D</span></div>
   <button class="back-btn" onclick="goBack()">⬅ Dashboard</button>
@@ -26,18 +25,18 @@
     </div>
     <div class="stat-card">
       <span>Total Users</span>
-      <h2>346</h2> <!-- hardcoded for now -->
+      <h2 id="totalUsers">0</h2>
     </div>
     <div class="stat-card">
       <span>Total Wallet</span>
-      <h2>₹ 4,85,000</h2> <!-- hardcoded -->
+      <h2 id="totalWallet">₹ 0</h2>
     </div>
   </div>
 
   <!-- MAIN GRID -->
   <div class="main-grid">
 
-    <!-- CREATE SUBADMIN -->
+    <!-- CREATE SUB ADMIN -->
     <div class="card create-card">
       <h2>Create Sub Admin</h2>
 
@@ -47,7 +46,7 @@
       <button onclick="createSubAdmin()">Create Sub Admin</button>
     </div>
 
-    <!-- SUBADMIN LIST -->
+    <!-- SUB ADMIN LIST -->
     <div class="card list-card">
       <h2>Sub Admin List</h2>
       <ul id="subAdminList"></ul>
@@ -57,43 +56,12 @@
 
 </div>
 
-<script src="admin.js"></script>
+<script src="subadmins.js"></script>
 
 <script>
 function goBack() {
   location.href = "dashboard.html";
 }
-
-/* Enhance list UI + count */
-const originalLoad = loadSubAdmins;
-loadSubAdmins = function () {
-  fetch("https://matka-backend-4fy1.onrender.com/admin/subadmins", {
-    headers: {
-      "Authorization": "Bearer " + localStorage.getItem("adminToken")
-    }
-  })
-  .then(res => res.json())
-  .then(data => {
-    const ul = document.getElementById("subAdminList");
-    const total = document.getElementById("totalSubs");
-
-    ul.innerHTML = "";
-    total.innerText = data.length;
-
-    data.forEach(sa => {
-      const li = document.createElement("li");
-      li.innerHTML = `
-        <strong>${sa.username}</strong>
-        <span>👥 Users: ${Math.floor(Math.random()*200)}</span>
-        <span>💰 Wallet: ₹ ${Math.floor(Math.random()*300000)}</span>
-      `;
-      ul.appendChild(li);
-    });
-  });
-};
-
-/* load on page open */
-loadSubAdmins();
 </script>
 
 </body>
