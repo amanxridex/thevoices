@@ -68,7 +68,7 @@ fetch(API + "/api/markets", {
 
     card.innerHTML = `
       <div class="market-name">${m.name}</div>
-      <div class="market-time">${m.openAt} – ${m.closeAt}</div>
+      <div class="market-time">${m.openTime} – ${m.closeTime}</div>
 
       <div class="status ${isOpen ? "open" : "closed"}">
         ${isOpen ? "LIVE 🔥" : "CLOSED"}
@@ -77,8 +77,8 @@ fetch(API + "/api/markets", {
       <button class="action edit" onclick="editMarket(
         '${m._id}',
         '${m.name}',
-        '${m.openAt}',
-        '${m.closeAt}'
+        '${m.openTime}',
+        '${m.closeTime}'
       )">EDIT</button>
     `;
 
@@ -91,11 +91,11 @@ fetch(API + "/api/markets", {
 });
 
 /* EDIT */
-function editMarket(id, name, openAt, closeAt) {
+function editMarket(id, name, openTime, closeTime) {
   currentMarketId = id;
   editName.value = name;
-  editOpen.value = openAt;
-  editClose.value = closeAt;
+  editOpen.value = openTime;
+  editClose.value = closeTime;
   document.getElementById("editModal").style.display = "flex";
 }
 
@@ -109,8 +109,8 @@ function saveMarket() {
     },
     body: JSON.stringify({
       name: editName.value,
-      openAt: editOpen.value,
-      closeAt: editClose.value
+      openTime: editOpen.value,
+      closeTime: editClose.value
     })
   }).then(() => location.reload());
 }
