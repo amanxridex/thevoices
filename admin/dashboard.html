@@ -1,28 +1,75 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Admin Dashboard</title>
-  <link rel="stylesheet" href="admin.css">
+  <meta charset="UTF-8">
+  <title>SUPER D • Admin Panel</title>
+  <link rel="stylesheet" href="dashboard.css">
 </head>
 <body>
 
-<header>
-  <h2>ADMIN DASHBOARD</h2>
-  <button onclick="logout()">Logout</button>
+<!-- TOP BAR -->
+<header class="topbar">
+  <div class="brand">SUPER <span>D</span></div>
+  <button class="logout" onclick="logout()">Logout</button>
 </header>
 
-<div class="cards">
-  <div class="card" onclick="location.href='subadmins.html'">
-    Manage Sub Admins
-  </div>
-  <div class="card">
-    Markets (Next)
-  </div>
-  <div class="card">
-    Results (Next)
-  </div>
+<!-- LAYOUT -->
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <h3>ADMIN PANEL</h3>
+    <ul>
+      <li onclick="go('subadmins.html')">👤 Sub Admins</li>
+      <li onclick="go('markets.html')">🎯 Markets</li>
+      <li onclick="go('results.html')">📊 Results</li>
+      <li onclick="go('users.html')">💰 User Wallets</li>
+    </ul>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="content">
+    <h1>Welcome, Admin 👑</h1>
+    <p>Manage SUPER D Matka system from here</p>
+
+    <div class="cards">
+      <div class="card">
+        <h2>Sub Admins</h2>
+        <p>Create & manage sub admins</p>
+        <button onclick="go('subadmins.html')">Open</button>
+      </div>
+
+      <div class="card">
+        <h2>Markets</h2>
+        <p>Open / Close markets</p>
+        <button onclick="go('markets.html')">Open</button>
+      </div>
+
+      <div class="card">
+        <h2>Results</h2>
+        <p>Declare & edit results</p>
+        <button onclick="go('results.html')">Open</button>
+      </div>
+
+      <div class="card">
+        <h2>User Wallets</h2>
+        <p>Add / Deduct balance</p>
+        <button onclick="go('users.html')">Open</button>
+      </div>
+    </div>
+  </main>
+
 </div>
 
-<script src="admin.js"></script>
+<script>
+function logout() {
+  localStorage.removeItem("adminToken");
+  location.href = "login.html";
+}
+function go(page) {
+  location.href = page;
+}
+</script>
+
 </body>
 </html>
