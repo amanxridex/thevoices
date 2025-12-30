@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SUPER D • Sub Admin Login</title>
+  <link rel="stylesheet" href="subadmin-login.css">
+</head>
+<body>
+
+<div class="login-wrapper">
+  <div class="login-box">
+    <h1 class="brand">SUPER <span>D</span></h1>
+    <h2>Sub Admin Login</h2>
+
+    <input type="text" id="username" placeholder="Sub Admin Username">
+
+    <div class="password-box">
+      <input type="password" id="password" placeholder="Password">
+      <span class="eye" onclick="togglePassword()">👁️</span>
+    </div>
+
+    <button onclick="loginSubAdmin()">LOGIN</button>
+    <p id="error"></p>
+  </div>
+</div>
+
+<script>
+function togglePassword() {
+  password.type = password.type === "password" ? "text" : "password";
+}
+
+function loginSubAdmin() {
+  fetch("https://matka-backend-4fy1.onrender.com/admin/subadmin/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      username: username.value,
+      password: password.value
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.token) {
+      localStorage.setItem("subToken", data.token);
+      location.href = "subadmin-dashboard.html";
+    } else {
+      error.innerText = "Invalid credentials";
+    }
+  });
+}
+</script>
+
+</body>
+</html>

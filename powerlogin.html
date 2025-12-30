@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SUPER D • Power Login</title>
+  <link rel="stylesheet" href="powerlogin.css">
+</head>
+<body>
+
+<div class="wrapper">
+  <h1 class="brand">SUPER <span>D</span></h1>
+  <p class="tagline">Choose your power</p>
+
+  <div class="card-grid">
+
+    <!-- SUPER ADMIN -->
+    <div class="card super" onclick="goSuper()">
+      <h2>👑 Super Admin</h2>
+      <p>Full control of system</p>
+      <button>Login</button>
+    </div>
+
+    <!-- SUB ADMIN -->
+    <div class="card sub" onclick="goSub()">
+      <h2>🛡️ Sub Admin</h2>
+      <p>Manage users & wallets</p>
+      <button>Login</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function goSuper() {
+  location.href = "admin/login.html";
+}
+
+function goSub() {
+  location.href = "admin/subadmin-login.html";
+}
+</script>
+
+</body>
+</html>
