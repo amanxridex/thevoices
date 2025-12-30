@@ -46,10 +46,11 @@
     <!-- CREATE USER -->
     <div class="card create-card">
       <h2>Create User</h2>
-      <input type="text" placeholder="Username">
-      <input type="password" placeholder="Password">
-      <button>Create User</button>
+      <input type="text" id="newUser" placeholder="Username">
+      <input type="password" id="newPass" placeholder="Password">
+      <button onclick="createUser()">Create User</button>
     </div>
+
 
     <!-- USER LIST -->
     <div class="card list-card">
@@ -119,6 +120,39 @@
     localStorage.removeItem("subUsername");
     window.location.href = "subadmin-login.html";
   };
+</script>
+<script>
+const API = "https://matka-backend-4fy1.onrender.com";
+
+function createUser() {
+  const username = document.getElementById("newUser").value;
+  const password = document.getElementById("newPass").value;
+
+  if (!username || !password) {
+    alert("Fill all fields");
+    return;
+  }
+
+  fetch(API + "/subadmin/users/create", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + localStorage.getItem("subToken")
+    },
+    body: JSON.stringify({ username, password })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data._id) {
+      alert("User created successfully");
+      document.getElementById("newUser").value = "";
+      document.getElementById("newPass").value = "";
+    } else {
+      alert("Error creating user");
+    }
+  })
+  .catch(() => alert("Server error"));
+}
 </script>
 
 </body>
