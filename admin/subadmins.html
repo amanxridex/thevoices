@@ -33,36 +33,80 @@
     </div>
   </div>
 
-  <!-- MAIN GRID -->
-  <div class="main-grid">
+  <!-- CREATE -->
+  <div class="card create-card">
+    <h2>Create Sub Admin</h2>
+    <input id="saUser" placeholder="Username">
+    <input id="saPass" type="password" placeholder="Password">
+    <button onclick="createSubAdmin()">Create Sub Admin</button>
+  </div>
 
-    <!-- CREATE SUB ADMIN -->
-    <div class="card create-card">
-      <h2>Create Sub Admin</h2>
+  <!-- LIST -->
+  <div class="card list-card">
+    <h2>Sub Admin List</h2>
 
-      <input type="text" id="saUser" placeholder="Username">
-      <input type="password" id="saPass" placeholder="Password">
-
-      <button onclick="createSubAdmin()">Create Sub Admin</button>
+    <div class="subadmin-header">
+      <span>Sub Admin</span>
+      <span>Total Users</span>
+      <span>Total Wallet</span>
+      <span>Actions</span>
     </div>
 
-    <!-- SUB ADMIN LIST -->
-    <div class="card list-card">
-      <h2>Sub Admin List</h2>
-      <ul id="subAdminList"></ul>
-    </div>
-
+    <div id="subAdminList"></div>
   </div>
 
 </div>
 
-<script src="subadmins.js"></script>
-
 <script>
+const API = "https://matka-backend-4fy1.onrender.com";
+
 function goBack() {
   location.href = "dashboard.html";
 }
+
+function loadSubAdmins() {
+  fetch(API + "/admin/subadmins", {
+    headers: {
+      "Authorization": "Bearer " + localStorage.getItem("adminToken")
+    }
+  })
+  .then(res => res.json())
+  .then(data => {
+    const list = document.getElementById("subAdminList");
+
+    let totalUsers = 0;
+    let totalWallet = 0;
+
+    list.innerHTML = "";
+    document.getElementById("totalSubs").innerText = data.length;
+
+    data.forEach(sa => {
+      totalUsers += sa.users || 0;
+      totalWallet += sa.balance || 0;
+
+      const row = document.createElement("div");
+      row.className = "subadmin-row";
+      row.innerHTML = `
+        <div>
+          <strong>${sa.username}</strong>
+        </div>
+        <div>${sa.users || 0}</div>
+        <div>₹ ${sa.balance || 0}</div>
+        <div>
+          <button class="action-btn">View</button>
+        </div>
+      `;
+      list.appendChild(row);
+    });
+
+    document.getElementById("totalUsers").innerText = totalUsers;
+    document.getElementById("totalWallet").innerText = "₹ " + totalWallet;
+  });
+}
+
+loadSubAdmins();
 </script>
 
+<script src="admin.js"></script>
 </body>
 </html>
