@@ -14,8 +14,8 @@ function saveMarket() {
     },
     body: JSON.stringify({
       name: editName.value,
-      openAt: editOpen.value,
-      closeAt: editClose.value
+      openTime: editOpen.value,
+      closeTime: editClose.value
     })
   })
   .then(() => location.reload());
