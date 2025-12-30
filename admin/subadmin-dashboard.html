@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SUPER D • Sub Admin Panel</title>
+  <link rel="stylesheet" href="subadmin-dashboard.css">
+</head>
+<body>
+
+<!-- TOP BAR -->
+<header class="topbar">
+  <div class="logo">SUPER <span>D</span></div>
+  <div class="right">
+    <span class="admin-name">👤 Sub Admin: ramesh</span>
+    <button class="logout">Logout</button>
+  </div>
+</header>
+
+<div class="page">
+
+  <h1 class="title">📊 Sub Admin Dashboard</h1>
+  <p class="subtitle">Manage users & wallet power</p>
+
+  <!-- STATS -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <span>Total Users</span>
+      <h2>168</h2>
+    </div>
+    <div class="stat-card">
+      <span>Total Wallet</span>
+      <h2>₹ 2,75,000</h2>
+    </div>
+    <div class="stat-card">
+      <span>Today Transactions</span>
+      <h2>₹ 48,500</h2>
+    </div>
+  </div>
+
+  <!-- MAIN GRID -->
+  <div class="main-grid">
+
+    <!-- CREATE USER -->
+    <div class="card create-card">
+      <h2>Create User</h2>
+      <input type="text" placeholder="Username">
+      <input type="password" placeholder="Password">
+      <button>Create User</button>
+    </div>
+
+    <!-- USER LIST -->
+    <div class="card list-card">
+      <h2>User List</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Balance</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <tr>
+            <td>amit123</td>
+            <td>₹ 12,500</td>
+            <td>
+              <button class="add">+ Add</button>
+              <button class="deduct">- Deduct</button>
+              <button class="delete">Delete</button>
+            </td>
+          </tr>
+
+          <tr>
+            <td>rohit777</td>
+            <td>₹ 8,200</td>
+            <td>
+              <button class="add">+ Add</button>
+              <button class="deduct">- Deduct</button>
+              <button class="delete">Delete</button>
+            </td>
+          </tr>
+
+          <tr>
+            <td>vipuser</td>
+            <td>₹ 45,000</td>
+            <td>
+              <button class="add">+ Add</button>
+              <button class="deduct">- Deduct</button>
+              <button class="delete">Delete</button>
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+
+    </div>
+
+  </div>
+
+</div>
+
+</body>
+</html>
