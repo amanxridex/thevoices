@@ -96,7 +96,7 @@ function loadUsers() {
           <td>${u.username}</td>
           <td>₹ ${u.balance}</td>
           <td>
-            <button class ="view-btn" onclick="openWallet('gautam', 500)">
+            <button class ="view-btn" onclick="openWallet('${u.username}', ${u.balance})"
               View
             </button>
           </td>
