@@ -83,7 +83,7 @@ body {
   box-shadow: 0 0 25px rgba(255,215,0,.2);
 }
 
-.submit {
+.submit-btn {
   width: calc(100% - 40px);
   margin: 20px;
   padding: 14px;
