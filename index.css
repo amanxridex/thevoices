@@ -233,3 +233,117 @@ body {
     transform: translateX(-100%);
   }
 }
+
+/* =========================
+   📱 MOBILE UI ENHANCEMENTS
+   ========================= */
+@media (max-width: 768px) {
+
+  body {
+    font-size: 14px;
+  }
+
+  /* HEADER */
+  .top-bar {
+    padding: 10px 14px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .logo {
+    font-size: 18px;
+    letter-spacing: 1px;
+  }
+
+  .user-info {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+  }
+
+  .balance b {
+    font-size: 15px;
+    color: #ffd400;
+  }
+
+  /* NAV */
+  .menu {
+    font-size: 13px;
+    padding: 8px 6px;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .menu span {
+    padding: 6px 10px;
+  }
+
+  /* DISCLAIMER */
+  .disclaimer-bar {
+    font-size: 11px;
+    padding: 6px 10px;
+  }
+
+  /* TITLE */
+  .bazar-title {
+    font-size: 13px;
+    margin: 10px 0;
+    letter-spacing: 1px;
+  }
+
+  /* MARKET LIST */
+  .market-list {
+    padding: 0 10px;
+  }
+
+  .market-card {
+    padding: 14px 12px;
+    margin-bottom: 14px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 0 18px rgba(255, 215, 0, 0.08);
+  }
+
+  .market-card.live {
+    border-left: 4px solid #00ff8f;
+  }
+
+  .market-card.closed {
+    border-left: 4px solid #ff4d4d;
+  }
+
+  .market-card .time {
+    font-size: 12px;
+    min-width: 52px;
+    text-align: center;
+  }
+
+  .market-card .center h3 {
+    font-size: 15px;
+    margin-bottom: 4px;
+  }
+
+  .market-card .center p {
+    font-size: 12px;
+  }
+
+  .market-card .result {
+    font-size: 14px;
+    margin-top: 4px;
+  }
+
+  /* TAP FEEL */
+  .market-card {
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .market-card:active {
+    transform: scale(0.97);
+    box-shadow: 0 0 25px rgba(255, 215, 0, 0.25);
+  }
+}
