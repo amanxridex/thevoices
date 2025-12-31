@@ -31,9 +31,7 @@ const token = localStorage.getItem("userToken");
 if (!token) location.href = "user-login.html";
 
 fetch(API + "/user/transactions", {
-  headers: {
-    Authorization: "Bearer " + token
-  }
+  headers: { Authorization: "Bearer " + token }
 })
 .then(res => res.json())
 .then(data => {
@@ -55,13 +53,11 @@ fetch(API + "/user/transactions", {
 
     container.innerHTML += `
       <div class="card">
-
-        <!-- 🔥 MARKET + GAME TYPE -->
         <div class="meta">
           <span class="tag">${txn.market}</span>
           <span class="tag">${txn.gameType}</span>
         </div>
-        
+
         <div class="card-head">
           <span>Total Bet</span>
           <b>₹ ${txn.amount}</b>
