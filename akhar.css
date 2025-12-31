@@ -93,7 +93,3 @@ body {
   font-weight: 800;
   cursor: pointer;
 }
-
-.grid {
-  grid-template-columns: repeat(6, 1fr);
-}

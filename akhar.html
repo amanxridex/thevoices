@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>JODI • SUPER D</title>
-  <link rel="stylesheet" href="jodi.css">
+  <title>AKHAR • SUPER D</title>
+  <link rel="stylesheet" href="akhar.css">
 </head>
 <body>
 
@@ -11,15 +11,18 @@
   <h1>SUPER <span>D</span></h1>
 </header>
 
+<!-- TOGGLE -->
 <div class="toggle">
-  <button onclick="location.href='akhar.html'">AKHAR</button>
-  <button class="active">JODI</button>
+  <button class="active">AKHAR</button>
+  <button onclick="location.href='jodi.html'">JODI</button>
 </div>
 
-<h2 class="subtitle">Select Jodi & Enter Amount</h2>
+<h2 class="subtitle">Select Akhar & Enter Amount</h2>
 
-<div class="grid" id="jodiGrid"></div>
+<!-- NUMBER GRID -->
+<div class="grid" id="numberGrid"></div>
 
+<!-- PREVIEW -->
 <div class="preview">
   <h3>Bet Preview</h3>
   <div id="betList"></div>
@@ -30,32 +33,30 @@
 <button class="submit">SUBMIT BET</button>
 
 <script>
-const grid = document.getElementById("jodiGrid");
+const grid = document.getElementById("numberGrid");
 const betList = document.getElementById("betList");
 const totalAmountEl = document.getElementById("totalAmount");
 
-const bets = {}; // { "02": 100, "15": 50 }
+const bets = {}; // { digit: amount }
 
-for (let i = 0; i <= 99; i++) {
-  const num = i.toString().padStart(2, "0");
-
+for (let i = 0; i <= 9; i++) {
   const box = document.createElement("div");
   box.className = "box";
   box.innerHTML = `
-    <b>${num}</b>
+    <b>${i}</b>
     <input type="number" min="0" placeholder="₹"
-      oninput="updateBet('${num}', this.value)">
+      oninput="updateBet(${i}, this.value)">
   `;
   grid.appendChild(box);
 }
 
-function updateBet(jodi, value) {
+function updateBet(digit, value) {
   const amt = Number(value);
 
   if (amt > 0) {
-    bets[jodi] = amt;
+    bets[digit] = amt;
   } else {
-    delete bets[jodi];
+    delete bets[digit];
   }
 
   renderPreview();
@@ -65,12 +66,12 @@ function renderPreview() {
   betList.innerHTML = "";
   let total = 0;
 
-  Object.keys(bets).forEach(jodi => {
-    const amt = bets[jodi];
+  Object.keys(bets).forEach(digit => {
+    const amt = bets[digit];
     total += amt;
 
     betList.innerHTML += `
-      <p>${jodi} → ₹ ${amt}</p>
+      <p>${digit} → ₹ ${amt}</p>
     `;
   });
 
