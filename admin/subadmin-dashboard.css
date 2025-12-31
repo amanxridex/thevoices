@@ -304,21 +304,40 @@ td button {
   cursor: pointer;
 }
 
-.txn-list {
-  list-style: none;
-  padding: 0;
-  max-height: 150px;
-  overflow-y: auto;
+.txn-head,
+.txn-list li {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  gap: 10px;
+  align-items: center;
+}
+
+.txn-head {
+  font-size: 12px;
+  color: #aaa;
+  padding: 6px 0;
+  border-bottom: 1px solid #333;
 }
 
 .txn-list li {
+  font-size: 13px;
   padding: 6px 0;
-  border-bottom: 1px solid #333;
-  font-size: 14px;
+  border-bottom: 1px solid #222;
 }
 
-.txn-list .plus { color: #2ecc71; }
-.txn-list .minus { color: #e74c3c; }
+.txn-list li.plus {
+  color: #2ecc71;
+}
+
+.txn-list li.minus {
+  color: #e74c3c;
+}
+
+.txn-type {
+  text-align: right;
+  font-weight: bold;
+}
+
 
 .stat-card.highlight {
   border: 1px solid rgba(255,215,0,.4);

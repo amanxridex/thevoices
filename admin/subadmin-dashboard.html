@@ -225,13 +225,18 @@ function loadTransactions(id) {
     if (!user || !user.transactions) return;
 
     user.transactions.forEach(t => {
+      const sign = t.type === "ADD" ? "+" : "-";
+      const cls = t.type === "ADD" ? "plus" : "minus";
+
       ul.innerHTML += `
-        <li class="${t.type === "ADD" ? "plus" : "minus"}">
-          ${t.type === "ADD" ? "+" : "-"}${t.amount}
-          <small>${new Date(t.date).toLocaleString()}</small>
+        <li class="${cls}">
+          <span>${sign}${t.amount}</span>
+          <span>${new Date(t.date).toLocaleString()}</span>
+          <span class="txn-type">${t.type}</span>
         </li>
-      `;
-    });
+     `;
+   });
+
   });
 }
 
@@ -302,9 +307,17 @@ loadMyWallet();
       <button class="add-btn" onclick="addBalance()">➕ Add</button>
       <button class="deduct-btn" onclick="deductBalance()">➖ Deduct</button>
     </div>
-
+  
     <h4>Transaction History</h4>
+
+    <div class="txn-head">
+      <span>Amount</span>
+      <span>Date & Time</span>
+      <span>Type</span>
+    </div>
+
     <ul id="txnList" class="txn-list"></ul>
+
 
   </div>
 </div>
