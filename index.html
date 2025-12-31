@@ -4,6 +4,14 @@
 <meta charset="UTF-8">
 <title>SUPER D • Play Matka</title>
 <link rel="stylesheet" href="index.css">
+
+<!-- 🔐 AUTH GUARD -->
+<script>
+  const userToken = localStorage.getItem("userToken");
+  if (!userToken) {
+    location.href = "user-login.html";
+  }
+</script>
 </head>
 
 <body>
@@ -14,10 +22,10 @@
 
   <div class="user-info">
     <div class="balance">
-      💰 Balance: <b>₹ 2,450</b>
+      💰 Balance: <b id="userBalance">₹ 0</b>
     </div>
     <div class="user-id">
-      👤 8529637410
+      👤 <span id="userName"></span>
     </div>
   </div>
 </header>
@@ -47,7 +55,32 @@
   <p class="loading">Loading markets...</p>
 </div>
 
-<!-- 🔥 JS EXACT SAME (UNCHANGED) -->
+<!-- ================= USER INFO ================= -->
+<script>
+const API = "https://matka-backend-4fy1.onrender.com";
+const token = localStorage.getItem("userToken");
+
+fetch(API + "/user/me", {
+  headers: {
+    Authorization: "Bearer " + token
+  }
+})
+.then(res => {
+  if (!res.ok) {
+    localStorage.clear();
+    location.href = "user-login.html";
+    return;
+  }
+  return res.json();
+})
+.then(user => {
+  if (!user) return;
+  document.getElementById("userName").innerText = user.username;
+  document.getElementById("userBalance").innerText = "₹ " + user.balance;
+});
+</script>
+
+<!-- ================= MARKET LIST (UNCHANGED) ================= -->
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
@@ -98,8 +131,7 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     })
     .catch(() => {
-      list.innerHTML =
-        "<p class='error'>Server not reachable</p>";
+      list.innerHTML = "<p class='error'>Server not reachable</p>";
     });
 });
 </script>
