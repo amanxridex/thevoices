@@ -329,3 +329,18 @@ td button {
   color: gold;
   text-shadow: 0 0 10px rgba(255,215,0,.6);
 }
+
+.suspend-btn {
+  background: #ff3b3b;
+  color: #fff;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.suspend-btn:hover {
+  background: #d60000;
+}

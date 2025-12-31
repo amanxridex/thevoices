@@ -56,6 +56,7 @@
             <th>User</th>
             <th>Balance</th>
             <th>Actions</th>
+            <th>Suspend</th>
           </tr>
         </thead>
         <tbody id="userTable"></tbody>
@@ -117,6 +118,12 @@ function loadUsers() {
           <td>
             <button class="view-btn"
               onclick="openWallet('${u._id}', '${u.username}', ${u.balance})">
+              View
+            </button>
+          </td>
+          <td>
+            <button class="suspend-btn"
+              onclick="confirmSuspend('${u._id}', '${u.username}', ${u.balance})">
               View
             </button>
           </td>
@@ -227,6 +234,42 @@ function loadTransactions(id) {
     });
   });
 }
+
+function confirmSuspend(userId, username) {
+  const ok = confirm(
+    `⚠️ Are you sure?\n\nDo you want to permanently delete user "${username}"?\n\nThis action cannot be undone.`
+  );
+
+  if (!ok) return;
+
+  deleteUser(userId);
+}
+
+function deleteUser(userId) {
+  fetch(API + "/subadmin/users/" + userId, {
+    method: "DELETE",
+    headers: {
+      Authorization: "Bearer " + token
+    }
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (!data.success) {
+      alert(data.error || "Delete failed");
+      return;
+    }
+
+    alert("✅ User suspended successfully");
+
+    // refresh everything
+    loadUsers();
+    loadMyWallet();
+  })
+  .catch(() => {
+    alert("Server error while deleting user");
+  });
+}
+
 
 function closeModal() {
   document.getElementById("walletModal").style.display = "none";
