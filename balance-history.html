@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SUPER D • Balance History</title>
+  <link rel="stylesheet" href="balance-history.css">
+</head>
+<body>
+
+<!-- TOP BAR -->
+<header class="top-bar">
+  <div class="logo">
+    SUPER <span>D</span>
+    <small>powered by super d</small>
+  </div>
+
+  <div class="user-info">
+    <div class="balance">💰 ₹ <span id="userBalance">0</span></div>
+    <div class="user-id">👤 <span id="userName"></span></div>
+  </div>
+</header>
+
+<!-- NAV -->
+<nav class="menu">
+  <a href="index.html">PLAY</a>
+  <a href="bet-history.html">BET HISTORY</a>
+  <a href="results.html">RESULTS</a>
+  <a class="active">BALANCE HISTORY</a>
+</nav>
+
+<!-- PAGE -->
+<div class="page">
+
+  <h1 class="title">💳 Balance History</h1>
+
+  <div class="history-box">
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Amount</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody id="historyTable">
+        <tr>
+          <td colspan="3" class="loading">Loading transactions...</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<script>
+const API = "https://matka-backend-4fy1.onrender.com";
+const token = localStorage.getItem("userToken");
+
+if (!token) location.replace("user-login.html");
+
+/* USER INFO */
+fetch(API + "/subadmin/users/me", {
+  headers: { Authorization: "Bearer " + token }
+})
+.then(res => res.json())
+.then(user => {
+  document.getElementById("userName").innerText = user.username;
+  document.getElementById("userBalance").innerText = user.balance;
+});
+
+/* TRANSACTIONS */
+fetch(API + "/subadmin/users/transactions", {
+  headers: { Authorization: "Bearer " + token }
+})
+.then(res => res.json())
+.then(txns => {
+  const tbody = document.getElementById("historyTable");
+  tbody.innerHTML = "";
+
+  if (!txns.length) {
+    tbody.innerHTML =
+      `<tr><td colspan="3" class="empty">No transactions found</td></tr>`;
+    return;
+  }
+
+  txns.forEach(t => {
+    tbody.innerHTML += `
+      <tr class="${t.type === "ADD" ? "add" : "deduct"}">
+        <td>${t.type}</td>
+        <td>${t.type === "ADD" ? "+" : "-"}₹ ${t.amount}</td>
+        <td>${new Date(t.date).toLocaleString()}</td>
+      </tr>
+    `;
+  });
+});
+</script>
+
+</body>
+</html>
