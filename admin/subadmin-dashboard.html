@@ -184,6 +184,8 @@ function loadTransactions(id) {
     const ul = document.getElementById("txnList");
     ul.innerHTML = "";
 
+    if (!user || !user.transactions) return;
+
     user.transactions.forEach(t => {
       ul.innerHTML += `
         <li class="${t.type === "ADD" ? "plus" : "minus"}">
