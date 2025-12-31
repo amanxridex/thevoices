@@ -1,22 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>SUPER D • Play Matka</title>
-<link rel="stylesheet" href="index.css">
-
-<!-- 🔐 AUTH GUARD -->
-<script>
-  const userToken = localStorage.getItem("userToken");
-  if (!userToken) {
-    location.href = "user-login.html";
-  }
-</script>
+  <meta charset="UTF-8">
+  <title>SUPER D • Play Matka</title>
+  <link rel="stylesheet" href="index.css">
 </head>
 
 <body>
 
-<!-- TOP HEADER -->
+<!-- ================= TOP HEADER ================= -->
 <header class="top-bar">
   <div class="logo">SUPER <span>D</span></div>
 
@@ -30,7 +22,7 @@
   </div>
 </header>
 
-<!-- NAV -->
+<!-- ================= NAV ================= -->
 <nav class="menu">
   <span class="active">PLAY</span>
   <span>BET HISTORY</span>
@@ -38,92 +30,86 @@
   <span>BALANCE HISTORY</span>
 </nav>
 
-<!-- DISCLAIMER TICKER -->
+<!-- ================= DISCLAIMER ================= -->
 <div class="disclaimer-bar">
   <div class="disclaimer-text">
-    ⚠️ This game is made only for fun & entertainment purposes. 
-    No real money gaming is involved. 
+    ⚠️ This game is made only for fun & entertainment purposes.
+    No real money gaming is involved.
     This platform does not promote gambling. ⚠️
   </div>
 </div>
 
-<!-- TITLE -->
+<!-- ================= TITLE ================= -->
 <div class="bazar-title">POWERED BY SUPER D</div>
 
-<!-- MARKET LIST (🔥 DO NOT TOUCH ID 🔥) -->
+<!-- ================= MARKET LIST ================= -->
 <div class="market-list" id="marketList">
   <p class="loading">Loading markets...</p>
 </div>
 
-<!-- ================= USER INFO ================= -->
+<!-- ================= AUTH + USER INFO ================= -->
 <script>
-const API = "https://matka-backend-4fy1.onrender.com";
-const token = localStorage.getItem("userToken");
+document.addEventListener("DOMContentLoaded", () => {
+  const token = localStorage.getItem("userToken");
 
-fetch(API + "/user/me", {
-  headers: {
-    Authorization: "Bearer " + token
-  }
-})
-.then(res => {
-  if (!res.ok) {
-    localStorage.clear();
-    location.href = "user-login.html";
+  // 🔐 AUTH GUARD
+  if (!token) {
+    location.replace("user-login.html");
     return;
   }
-  return res.json();
-})
-.then(user => {
-  if (!user) return;
-  document.getElementById("userName").innerText = user.username;
-  document.getElementById("userBalance").innerText = "₹ " + user.balance;
-});
-</script>
 
-<!-- ================= MARKET LIST (UNCHANGED) ================= -->
-<script>
-document.addEventListener("DOMContentLoaded", function () {
+  // 👤 FETCH USER
+  fetch("https://matka-backend-4fy1.onrender.com/user/me", {
+    headers: {
+      Authorization: "Bearer " + token
+    }
+  })
+  .then(res => {
+    if (!res.ok) {
+      localStorage.removeItem("userToken");
+      location.replace("user-login.html");
+      return;
+    }
+    return res.json();
+  })
+  .then(user => {
+    if (!user) return;
+    document.getElementById("userName").innerText = user.username;
+    document.getElementById("userBalance").innerText = "₹ " + user.balance;
+  });
 
-  const API_URL = "https://matka-backend-4fy1.onrender.com/api/markets";
+  // 📊 FETCH MARKETS
   const list = document.getElementById("marketList");
 
-  if (!list) return;
-
-  fetch(API_URL)
+  fetch("https://matka-backend-4fy1.onrender.com/api/markets")
     .then(res => res.json())
     .then(markets => {
       list.innerHTML = "";
 
       markets.forEach(market => {
-        let statusClass = "closed";
-        let statusText = "Betting is Closed for Today";
-
-        if (market.status === "OPEN") {
-          statusClass = "live";
-          statusText = "Betting is Running Now";
-        }
+        const isOpen = market.status === "OPEN";
 
         const card = document.createElement("div");
-        card.className = `market-card ${statusClass}`;
+        card.className = "market-card " + (isOpen ? "live" : "closed");
 
         card.innerHTML = `
           <div class="time">${market.openTime}</div>
-
           <div class="center">
             <h3>${market.name}</h3>
-            <p class="${statusClass}-text">${statusText}</p>
-            <p class="result">${market.status === "OPEN" ? "***-**-***" : "--"}</p>
+            <p class="${isOpen ? "live-text" : "closed-text"}">
+              ${isOpen ? "Betting is Running Now" : "Betting is Closed"}
+            </p>
+            <p class="result">${isOpen ? "***-**-***" : "--"}</p>
           </div>
-
           <div class="time">
             Close Time<br>
             <b>${market.closeTime}</b>
           </div>
         `;
 
-        if (market.status === "OPEN") {
+        if (isOpen) {
           card.onclick = () => {
-            window.location.href = "jodi.html?marketId=" + market._id;
+            location.href = "jodi.html?marketId=" + market._id;
           };
         }
 
