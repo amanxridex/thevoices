@@ -1,0 +1,101 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", sans-serif;
+}
+
+body {
+  background: #000;
+  color: #fff;
+}
+
+/* HEADER */
+.top {
+  background: linear-gradient(90deg,#d4af37,#f5d76e);
+  padding: 14px;
+}
+
+.top h1 {
+  color: #000;
+  font-weight: 900;
+}
+
+.top span {
+  background: #000;
+  color: gold;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+/* MENU */
+.menu {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  padding: 14px;
+  background: #111;
+}
+
+.menu span {
+  cursor: pointer;
+  opacity: .6;
+}
+
+.menu .active {
+  color: gold;
+  opacity: 1;
+}
+
+/* TITLE */
+.title {
+  text-align: center;
+  margin: 20px 0;
+  letter-spacing: 1px;
+}
+
+/* HISTORY */
+.history {
+  max-width: 800px;
+  margin: auto;
+  padding: 16px;
+}
+
+.card {
+  background: linear-gradient(145deg,#111,#1b1b1b);
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 6px 20px rgba(0,0,0,.7);
+}
+
+.card-head {
+  display: flex;
+  justify-content: space-between;
+  color: gold;
+  margin-bottom: 10px;
+}
+
+.bet-list {
+  list-style: none;
+}
+
+.bet-list li {
+  padding: 6px 0;
+  border-bottom: 1px dashed #333;
+}
+
+.date {
+  margin-top: 8px;
+  font-size: 12px;
+  opacity: .6;
+  text-align: right;
+}
+
+.loading,
+.empty,
+.error {
+  text-align: center;
+  padding: 30px;
+  opacity: .7;
+}

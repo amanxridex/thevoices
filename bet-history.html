@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>BET HISTORY • SUPER D</title>
+  <link rel="stylesheet" href="bet-history.css">
+</head>
+<body>
+
+<header class="top">
+  <h1>SUPER <span>D</span></h1>
+</header>
+
+<nav class="menu">
+  <span onclick="location.href='index.html'">PLAY</span>
+  <span class="active">BET HISTORY</span>
+  <span onclick="location.href='results.html'">RESULTS</span>
+  <span onclick="location.href='balance-history.html'">BALANCE HISTORY</span>
+</nav>
+
+<h2 class="title">🎯 Bet History</h2>
+
+<div class="history" id="history">
+  <p class="loading">Loading bets...</p>
+</div>
+
+<script>
+const API = "https://matka-backend-4fy1.onrender.com";
+const token = localStorage.getItem("userToken");
+
+if (!token) location.href = "user-login.html";
+
+fetch(API + "/user/transactions", {
+  headers: {
+    Authorization: "Bearer " + token
+  }
+})
+.then(res => res.json())
+.then(data => {
+  const container = document.getElementById("history");
+  container.innerHTML = "";
+
+  const bets = data.filter(t => t.type === "BET");
+
+  if (!bets.length) {
+    container.innerHTML = "<p class='empty'>No bets placed yet</p>";
+    return;
+  }
+
+  bets.forEach(txn => {
+    let rows = "";
+    txn.bets.forEach(b => {
+      rows += `<li>${b.digit} → ₹ ${b.amount}</li>`;
+    });
+
+    container.innerHTML += `
+      <div class="card">
+        <div class="card-head">
+          <span>Total Bet</span>
+          <b>₹ ${txn.amount}</b>
+        </div>
+
+        <ul class="bet-list">
+          ${rows}
+        </ul>
+
+        <div class="date">
+          ${new Date(txn.date).toLocaleString()}
+        </div>
+      </div>
+    `;
+  });
+})
+.catch(() => {
+  document.getElementById("history").innerHTML =
+    "<p class='error'>Failed to load history</p>";
+});
+</script>
+
+</body>
+</html>
