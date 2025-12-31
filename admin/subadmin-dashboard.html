@@ -202,5 +202,35 @@ function closeModal() {
 loadUsers();
 </script>
 
+<!-- WALLET MODAL -->
+<div id="walletModal" class="modal">
+  <div class="modal-box">
+
+    <div class="modal-header">
+      <h3 id="modalUser">Wallet</h3>
+      <button class="close-btn" onclick="closeModal()">✖</button>
+    </div>
+
+    <div class="modal-balance">
+      Balance: ₹ <span id="modalBalance">0</span>
+    </div>
+
+    <input
+      type="number"
+      id="amountInput"
+      placeholder="Enter amount"
+    />
+
+    <div class="modal-actions">
+      <button class="add-btn" onclick="addBalance()">➕ Add</button>
+      <button class="deduct-btn" onclick="deductBalance()">➖ Deduct</button>
+    </div>
+
+    <h4>Transaction History</h4>
+    <ul id="txnList" class="txn-list"></ul>
+
+  </div>
+</div>
+
 </body>
 </html>
