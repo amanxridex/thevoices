@@ -44,30 +44,6 @@ function createSubAdmin() {
   .then(() => loadSubAdmins());
 }
 
-// ---------- LOAD SUB ADMINS ----------
-function loadSubAdmins() {
-  fetch(API + "/admin/subadmins", {
-    headers: {
-      "Authorization": "Bearer " + localStorage.getItem("adminToken")
-    }
-  })
-  .then(res => res.json())
-  .then(data => {
-    const ul = document.getElementById("subAdminList");
-    if (!ul) return;
-    ul.innerHTML = "";
-    data.forEach(sa => {
-      const li = document.createElement("li");
-      li.innerText = sa.username;
-      ul.appendChild(li);
-    });
-  });
-}
-
-if (location.pathname.includes("subadmins")) {
-  loadSubAdmins();
-}
-
 // ---------- TOGGLE PASSWORD ----------
 function togglePassword() {
   const pass = document.getElementById("password");
