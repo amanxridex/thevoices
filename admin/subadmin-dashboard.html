@@ -176,16 +176,30 @@ function updateWallet(type) {
     body: JSON.stringify({ amount, type })
   })
   .then(res => res.json())
-  .then(user => {
-    document.getElementById("modalBalance").innerText = user.balance;
-    document.getElementById("balance-" + user._id).innerText =
-      "₹ " + user.balance;
+  .then(data => {
+    if (!data.success) {
+      alert(data.error || "Wallet update failed");
+      return;
+    }
 
-    loadTransactions(user._id);
+    // ✅ MODAL BALANCE (SAFE)
+    document.getElementById("modalBalance").innerText =
+      data.userBalance;
+
+    // ✅ REFRESH TABLE + STATS
     loadUsers();
+
+    // ✅ REFRESH SUBADMIN WALLET
+    loadMyWallet();
+
     amountInput.value = "";
+  })
+  .catch(err => {
+    console.error(err);
+    alert("Server error");
   });
 }
+
 
 function addBalance() { updateWallet("ADD"); }
 function deductBalance() { updateWallet("DEDUCT"); }
