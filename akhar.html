@@ -19,6 +19,11 @@
 
 <h2 class="subtitle">Select Akhar & Enter Amount</h2>
 
+<!-- USER BALANCE -->
+<div class="user-balance-box">
+  Available Balance: ₹ <span id="userBalance">0</span>
+</div>
+
 <!-- NUMBER GRID -->
 <div class="grid" id="numberGrid"></div>
 
@@ -30,12 +35,21 @@
   <p class="total">Total: ₹ <span id="totalAmount">0</span></p>
 </div>
 
-<button class="submit">SUBMIT BET</button>
+<button class="submit-btn" onclick="submitBet()">SUBMIT BET</button>
 
 <script>
 const API = "https://matka-backend-4fy1.onrender.com";
 const token = localStorage.getItem("userToken");
 
+if (!token) {
+  location.href = "user-login.html";
+}
+</script>
+
+<script>
+/* ======================
+   LOAD USER BALANCE
+   ====================== */
 function loadUserBalance() {
   fetch(API + "/user/me", {
     headers: {
@@ -59,45 +73,29 @@ loadUserBalance();
 </script>
 
 <script>
-const API = "https://matka-backend-4fy1.onrender.com";
-const token = localStorage.getItem("userToken");
-
-function loadUserBalance() {
-  fetch(API + "/user/me", {
-    headers: {
-      Authorization: "Bearer " + token
-    }
-  })
-  .then(res => {
-    if (!res.ok) {
-      location.href = "user-login.html";
-      return;
-    }
-    return res.json();
-  })
-  .then(user => {
-    if (!user) return;
-    document.getElementById("userBalance").innerText = user.balance;
-  });
-}
-
-loadUserBalance();
-</script>
-
-<script>
+/* ======================
+   AKHAR GRID + PREVIEW
+   ====================== */
 const grid = document.getElementById("numberGrid");
 const betList = document.getElementById("betList");
 const totalAmountEl = document.getElementById("totalAmount");
 
-const bets = {}; // { digit: amount }
+const betsMap = {}; // { digit: amount }
 
+// CREATE 0–9 GRID
 for (let i = 0; i <= 9; i++) {
   const box = document.createElement("div");
   box.className = "box";
   box.innerHTML = `
     <b>${i}</b>
-    <input type="number" min="0" placeholder="₹"
-      oninput="updateBet(${i}, this.value)">
+    <input
+      type="number"
+      class="digit-input"
+      data-digit="${i}"
+      placeholder="₹"
+      min="0"
+      oninput="updateBet('${i}', this.value)"
+    >
   `;
   grid.appendChild(box);
 }
@@ -106,9 +104,9 @@ function updateBet(digit, value) {
   const amt = Number(value);
 
   if (amt > 0) {
-    bets[digit] = amt;
+    betsMap[digit] = amt;
   } else {
-    delete bets[digit];
+    delete betsMap[digit];
   }
 
   renderPreview();
@@ -118,8 +116,8 @@ function renderPreview() {
   betList.innerHTML = "";
   let total = 0;
 
-  Object.keys(bets).forEach(digit => {
-    const amt = bets[digit];
+  Object.keys(betsMap).forEach(digit => {
+    const amt = betsMap[digit];
     total += amt;
 
     betList.innerHTML += `
@@ -128,6 +126,63 @@ function renderPreview() {
   });
 
   totalAmountEl.innerText = total;
+}
+</script>
+
+<script>
+/* ======================
+   SUBMIT BET
+   ====================== */
+function submitBet() {
+  const bets = [];
+  let total = 0;
+
+  document.querySelectorAll(".digit-input").forEach(input => {
+    const amount = Number(input.value);
+    const digit = input.dataset.digit;
+
+    if (amount > 0) {
+      bets.push({ digit, amount });
+      total += amount;
+    }
+  });
+
+  if (!bets.length) {
+    alert("Place at least one bet");
+    return;
+  }
+
+  fetch(API + "/user/place-bet", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token
+    },
+    body: JSON.stringify({
+      bets,
+      totalAmount: total
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (!data.success) {
+      alert(data.error || "Bet failed");
+      return;
+    }
+
+    // UPDATE BALANCE
+    document.getElementById("userBalance").innerText = data.newBalance;
+
+    // RESET
+    document.querySelectorAll(".digit-input").forEach(i => i.value = "");
+    betList.innerHTML = "";
+    totalAmountEl.innerText = "0";
+
+    alert("Bet placed successfully 🎉");
+  })
+  .catch(() => {
+    alert("Server error");
+  });
 }
 </script>
 

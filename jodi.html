@@ -11,6 +11,7 @@
   <h1>SUPER <span>D</span></h1>
 </header>
 
+<!-- TOGGLE -->
 <div class="toggle">
   <button onclick="location.href='akhar.html'">AKHAR</button>
   <button class="active">JODI</button>
@@ -18,8 +19,15 @@
 
 <h2 class="subtitle">Select Jodi & Enter Amount</h2>
 
+<!-- USER BALANCE -->
+<div class="user-balance-box">
+  Available Balance: ₹ <span id="userBalance">0</span>
+</div>
+
+<!-- JODI GRID -->
 <div class="grid" id="jodiGrid"></div>
 
+<!-- PREVIEW -->
 <div class="preview">
   <h3>Bet Preview</h3>
   <div id="betList"></div>
@@ -27,16 +35,21 @@
   <p class="total">Total: ₹ <span id="totalAmount">0</span></p>
 </div>
 
-<div class="user-balance-box">
-  Available Balance: ₹ <span id="userBalance">0</span>
-</div>
-
-<button class="submit">SUBMIT BET</button>
+<button class="submit-btn" onclick="submitBet()">SUBMIT BET</button>
 
 <script>
 const API = "https://matka-backend-4fy1.onrender.com";
 const token = localStorage.getItem("userToken");
 
+if (!token) {
+  location.href = "user-login.html";
+}
+</script>
+
+<script>
+/* ======================
+   LOAD USER BALANCE
+   ====================== */
 function loadUserBalance() {
   fetch(API + "/user/me", {
     headers: {
@@ -60,12 +73,16 @@ loadUserBalance();
 </script>
 
 <script>
+/* ======================
+   JODI GRID + PREVIEW
+   ====================== */
 const grid = document.getElementById("jodiGrid");
 const betList = document.getElementById("betList");
 const totalAmountEl = document.getElementById("totalAmount");
 
-const bets = {}; // { "02": 100, "15": 50 }
+const betsMap = {}; // { "02": 100, "15": 50 }
 
+// CREATE 00–99 GRID
 for (let i = 0; i <= 99; i++) {
   const num = i.toString().padStart(2, "0");
 
@@ -73,8 +90,14 @@ for (let i = 0; i <= 99; i++) {
   box.className = "box";
   box.innerHTML = `
     <b>${num}</b>
-    <input type="number" min="0" placeholder="₹"
-      oninput="updateBet('${num}', this.value)">
+    <input
+      type="number"
+      class="digit-input"
+      data-digit="${num}"
+      placeholder="₹"
+      min="0"
+      oninput="updateBet('${num}', this.value)"
+    >
   `;
   grid.appendChild(box);
 }
@@ -83,9 +106,9 @@ function updateBet(jodi, value) {
   const amt = Number(value);
 
   if (amt > 0) {
-    bets[jodi] = amt;
+    betsMap[jodi] = amt;
   } else {
-    delete bets[jodi];
+    delete betsMap[jodi];
   }
 
   renderPreview();
@@ -95,8 +118,8 @@ function renderPreview() {
   betList.innerHTML = "";
   let total = 0;
 
-  Object.keys(bets).forEach(jodi => {
-    const amt = bets[jodi];
+  Object.keys(betsMap).forEach(jodi => {
+    const amt = betsMap[jodi];
     total += amt;
 
     betList.innerHTML += `
@@ -105,6 +128,63 @@ function renderPreview() {
   });
 
   totalAmountEl.innerText = total;
+}
+</script>
+
+<script>
+/* ======================
+   SUBMIT BET
+   ====================== */
+function submitBet() {
+  const bets = [];
+  let total = 0;
+
+  document.querySelectorAll(".digit-input").forEach(input => {
+    const amount = Number(input.value);
+    const digit = input.dataset.digit;
+
+    if (amount > 0) {
+      bets.push({ digit, amount });
+      total += amount;
+    }
+  });
+
+  if (!bets.length) {
+    alert("Place at least one bet");
+    return;
+  }
+
+  fetch(API + "/user/place-bet", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token
+    },
+    body: JSON.stringify({
+      bets,
+      totalAmount: total
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (!data.success) {
+      alert(data.error || "Bet failed");
+      return;
+    }
+
+    // UPDATE BALANCE
+    document.getElementById("userBalance").innerText = data.newBalance;
+
+    // RESET UI
+    document.querySelectorAll(".digit-input").forEach(i => i.value = "");
+    betList.innerHTML = "";
+    totalAmountEl.innerText = "0";
+
+    alert("Bet placed successfully 🎉");
+  })
+  .catch(() => {
+    alert("Server error");
+  });
 }
 </script>
 
