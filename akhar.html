@@ -79,6 +79,13 @@ loadUserBalance();
 const grid = document.getElementById("numberGrid");
 const betList = document.getElementById("betList");
 const totalAmountEl = document.getElementById("totalAmount");
+const params = new URLSearchParams(window.location.search);
+const marketName = params.get("market");
+
+if (!marketName) {
+  alert("Market not selected");
+  location.href = "index.html";
+}
 
 const betsMap = {}; // { digit: amount }
 

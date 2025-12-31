@@ -118,7 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (isOpen) {
           card.onclick = () => {
-            location.href = "jodi.html?marketId=" + market._id;
+            location.href = `akhar.html?market=${encodeURIComponent(market.name)}`;
           };
         }
 
