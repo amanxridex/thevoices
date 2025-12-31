@@ -2,96 +2,93 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>SUPER D • Balance History</title>
-  <link rel="stylesheet" href="balance-history.css">
+  <title>BET HISTORY • SUPER D</title>
+  <link rel="stylesheet" href="bet-history.css">
 </head>
 <body>
 
-<!-- TOP BAR -->
-<header class="top-bar">
-  <div class="logo">
-    SUPER <span>D</span>
-    <small>powered by super d</small>
-  </div>
-
-  <div class="user-info">
-    <div class="balance">💰 ₹ <span id="userBalance">0</span></div>
-    <div class="user-id">👤 <span id="userName"></span></div>
-  </div>
+<!-- TOP -->
+<header class="top">
+  <h1>SUPER <span>D</span></h1>
 </header>
 
 <!-- NAV -->
 <nav class="menu">
-  <a href="index.html">PLAY</a>
-  <a href="bet-history.html">BET HISTORY</a>
-  <a href="results.html">RESULTS</a>
-  <a class="active">BALANCE HISTORY</a>
+  <span onclick="location.href='index.html'">PLAY</span>
+  <span class="active">BET HISTORY</span>
+  <span onclick="location.href='results.html'">RESULTS</span>
+  <span onclick="location.href='balance-history.html'">BALANCE HISTORY</span>
 </nav>
 
-<!-- PAGE -->
-<div class="page">
+<h2 class="title">🎯 Bet History</h2>
 
-  <h1 class="title">💳 Balance History</h1>
-
-  <div class="history-box">
-    <table>
-      <thead>
-        <tr>
-          <th>Type</th>
-          <th>Amount</th>
-          <th>Date & Time</th>
-        </tr>
-      </thead>
-      <tbody id="historyTable">
-        <tr>
-          <td colspan="3" class="loading">Loading transactions...</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
+<div class="history" id="history">
+  <p class="loading">Loading bets...</p>
 </div>
 
 <script>
 const API = "https://matka-backend-4fy1.onrender.com";
 const token = localStorage.getItem("userToken");
 
-if (!token) location.replace("user-login.html");
+if (!token) location.href = "user-login.html";
 
-/* USER INFO */
-fetch(API + "/subadmin/users/me", {
-  headers: { Authorization: "Bearer " + token }
+fetch(API + "/user/transactions", {
+  headers: {
+    Authorization: "Bearer " + token
+  }
 })
 .then(res => res.json())
-.then(user => {
-  document.getElementById("userName").innerText = user.username;
-  document.getElementById("userBalance").innerText = user.balance;
-});
+.then(data => {
+  const container = document.getElementById("history");
+  container.innerHTML = "";
 
-/* TRANSACTIONS */
-fetch(API + "/subadmin/users/transactions", {
-  headers: { Authorization: "Bearer " + token }
-})
-.then(res => res.json())
-.then(txns => {
-  const tbody = document.getElementById("historyTable");
-  tbody.innerHTML = "";
+  // ✅ ONLY BET TRANSACTIONS
+  const bets = data.filter(t => t.type === "BET");
 
-  if (!txns.length) {
-    tbody.innerHTML =
-      `<tr><td colspan="3" class="empty">No transactions found</td></tr>`;
+  if (!bets.length) {
+    container.innerHTML =
+      "<p class='empty'>No bets placed yet</p>";
     return;
   }
 
-  txns.forEach(t => {
-    tbody.innerHTML += `
-      <tr class="${t.type === "ADD" ? "add" : "deduct"}">
-        <td>${t.type}</td>
-        <td>${t.type === "ADD" ? "+" : "-"}₹ ${t.amount}</td>
-        <td>${new Date(t.date).toLocaleString()}</td>
-      </tr>
+  bets.forEach(txn => {
+
+    const market = txn.market || "N/A";
+    const gameType = txn.gameType || "N/A";
+
+    let rows = "";
+    txn.bets.forEach(b => {
+      rows += `<li>${b.digit} → ₹ ${b.amount}</li>`;
+    });
+
+    container.innerHTML += `
+      <div class="card">
+
+        <!-- MARKET + GAME TYPE -->
+        <div class="meta">
+          <span class="tag">${market}</span>
+          <span class="tag">${gameType}</span>
+        </div>
+
+        <div class="card-head">
+          <span>Total Bet</span>
+          <b>₹ ${txn.amount}</b>
+        </div>
+
+        <ul class="bet-list">
+          ${rows}
+        </ul>
+
+        <div class="date">
+          ${new Date(txn.date).toLocaleString()}
+        </div>
+      </div>
     `;
   });
+})
+.catch(() => {
+  document.getElementById("history").innerHTML =
+    "<p class='error'>Failed to load history</p>";
 });
 </script>
 
