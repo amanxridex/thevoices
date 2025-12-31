@@ -35,20 +35,28 @@
 const API = "https://matka-backend-4fy1.onrender.com";
 
 function login() {
-  error.innerText = "";
+  const errorEl = document.getElementById("error");
+  errorEl.innerText = "";
 
   fetch(API + "/user/login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      username: username.value,
-      password: password.value
+      username: document.getElementById("username").value.trim(),
+      password: document.getElementById("password").value
     })
   })
-  .then(res => res.json())
+  .then(async res => {
+    // 🔐 SAFETY FIX: handle non-JSON / 404 / HTML responses
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error("Login failed");
+    }
+    return res.json();
+  })
   .then(data => {
-    if (!data.token) {
-      error.innerText = "Invalid username or password";
+    if (!data || !data.token) {
+      errorEl.innerText = data?.error || "Invalid username or password";
       return;
     }
 
@@ -57,6 +65,9 @@ function login() {
     localStorage.setItem("username", data.user.username);
 
     location.href = "index.html";
+  })
+  .catch(() => {
+    errorEl.innerText = "Server error. Please try again.";
   });
 }
 </script>
