@@ -28,6 +28,7 @@
     <div class="user-id">
       👤 <span id="userName"></span>
     </div>
+    <button id="logoutBtn" class="logout-btn">Logout</button>
   </div>
 </header>
 
@@ -128,6 +129,22 @@ document.addEventListener("DOMContentLoaded", () => {
     .catch(() => {
       list.innerHTML = "<p class='error'>Server not reachable</p>";
     });
+});
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  /* existing code already here */
+
+  // 🔐 LOGOUT HANDLER
+  const logoutBtn = document.getElementById("logoutBtn");
+
+  logoutBtn.addEventListener("click", () => {
+    localStorage.removeItem("userToken");
+    location.replace("user-login.html");
+  });
+
 });
 </script>
 
