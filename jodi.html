@@ -37,6 +37,9 @@
 
 <button class="submit-btn" onclick="submitBet()">SUBMIT BET</button>
 
+<!-- ======================
+     GLOBAL CONFIG
+     ====================== -->
 <script>
 const API = "https://matka-backend-4fy1.onrender.com";
 const token = localStorage.getItem("userToken");
@@ -44,59 +47,48 @@ const token = localStorage.getItem("userToken");
 if (!token) {
   location.href = "user-login.html";
 }
-</script>
 
-<script>
-/* ======================
-   LOAD USER BALANCE
-   ====================== */
-function loadUserBalance() {
-  fetch(API + "/user/me", {
-    headers: {
-      Authorization: "Bearer " + token
-    }
-  })
-  .then(res => {
-    if (!res.ok) {
-      location.href = "user-login.html";
-      return;
-    }
-    return res.json();
-  })
-  .then(user => {
-    if (!user) return;
-    document.getElementById("userBalance").innerText = user.balance;
-  });
-}
-
-loadUserBalance();
-</script>
-
-<script>
-/* ======================
-   JODI GRID + PREVIEW
-   ====================== */
-const grid = document.getElementById("jodiGrid");
-const betList = document.getElementById("betList");
-const totalAmountEl = document.getElementById("totalAmount");
+// ✅ GET MARKET FROM URL
 const params = new URLSearchParams(window.location.search);
-const marketName = params.get("market");
+const market = params.get("market");
 
-if (!marketName) {
+if (!market) {
   alert("Market not selected");
   location.href = "index.html";
 }
+</script>
 
-// 🔁 TOGGLE HANDLERS
-  function goToAkhar() {
-    location.href = `akhar.html?market=${encodeURIComponent(market)}`;
-  }
+<!-- ======================
+     LOAD USER BALANCE
+     ====================== -->
+<script>
+function loadUserBalance() {
+  fetch(API + "/user/me", {
+    headers: { Authorization: "Bearer " + token }
+  })
+  .then(res => res.json())
+  .then(user => {
+    document.getElementById("userBalance").innerText = user.balance;
+  });
+}
+loadUserBalance();
+</script>
 
-  function goToJodi() {
-    location.href = `jodi.html?market=${encodeURIComponent(market)}`;
-  }
+<!-- ======================
+     JODI GRID + PREVIEW
+     ====================== -->
+<script>
+const grid = document.getElementById("jodiGrid");
+const betList = document.getElementById("betList");
+const totalAmountEl = document.getElementById("totalAmount");
 
-const betsMap = {}; // { "02": 100, "15": 50 }
+// TOGGLE
+function goToAkhar() {
+  location.href = `akhar.html?market=${encodeURIComponent(market)}`;
+}
+
+// BET STORAGE
+const betsMap = {};
 
 // CREATE 00–99 GRID
 for (let i = 0; i <= 99; i++) {
@@ -120,13 +112,8 @@ for (let i = 0; i <= 99; i++) {
 
 function updateBet(jodi, value) {
   const amt = Number(value);
-
-  if (amt > 0) {
-    betsMap[jodi] = amt;
-  } else {
-    delete betsMap[jodi];
-  }
-
+  if (amt > 0) betsMap[jodi] = amt;
+  else delete betsMap[jodi];
   renderPreview();
 }
 
@@ -137,20 +124,17 @@ function renderPreview() {
   Object.keys(betsMap).forEach(jodi => {
     const amt = betsMap[jodi];
     total += amt;
-
-    betList.innerHTML += `
-      <p>${jodi} → ₹ ${amt}</p>
-    `;
+    betList.innerHTML += `<p>${jodi} → ₹ ${amt}</p>`;
   });
 
   totalAmountEl.innerText = total;
 }
 </script>
 
+<!-- ======================
+     SUBMIT BET
+     ====================== -->
 <script>
-/* ======================
-   SUBMIT BET
-   ====================== */
 function submitBet() {
   const bets = [];
   let total = 0;
@@ -177,10 +161,10 @@ function submitBet() {
       Authorization: "Bearer " + token
     },
     body: JSON.stringify({
-      market,                 // ✅ MARKET NAME
-      gameType: "JODI",      // ✅ GAME TYPE
-      bets,                   // ✅ DIGITS + AMOUNT
-      totalAmount: total      // ✅ TOTAL
+      market,
+      gameType: "JODI",
+      bets,
+      totalAmount: total
     })
   })
   .then(res => res.json())
@@ -190,19 +174,14 @@ function submitBet() {
       return;
     }
 
-    // ✅ UPDATE BALANCE
     document.getElementById("userBalance").innerText = data.newBalance;
-
-    // ✅ RESET UI
     document.querySelectorAll(".digit-input").forEach(i => i.value = "");
     betList.innerHTML = "";
     totalAmountEl.innerText = "0";
 
     alert("Bet placed successfully 🎉");
   })
-  .catch(() => {
-    alert("Server error");
-  });
+  .catch(() => alert("Server error"));
 }
 </script>
 

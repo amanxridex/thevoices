@@ -17,7 +17,6 @@
   <button onclick="goToJodi()">JODI</button>
 </div>
 
-
 <h2 class="subtitle">Select Akhar & Enter Amount</h2>
 
 <!-- USER BALANCE -->
@@ -38,6 +37,9 @@
 
 <button class="submit-btn" onclick="submitBet()">SUBMIT BET</button>
 
+<!-- ======================
+     GLOBAL CONFIG
+     ====================== -->
 <script>
 const API = "https://matka-backend-4fy1.onrender.com";
 const token = localStorage.getItem("userToken");
@@ -45,59 +47,50 @@ const token = localStorage.getItem("userToken");
 if (!token) {
   location.href = "user-login.html";
 }
+
+// ✅ GET MARKET FROM URL (ONLY ONCE)
+const params = new URLSearchParams(window.location.search);
+const market = params.get("market");
+
+if (!market) {
+  alert("Market not selected");
+  location.href = "index.html";
+}
 </script>
 
+<!-- ======================
+     LOAD USER BALANCE
+     ====================== -->
 <script>
-/* ======================
-   LOAD USER BALANCE
-   ====================== */
 function loadUserBalance() {
   fetch(API + "/user/me", {
     headers: {
       Authorization: "Bearer " + token
     }
   })
-  .then(res => {
-    if (!res.ok) {
-      location.href = "user-login.html";
-      return;
-    }
-    return res.json();
-  })
+  .then(res => res.json())
   .then(user => {
-    if (!user) return;
     document.getElementById("userBalance").innerText = user.balance;
   });
 }
-
 loadUserBalance();
 </script>
 
+<!-- ======================
+     AKHAR GRID + PREVIEW
+     ====================== -->
 <script>
-/* ======================
-   AKHAR GRID + PREVIEW
-   ====================== */
 const grid = document.getElementById("numberGrid");
 const betList = document.getElementById("betList");
 const totalAmountEl = document.getElementById("totalAmount");
-const params = new URLSearchParams(window.location.search);
-const marketName = params.get("market");
 
-if (!marketName) {
-  alert("Market not selected");
-  location.href = "index.html";
+// TOGGLE
+function goToJodi() {
+  location.href = `jodi.html?market=${encodeURIComponent(market)}`;
 }
 
-// 🔁 TOGGLE HANDLERS
-  function goToAkhar() {
-    location.href = `akhar.html?market=${encodeURIComponent(market)}`;
-  }
-
-  function goToJodi() {
-    location.href = `jodi.html?market=${encodeURIComponent(market)}`;
-  }
-
-const betsMap = {}; // { digit: amount }
+// BET STORAGE
+const betsMap = {};
 
 // CREATE 0–9 GRID
 for (let i = 0; i <= 9; i++) {
@@ -119,13 +112,8 @@ for (let i = 0; i <= 9; i++) {
 
 function updateBet(digit, value) {
   const amt = Number(value);
-
-  if (amt > 0) {
-    betsMap[digit] = amt;
-  } else {
-    delete betsMap[digit];
-  }
-
+  if (amt > 0) betsMap[digit] = amt;
+  else delete betsMap[digit];
   renderPreview();
 }
 
@@ -136,20 +124,17 @@ function renderPreview() {
   Object.keys(betsMap).forEach(digit => {
     const amt = betsMap[digit];
     total += amt;
-
-    betList.innerHTML += `
-      <p>${digit} → ₹ ${amt}</p>
-    `;
+    betList.innerHTML += `<p>${digit} → ₹ ${amt}</p>`;
   });
 
   totalAmountEl.innerText = total;
 }
 </script>
 
+<!-- ======================
+     SUBMIT BET
+     ====================== -->
 <script>
-/* ======================
-   SUBMIT BET
-   ====================== */
 function submitBet() {
   const bets = [];
   let total = 0;
@@ -176,10 +161,10 @@ function submitBet() {
       Authorization: "Bearer " + token
     },
     body: JSON.stringify({
-      market,                 // ✅ MARKET NAME
-      gameType: "AKHAR",      // ✅ GAME TYPE
-      bets,                   // ✅ DIGITS + AMOUNT
-      totalAmount: total      // ✅ TOTAL
+      market,
+      gameType: "AKHAR",
+      bets,
+      totalAmount: total
     })
   })
   .then(res => res.json())
@@ -189,19 +174,14 @@ function submitBet() {
       return;
     }
 
-    // ✅ UPDATE BALANCE
     document.getElementById("userBalance").innerText = data.newBalance;
-
-    // ✅ RESET UI
     document.querySelectorAll(".digit-input").forEach(i => i.value = "");
     betList.innerHTML = "";
     totalAmountEl.innerText = "0";
 
     alert("Bet placed successfully 🎉");
   })
-  .catch(() => {
-    alert("Server error");
-  });
+  .catch(() => alert("Server error"));
 }
 </script>
 
