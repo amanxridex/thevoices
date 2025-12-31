@@ -17,6 +17,7 @@
   <h1 class="title">🏆 Results Control Room</h1>
   <p class="subtitle">One number decides everything</p>
 
+  <!-- RESULT PANEL -->
   <div class="result-panel">
 
     <!-- LEFT -->
@@ -26,12 +27,6 @@
 
       <label>Result Number</label>
       <input type="text" id="resultInput" placeholder="Ex: 123-45-678">
-
-      <label>Session</label>
-      <div class="session">
-        <button class="session-btn active" onclick="setSession('OPEN')">OPEN</button>
-        <button class="session-btn" onclick="setSession('CLOSE')">CLOSE</button>
-      </div>
 
       <button class="publish" onclick="publishResult()">🔥 PUBLISH RESULT</button>
     </div>
@@ -43,22 +38,23 @@
       <div class="preview-card">
         <div class="market-name" id="previewMarket">—</div>
         <div class="result-number" id="previewResult">---</div>
-        <div class="session-tag" id="previewSession">—</div>
       </div>
 
-      <div class="warning">⚠️ Once published, result cannot be undone</div>
+      <div class="warning">
+        ⚠️ Once published, result cannot be undone
+      </div>
     </div>
 
   </div>
 
   <!-- RESULTS TABLE -->
   <h2 style="margin-top:40px">📋 All Market Results</h2>
+
   <table class="results-table">
     <thead>
       <tr>
         <th>Market</th>
         <th>Result</th>
-        <th>Session</th>
         <th>Date</th>
       </tr>
     </thead>
@@ -69,7 +65,6 @@
 
 <script>
 const API = "https://matka-backend-4fy1.onrender.com";
-let activeSession = "OPEN";
 
 /* LOGOUT */
 function logout() {
@@ -77,32 +72,28 @@ function logout() {
   location.href = "superadmin-login.html";
 }
 
-/* SESSION */
-function setSession(type) {
-  activeSession = type;
-  document.querySelectorAll(".session-btn").forEach(b => b.classList.remove("active"));
-  event.target.classList.add("active");
-  document.getElementById("previewSession").innerText = type + " SESSION";
-}
-
-/* LOAD LIVE MARKETS */
-fetch(API + "/api/markets/live")
+/* LOAD MARKETS (ALL FROM DB) */
+fetch(API + "/api/markets")
   .then(res => res.json())
   .then(markets => {
     const select = document.getElementById("marketSelect");
+    select.innerHTML = "";
+
     markets.forEach(m => {
       const opt = document.createElement("option");
       opt.value = m.name;
       opt.textContent = m.name;
       select.appendChild(opt);
     });
+
     updatePreview();
   });
 
-/* PREVIEW */
+/* LIVE PREVIEW */
 function updatePreview() {
   document.getElementById("previewMarket").innerText =
-    marketSelect.value;
+    marketSelect.value || "—";
+
   document.getElementById("previewResult").innerText =
     resultInput.value || "---";
 }
@@ -110,44 +101,57 @@ function updatePreview() {
 marketSelect.onchange = updatePreview;
 resultInput.oninput = updatePreview;
 
-/* PUBLISH */
+/* PUBLISH RESULT */
 function publishResult() {
   const market = marketSelect.value;
-  const result = resultInput.value;
+  const result = resultInput.value.trim();
 
-  if (!result) return alert("Enter result");
+  if (!market || !result) {
+    return alert("Market aur result dono bharo");
+  }
 
   fetch(API + "/api/results/publish", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ market, result, session: activeSession })
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ market, result })
   })
   .then(res => res.json())
-  .then(() => {
+  .then(data => {
+    if (data.error) {
+      alert(data.error);
+      return;
+    }
+
     resultInput.value = "";
     loadResults();
+    updatePreview();
   });
 }
 
-/* LOAD RESULTS TABLE */
+/* LOAD RESULTS TABLE (ALL MARKETS + BLANK RESULT) */
 function loadResults() {
-  fetch(API + "/api/results")
-    .then(res => res.json())
-    .then(data => {
-      const tbody = document.getElementById("resultsTable");
-      tbody.innerHTML = "";
+  Promise.all([
+    fetch(API + "/api/markets").then(res => res.json()),
+    fetch(API + "/api/results").then(res => res.json())
+  ])
+  .then(([markets, results]) => {
+    const tbody = document.getElementById("resultsTable");
+    tbody.innerHTML = "";
 
-      data.forEach(r => {
-        tbody.innerHTML += `
-          <tr>
-            <td>${r.market}</td>
-            <td>${r.result || "-"}</td>
-            <td>${r.session}</td>
-            <td>${new Date(r.date).toLocaleString()}</td>
-          </tr>
-        `;
-      });
+    markets.forEach(market => {
+      const r = results.find(x => x.market === market.name);
+
+      tbody.innerHTML += `
+        <tr>
+          <td>${market.name}</td>
+          <td>${r ? r.result : "-"}</td>
+          <td>${r ? new Date(r.date).toLocaleString() : "-"}</td>
+        </tr>
+      `;
     });
+  });
 }
 
 loadResults();
