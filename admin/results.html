@@ -7,10 +7,9 @@
 </head>
 <body>
 
-<!-- TOP BAR -->
 <header class="topbar">
   <div class="logo">SUPER <span>D</span></div>
-  <button class="logout">Logout</button>
+  <button class="logout" onclick="logout()">Logout</button>
 </header>
 
 <div class="page">
@@ -18,48 +17,141 @@
   <h1 class="title">🏆 Results Control Room</h1>
   <p class="subtitle">One number decides everything</p>
 
-  <!-- RESULT PANEL -->
   <div class="result-panel">
 
+    <!-- LEFT -->
     <div class="panel-left">
       <label>Market</label>
-      <select>
-        <option>MADHUR MORNING</option>
-        <option>MADHUR NIGHT</option>
-        <option>KALYAN NIGHT</option>
-        <option>SRIDEVI MORNING</option>
-      </select>
+      <select id="marketSelect"></select>
 
       <label>Result Number</label>
-      <input type="text" placeholder="Ex: 123-45-678">
+      <input type="text" id="resultInput" placeholder="Ex: 123-45-678">
 
       <label>Session</label>
       <div class="session">
-        <button class="session-btn active">OPEN</button>
-        <button class="session-btn">CLOSE</button>
+        <button class="session-btn active" onclick="setSession('OPEN')">OPEN</button>
+        <button class="session-btn" onclick="setSession('CLOSE')">CLOSE</button>
       </div>
 
-      <button class="publish">🔥 PUBLISH RESULT</button>
+      <button class="publish" onclick="publishResult()">🔥 PUBLISH RESULT</button>
     </div>
 
-    <!-- LIVE PREVIEW -->
+    <!-- RIGHT -->
     <div class="panel-right">
       <div class="preview-title">LIVE RESULT PREVIEW</div>
 
       <div class="preview-card">
-        <div class="market-name">MADHUR MORNING</div>
-        <div class="result-number">123-45-678</div>
-        <div class="session-tag">OPEN SESSION</div>
+        <div class="market-name" id="previewMarket">—</div>
+        <div class="result-number" id="previewResult">---</div>
+        <div class="session-tag" id="previewSession">—</div>
       </div>
 
-      <div class="warning">
-        ⚠️ Once published, result cannot be undone
-      </div>
+      <div class="warning">⚠️ Once published, result cannot be undone</div>
     </div>
 
   </div>
 
+  <!-- RESULTS TABLE -->
+  <h2 style="margin-top:40px">📋 All Market Results</h2>
+  <table class="results-table">
+    <thead>
+      <tr>
+        <th>Market</th>
+        <th>Result</th>
+        <th>Session</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody id="resultsTable"></tbody>
+  </table>
+
 </div>
+
+<script>
+const API = "https://matka-backend-4fy1.onrender.com";
+let activeSession = "OPEN";
+
+/* LOGOUT */
+function logout() {
+  localStorage.clear();
+  location.href = "superadmin-login.html";
+}
+
+/* SESSION */
+function setSession(type) {
+  activeSession = type;
+  document.querySelectorAll(".session-btn").forEach(b => b.classList.remove("active"));
+  event.target.classList.add("active");
+  document.getElementById("previewSession").innerText = type + " SESSION";
+}
+
+/* LOAD LIVE MARKETS */
+fetch(API + "/api/markets/live")
+  .then(res => res.json())
+  .then(markets => {
+    const select = document.getElementById("marketSelect");
+    markets.forEach(m => {
+      const opt = document.createElement("option");
+      opt.value = m.name;
+      opt.textContent = m.name;
+      select.appendChild(opt);
+    });
+    updatePreview();
+  });
+
+/* PREVIEW */
+function updatePreview() {
+  document.getElementById("previewMarket").innerText =
+    marketSelect.value;
+  document.getElementById("previewResult").innerText =
+    resultInput.value || "---";
+}
+
+marketSelect.onchange = updatePreview;
+resultInput.oninput = updatePreview;
+
+/* PUBLISH */
+function publishResult() {
+  const market = marketSelect.value;
+  const result = resultInput.value;
+
+  if (!result) return alert("Enter result");
+
+  fetch(API + "/api/results/publish", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ market, result, session: activeSession })
+  })
+  .then(res => res.json())
+  .then(() => {
+    resultInput.value = "";
+    loadResults();
+  });
+}
+
+/* LOAD RESULTS TABLE */
+function loadResults() {
+  fetch(API + "/api/results")
+    .then(res => res.json())
+    .then(data => {
+      const tbody = document.getElementById("resultsTable");
+      tbody.innerHTML = "";
+
+      data.forEach(r => {
+        tbody.innerHTML += `
+          <tr>
+            <td>${r.market}</td>
+            <td>${r.result || "-"}</td>
+            <td>${r.session}</td>
+            <td>${new Date(r.date).toLocaleString()}</td>
+          </tr>
+        `;
+      });
+    });
+}
+
+loadResults();
+</script>
 
 </body>
 </html>

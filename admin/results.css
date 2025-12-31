@@ -183,3 +183,25 @@ body {
   color: #ff4444;
   text-align: center;
 }
+
+.results-table {
+  width: 100%;
+  margin-top: 15px;
+  border-collapse: collapse;
+}
+
+.results-table th,
+.results-table td {
+  padding: 12px;
+  border-bottom: 1px solid #222;
+  text-align: center;
+}
+
+.results-table th {
+  color: gold;
+  font-size: 14px;
+}
+
+.results-table td {
+  font-size: 13px;
+}
