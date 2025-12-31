@@ -57,60 +57,21 @@
 
 </div>
 
+<!-- ONLY admin.js is loaded -->
+<script src="admin.js"></script>
+
 <script>
-const API = "https://matka-backend-4fy1.onrender.com";
+/* page-specific helpers only */
 
 function goBack() {
   location.href = "dashboard.html";
 }
 
-function loadSubAdmins() {
-  fetch(API + "/admin/subadmins", {
-    headers: {
-      Authorization: "Bearer " + localStorage.getItem("adminToken")
-    }
-  })
-  .then(res => {
-    if (!res.ok) throw new Error("Unauthorized");
-    return res.json();
-  })
-  .then(data => {
-    const list = document.getElementById("subAdminList");
-    list.innerHTML = "";
-
-    let totalUsers = 0;
-    let totalWallet = 0;
-
-    document.getElementById("totalSubs").innerText = data.length;
-
-    data.forEach(sa => {
-      totalUsers += sa.users || 0;
-      totalWallet += sa.balance || 0;
-
-      const row = document.createElement("div");
-      row.className = "subadmin-row";
-      row.innerHTML = `
-        <div><strong>${sa.username}</strong></div>
-        <div>${sa.users || 0}</div>
-        <div>₹ ${sa.balance || 0}</div>
-        <div><button class="action-btn">View</button></div>
-      `;
-      list.appendChild(row);
-    });
-
-    document.getElementById("totalUsers").innerText = totalUsers;
-    document.getElementById("totalWallet").innerText = "₹ " + totalWallet;
-  })
-  .catch(err => {
-    console.error(err);
-    alert("Session expired. Please login again.");
-    location.href = "login.html";
-  });
+/* auto load when page opens */
+if (typeof loadSubAdmins === "function") {
+  loadSubAdmins();
 }
-
-loadSubAdmins();
 </script>
 
-<script src="admin.js"></script>
 </body>
 </html>
