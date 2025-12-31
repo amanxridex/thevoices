@@ -13,7 +13,7 @@
 
 <!-- TOGGLE -->
 <div class="toggle">
-  <button onclick="location.href='akhar.html'">AKHAR</button>
+  <button onclick="goToAkhar()">AKHAR</button>
   <button class="active">JODI</button>
 </div>
 
@@ -86,6 +86,15 @@ if (!marketName) {
   alert("Market not selected");
   location.href = "index.html";
 }
+
+// 🔁 TOGGLE HANDLERS
+  function goToAkhar() {
+    location.href = `akhar.html?market=${encodeURIComponent(market)}`;
+  }
+
+  function goToJodi() {
+    location.href = `jodi.html?market=${encodeURIComponent(market)}`;
+  }
 
 const betsMap = {}; // { "02": 100, "15": 50 }
 
@@ -168,8 +177,10 @@ function submitBet() {
       Authorization: "Bearer " + token
     },
     body: JSON.stringify({
-      bets,
-      totalAmount: total
+      market,                 // ✅ MARKET NAME
+      gameType: "JODI",      // ✅ GAME TYPE
+      bets,                   // ✅ DIGITS + AMOUNT
+      totalAmount: total      // ✅ TOTAL
     })
   })
   .then(res => res.json())
@@ -179,10 +190,10 @@ function submitBet() {
       return;
     }
 
-    // UPDATE BALANCE
+    // ✅ UPDATE BALANCE
     document.getElementById("userBalance").innerText = data.newBalance;
 
-    // RESET UI
+    // ✅ RESET UI
     document.querySelectorAll(".digit-input").forEach(i => i.value = "");
     betList.innerHTML = "";
     totalAmountEl.innerText = "0";

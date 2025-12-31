@@ -55,6 +55,13 @@ fetch(API + "/user/transactions", {
 
     container.innerHTML += `
       <div class="card">
+
+        <!-- 🔥 MARKET + GAME TYPE -->
+        <div class="meta">
+          <span class="tag">${txn.market}</span>
+          <span class="tag">${txn.gameType}</span>
+        </div>
+        
         <div class="card-head">
           <span>Total Bet</span>
           <b>₹ ${txn.amount}</b>

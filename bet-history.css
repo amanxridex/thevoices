@@ -99,3 +99,18 @@ body {
   padding: 30px;
   opacity: .7;
 }
+
+.meta {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.tag {
+  background: #222;
+  color: #ffd700;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+}
