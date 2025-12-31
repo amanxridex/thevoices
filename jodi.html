@@ -27,7 +27,37 @@
   <p class="total">Total: ₹ <span id="totalAmount">0</span></p>
 </div>
 
+<div class="user-balance-box">
+  Available Balance: ₹ <span id="userBalance">0</span>
+</div>
+
 <button class="submit">SUBMIT BET</button>
+
+<script>
+const API = "https://matka-backend-4fy1.onrender.com";
+const token = localStorage.getItem("userToken");
+
+function loadUserBalance() {
+  fetch(API + "/user/me", {
+    headers: {
+      Authorization: "Bearer " + token
+    }
+  })
+  .then(res => {
+    if (!res.ok) {
+      location.href = "user-login.html";
+      return;
+    }
+    return res.json();
+  })
+  .then(user => {
+    if (!user) return;
+    document.getElementById("userBalance").innerText = user.balance;
+  });
+}
+
+loadUserBalance();
+</script>
 
 <script>
 const grid = document.getElementById("jodiGrid");
