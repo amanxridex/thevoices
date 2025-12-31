@@ -1,5 +1,16 @@
 const API = "https://matka-backend-4fy1.onrender.com";
 
+/* ================= TOKEN GUARD ================= */
+const adminToken = localStorage.getItem("adminToken");
+
+function requireAdmin() {
+  if (!adminToken) {
+    location.href = "login.html";
+    return false;
+  }
+  return true;
+}
+
 /* ================= LOGIN ================= */
 function login() {
   fetch(API + "/admin/login", {
@@ -29,11 +40,13 @@ function logout() {
 
 /* ================= CREATE SUB ADMIN ================= */
 function createSubAdmin() {
+  if (!requireAdmin()) return;
+
   fetch(API + "/admin/create-subadmin", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: "Bearer " + localStorage.getItem("adminToken")
+      Authorization: "Bearer " + adminToken
     },
     body: JSON.stringify({
       username: document.getElementById("saUser").value,
@@ -50,13 +63,20 @@ function createSubAdmin() {
 
 /* ================= LOAD SUB ADMINS ================= */
 function loadSubAdmins() {
+  if (!requireAdmin()) return;
+
   fetch(API + "/admin/subadmins", {
     headers: {
-      Authorization: "Bearer " + localStorage.getItem("adminToken")
+      Authorization: "Bearer " + adminToken
     }
   })
-    .then(res => res.json())
+    .then(res => {
+      if (!res.ok) throw new Error("Unauthorized");
+      return res.json();
+    })
     .then(data => {
+      if (!Array.isArray(data)) return;
+
       const list = document.getElementById("subAdminList");
       if (!list) return;
 
@@ -82,6 +102,10 @@ function loadSubAdmins() {
 
       document.getElementById("totalUsers").innerText = totalUsers;
       document.getElementById("totalWallet").innerText = "₹ " + totalWallet;
+    })
+    .catch(() => {
+      localStorage.removeItem("adminToken");
+      location.href = "login.html";
     });
 }
 
