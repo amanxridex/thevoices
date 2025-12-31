@@ -28,6 +28,10 @@
       <h2 id="totalUsers">0</h2>
     </div>
     <div class="stat-card">
+      <span>Your Wallet</span>
+      <h2 id="myWallet">0</h2>
+    </div>
+    <div class="stat-card">
       <span>Total Wallet</span>
       <h2 id="totalWallet">₹ 0</h2>
     </div>
@@ -69,6 +73,19 @@ const name = localStorage.getItem("subUsername");
 
 if (!token) location.href = "subadmin-login.html";
 document.getElementById("subAdminName").innerText = name;
+
+function loadMyWallet() {
+  fetch(API + "/subadmin/me", {
+    headers: {
+      Authorization: "Bearer " + token
+    }
+  })
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById("myWallet").innerText =
+      "₹ " + (data.balance || 0);
+  });
+}
 
 /* LOGOUT */
 document.querySelector(".logout").onclick = () => {
@@ -202,6 +219,7 @@ function closeModal() {
 }
 
 loadUsers();
+loadMyWallet();
 </script>
 
 <!-- WALLET MODAL -->

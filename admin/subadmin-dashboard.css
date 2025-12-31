@@ -319,3 +319,13 @@ td button {
 
 .txn-list .plus { color: #2ecc71; }
 .txn-list .minus { color: #e74c3c; }
+
+.stat-card.highlight {
+  border: 1px solid rgba(255,215,0,.4);
+  box-shadow: 0 0 20px rgba(255,215,0,.15);
+}
+
+.stat-card.highlight h2 {
+  color: gold;
+  text-shadow: 0 0 10px rgba(255,215,0,.6);
+}
