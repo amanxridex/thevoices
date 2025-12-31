@@ -8,6 +8,9 @@
 
 <body>
 
+<!-- 🔥 APP WRAPPER START -->
+<div class="app">
+
 <!-- ================= TOP HEADER ================= -->
 <header class="top-bar">
   <div class="logo">
@@ -16,7 +19,6 @@
       powered by super d
     </small>
   </div>
-
 
   <div class="user-info">
     <div class="balance">
@@ -53,18 +55,19 @@
   <p class="loading">Loading markets...</p>
 </div>
 
-<!-- ================= AUTH + USER INFO ================= -->
+</div>
+<!-- 🔥 APP WRAPPER END -->
+
+<!-- ================= AUTH + USER INFO + MARKETS ================= -->
 <script>
 document.addEventListener("DOMContentLoaded", () => {
   const token = localStorage.getItem("userToken");
 
-  // 🔐 AUTH GUARD
   if (!token) {
     location.replace("user-login.html");
     return;
   }
 
-  // 👤 FETCH USER
   fetch("https://matka-backend-4fy1.onrender.com/user/me", {
     headers: {
       Authorization: "Bearer " + token
@@ -84,7 +87,6 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("userBalance").innerText = "₹ " + user.balance;
   });
 
-  // 📊 FETCH MARKETS
   const list = document.getElementById("marketList");
 
   fetch("https://matka-backend-4fy1.onrender.com/api/markets")

@@ -234,116 +234,138 @@ body {
   }
 }
 
-/* =========================
-   📱 MOBILE UI ENHANCEMENTS
-   ========================= */
+/* ==============================
+   🔥 SUPER D — MOBILE APP MODE
+   ============================== */
 @media (max-width: 768px) {
 
   body {
-    font-size: 14px;
+    background: #0b0b0b;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto;
   }
 
-  /* HEADER */
+  .app {
+    padding-bottom: 90px; /* bottom nav space */
+  }
+
+  /* ================= HEADER ================= */
   .top-bar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: linear-gradient(90deg,#d4af37,#f5d76e);
     padding: 10px 14px;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 6px;
+    border-bottom-left-radius: 14px;
+    border-bottom-right-radius: 14px;
   }
 
   .logo {
-    font-size: 18px;
-    letter-spacing: 1px;
+    font-size: 16px;
+    font-weight: 800;
+    color: #000;
   }
 
   .user-info {
-    width: 100%;
+    margin-top: 6px;
     display: flex;
     justify-content: space-between;
-    font-size: 13px;
+    font-size: 12px;
+    color: #000;
   }
 
-  .balance b {
-    font-size: 15px;
-    color: #ffd400;
-  }
-
-  /* NAV */
-  .menu {
-    font-size: 13px;
-    padding: 8px 6px;
-    overflow-x: auto;
-    white-space: nowrap;
-  }
-
-  .menu span {
-    padding: 6px 10px;
-  }
-
-  /* DISCLAIMER */
+  /* ================= DISCLAIMER ================= */
   .disclaimer-bar {
-    font-size: 11px;
+    background: #111;
+    font-size: 10px;
     padding: 6px 10px;
+    border-radius: 10px;
+    margin: 10px;
   }
 
-  /* TITLE */
+  /* ================= TITLE ================= */
   .bazar-title {
-    font-size: 13px;
-    margin: 10px 0;
-    letter-spacing: 1px;
+    font-size: 11px;
+    opacity: .6;
+    margin: 10px 0 14px;
   }
 
-  /* MARKET LIST */
+  /* ================= MARKET LIST ================= */
   .market-list {
-    padding: 0 10px;
+    padding: 0 12px;
   }
 
   .market-card {
-    padding: 14px 12px;
-    margin-bottom: 14px;
-    border-radius: 14px;
+    background: linear-gradient(145deg,#121212,#1c1c1c);
+    border-radius: 18px;
+    padding: 16px 14px;
+    margin-bottom: 16px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    box-shadow: 0 0 18px rgba(255, 215, 0, 0.08);
+    box-shadow: 0 8px 30px rgba(0,0,0,.6);
   }
 
   .market-card.live {
-    border-left: 4px solid #00ff8f;
+    border-left: 5px solid #00ff9c;
   }
 
   .market-card.closed {
-    border-left: 4px solid #ff4d4d;
+    border-left: 5px solid #ff4d4d;
   }
 
   .market-card .time {
-    font-size: 12px;
-    min-width: 52px;
-    text-align: center;
+    font-size: 11px;
+    opacity: .7;
   }
 
-  .market-card .center h3 {
+  .market-card h3 {
     font-size: 15px;
     margin-bottom: 4px;
   }
 
-  .market-card .center p {
-    font-size: 12px;
+  .market-card .live-text {
+    color: #00ff9c;
+    font-weight: 600;
+  }
+
+  .market-card .closed-text {
+    color: #ff4d4d;
+    font-weight: 600;
   }
 
   .market-card .result {
     font-size: 14px;
-    margin-top: 4px;
-  }
-
-  /* TAP FEEL */
-  .market-card {
-    cursor: pointer;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    letter-spacing: 2px;
+    color: #f5d76e;
   }
 
   .market-card:active {
     transform: scale(0.97);
-    box-shadow: 0 0 25px rgba(255, 215, 0, 0.25);
   }
+
+  /* ================= BOTTOM NAV (🔥 MAIN SEXY PART) ================= */
+  .menu {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #0e0e0e;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    border-top: 1px solid #222;
+    z-index: 100;
+  }
+
+  .menu span {
+    font-size: 11px;
+    opacity: .6;
+  }
+
+  .menu span.active {
+    opacity: 1;
+    color: #f5d76e;
+    font-weight: 600;
+  }
+
 }
