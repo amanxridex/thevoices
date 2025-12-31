@@ -7,20 +7,36 @@
 </head>
 <body>
 
-<div class="login-box">
-  <h2>User Login</h2>
+<div class="login-wrapper">
+  <div class="login-box">
 
-  <input id="username" placeholder="Username / Mobile">
-  <input id="password" type="password" placeholder="Password">
+    <div class="brand">
+      SUPER <span>D</span>
+    </div>
 
-  <button onclick="login()">Login</button>
-  <p id="error"></p>
+    <h2>Welcome Back</h2>
+    <p class="subtitle">Login to continue playing</p>
+
+    <input id="username" placeholder="Username / Mobile">
+    <input id="password" type="password" placeholder="Password">
+
+    <button onclick="login()">Login</button>
+
+    <p id="error"></p>
+
+    <div class="footer-text">
+      Powered by <b>SUPER D</b>
+    </div>
+
+  </div>
 </div>
 
 <script>
 const API = "https://matka-backend-4fy1.onrender.com";
 
 function login() {
+  error.innerText = "";
+
   fetch(API + "/user/login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -32,7 +48,7 @@ function login() {
   .then(res => res.json())
   .then(data => {
     if (!data.token) {
-      error.innerText = "Invalid credentials";
+      error.innerText = "Invalid username or password";
       return;
     }
 
