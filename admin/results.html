@@ -52,8 +52,13 @@
 
   <!-- DATE FILTER -->
   <div class="result-filter">
-    <label for="resultDate">📅 Select Date</label>
-    <input type="date" id="resultDate">
+    <label>📅 Select Date</label>
+
+    <div class="date-box" id="dateBox">
+      <span id="dateText">--/--/----</span>
+      <span class="calendar-icon">📆</span>
+      <input type="date" id="resultDate">
+    </div>
   </div>
 
   <table class="results-table">
@@ -78,34 +83,37 @@ function logout() {
   location.href = "superadmin-login.html";
 }
 
+/* DOM ELEMENTS */
+const marketSelect = document.getElementById("marketSelect");
+const resultInput  = document.getElementById("resultInput");
+const previewMarket = document.getElementById("previewMarket");
+const previewResult = document.getElementById("previewResult");
+const resultDate = document.getElementById("resultDate");
+const dateText = document.getElementById("dateText");
+const dateBox = document.getElementById("dateBox");
+
 /* LOAD MARKETS */
 fetch(API + "/api/markets")
   .then(res => res.json())
   .then(markets => {
-    const select = document.getElementById("marketSelect");
-    select.innerHTML = "";
-
+    marketSelect.innerHTML = "";
     markets.forEach(m => {
       const opt = document.createElement("option");
       opt.value = m.name;
       opt.textContent = m.name;
-      select.appendChild(opt);
+      marketSelect.appendChild(opt);
     });
-
     updatePreview();
   });
 
 /* LIVE PREVIEW */
 function updatePreview() {
-  document.getElementById("previewMarket").innerText =
-    marketSelect.value || "—";
-
-  document.getElementById("previewResult").innerText =
-    resultInput.value || "---";
+  previewMarket.innerText = marketSelect.value || "—";
+  previewResult.innerText = resultInput.value || "---";
 }
 
-marketSelect.onchange = updatePreview;
-resultInput.oninput = updatePreview;
+marketSelect.addEventListener("change", updatePreview);
+resultInput.addEventListener("input", updatePreview);
 
 /* PUBLISH RESULT */
 function publishResult() {
@@ -162,16 +170,34 @@ function loadResultsByDate(selectedDate) {
   });
 }
 
+/* DATE FORMATTER */
+function updateDateText(dateStr) {
+  const d = new Date(dateStr);
+  const formatted =
+    String(d.getDate()).padStart(2, "0") + "/" +
+    String(d.getMonth() + 1).padStart(2, "0") + "/" +
+    d.getFullYear();
+  dateText.innerText = formatted;
+}
+
 /* DATE PICKER DEFAULT = TODAY */
-const resultDate = document.getElementById("resultDate");
 const today = new Date().toISOString().split("T")[0];
 resultDate.value = today;
-
-/* INITIAL LOAD */
+updateDateText(today);
 loadResultsByDate(today);
+
+/* CLICK DATE BOX → OPEN CALENDAR */
+dateBox.addEventListener("click", () => {
+  if (resultDate.showPicker) {
+    resultDate.showPicker();
+  } else {
+    resultDate.click();
+  }
+});
 
 /* ON DATE CHANGE */
 resultDate.addEventListener("change", () => {
+  updateDateText(resultDate.value);
   loadResultsByDate(resultDate.value);
 });
 </script>
