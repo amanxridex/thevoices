@@ -11,7 +11,6 @@
   <div class="brand">SUPER <span>D</span></div>
 
   <div class="top-actions">
-    <!-- 📅 DATE PICKER -->
     <input type="date" id="betDate">
     <button class="back" onclick="goBack()">⬅ Back</button>
   </div>
@@ -22,19 +21,19 @@
   <h1 id="marketTitle">Market Bets</h1>
   <p class="subtitle">Live bet summary (Akhar & Jodi)</p>
 
-  <!-- ================= AKHAR ================= -->
+  <!-- AKHAR -->
   <section class="section">
     <h2>🎯 AKHAR (0 - 9)</h2>
     <div class="grid akhar-grid" id="akharGrid"></div>
   </section>
 
-  <!-- ================= JODI ================= -->
+  <!-- JODI -->
   <section class="section">
     <h2>🎲 JODI (00 - 99)</h2>
     <div class="grid jodi-grid" id="jodiGrid"></div>
   </section>
 
-  <!-- ================= BET LOG ================= -->
+  <!-- BET LOG -->
   <section class="section">
     <h2>📋 Bet Logs (Selected Date)</h2>
     <table class="bet-table">
@@ -65,11 +64,11 @@ const jodiGrid = document.getElementById("jodiGrid");
 const betLog = document.getElementById("betLog");
 const betDateInput = document.getElementById("betDate");
 
-/* ================= DEFAULT DATE = TODAY ================= */
+/* DEFAULT DATE = TODAY */
 const today = new Date().toISOString().split("T")[0];
 betDateInput.value = today;
 
-/* ================= INIT GRIDS ================= */
+/* INIT AKHAR */
 for (let i = 0; i <= 9; i++) {
   akharGrid.innerHTML += `
     <div class="cell">
@@ -79,6 +78,7 @@ for (let i = 0; i <= 9; i++) {
   `;
 }
 
+/* INIT JODI */
 for (let i = 0; i < 100; i++) {
   const num = i.toString().padStart(2, "0");
   jodiGrid.innerHTML += `
@@ -89,13 +89,15 @@ for (let i = 0; i < 100; i++) {
   `;
 }
 
-/* ================= LOAD BETS ================= */
+/* LOAD BETS */
 function loadBets() {
   const selectedDate = betDateInput.value;
 
   fetch(API + "/api/bets?market=" + encodeURIComponent(marketName))
     .then(res => res.json())
-    .then(bets => {
+    .then(data => {
+
+      const bets = data.logs || [];
 
       // reset totals
       for (let i = 0; i <= 9; i++) {
@@ -108,8 +110,8 @@ function loadBets() {
 
       bets
         .filter(b => {
-          const betDate = new Date(b.date).toISOString().split("T")[0];
-          return betDate === selectedDate;
+          const d = new Date(b.date).toISOString().split("T")[0];
+          return d === selectedDate;
         })
         .forEach(bet => {
 
@@ -133,10 +135,13 @@ function loadBets() {
             </tr>
           `;
         });
+    })
+    .catch(err => {
+      console.error("BET FETCH ERROR:", err);
     });
 }
 
-/* ================= EVENTS ================= */
+/* EVENTS */
 betDateInput.addEventListener("change", loadBets);
 
 /* AUTO REFRESH */
