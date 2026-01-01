@@ -64,13 +64,13 @@ const jodiGrid  = document.getElementById("jodiGrid");
 const betLog    = document.getElementById("betLog");
 const betDateInput = document.getElementById("betDate");
 
-/* IST SAFE DATE */
+/* ================= DATE HELPER (FIXED) ================= */
 function toYMD(date) {
   const d = new Date(date);
   const y = d.getFullYear();
   const m = String(d.getMonth() + 1).padStart(2, "0");
-  const dayոթ = String(d.getDate()).padStart(2, "0");
-  return `${y}-${m}-${day}`;
+  const dd = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${dd}`;
 }
 
 /* DEFAULT DATE = TODAY */
@@ -97,22 +97,19 @@ for (let i = 0; i < 100; i++) {
   `;
 }
 
-/* LOAD BETS */
+/* ================= LOAD BETS ================= */
 function loadBets() {
   const selectedDate = betDateInput.value;
 
-  fetch(
-    API + "/api/bets?market=" + encodeURIComponent(marketName) + "&_=" + Date.now(),
-    { cache: "no-store" }
-  )
+  fetch(API + "/api/bets?market=" + encodeURIComponent(marketName) + "&_=" + Date.now(), {
+    cache: "no-store"
+  })
     .then(res => res.json())
-    .then(resData => {
+    .then(data => {
 
-      const records = Array.isArray(resData)
-        ? resData
-        : (resData.logs || []);
+      const records = Array.isArray(data) ? data : (data.logs || []);
 
-      // reset
+      /* RESET TOTALS */
       for (let i = 0; i <= 9; i++) {
         document.getElementById("akhar-" + i).innerText = "0";
       }
@@ -128,17 +125,17 @@ function loadBets() {
 
           if (entry.gameType === "AKHAR") {
             const el = document.getElementById("akhar-" + b.digit);
-            el.innerText = parseInt(el.innerText) + b.amount;
+            el.innerText = Number(el.innerText) + b.amount;
           }
 
           if (entry.gameType === "JODI") {
             const el = document.getElementById("jodi-" + b.digit);
-            el.innerText = parseInt(el.innerText) + b.amount;
+            el.innerText = Number(el.innerText) + b.amount;
           }
 
           betLog.innerHTML += `
             <tr>
-              <td>${entry.createdBy || "-"}</td>
+              <td>${entry.username || "-"}</td>
               <td>${entry.gameType}</td>
               <td>${b.digit}</td>
               <td>₹ ${b.amount}</td>
@@ -154,7 +151,7 @@ function loadBets() {
 /* EVENTS */
 betDateInput.addEventListener("change", loadBets);
 
-/* AUTO */
+/* AUTO REFRESH */
 loadBets();
 setInterval(loadBets, 5000);
 
