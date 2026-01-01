@@ -205,3 +205,24 @@ body {
 .results-table td {
   font-size: 13px;
 }
+
+.result-filter {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0 10px;
+}
+
+.result-filter label {
+  color: gold;
+  font-size: 14px;
+}
+
+.result-filter input[type="date"] {
+  background: #000;
+  border: 1px solid #333;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+}

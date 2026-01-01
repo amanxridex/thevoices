@@ -26,7 +26,7 @@
       <select id="marketSelect"></select>
 
       <label>Result Number</label>
-      <input type="text" id="resultInput" placeholder="Ex: 123-45-678">
+      <input type="text" id="resultInput" placeholder="Ex: 52">
 
       <button class="publish" onclick="publishResult()">🔥 PUBLISH RESULT</button>
     </div>
@@ -50,6 +50,12 @@
   <!-- RESULTS TABLE -->
   <h2 style="margin-top:40px">📋 All Market Results</h2>
 
+  <!-- DATE FILTER -->
+  <div class="result-filter">
+    <label for="resultDate">📅 Select Date</label>
+    <input type="date" id="resultDate">
+  </div>
+
   <table class="results-table">
     <thead>
       <tr>
@@ -72,7 +78,7 @@ function logout() {
   location.href = "superadmin-login.html";
 }
 
-/* LOAD MARKETS (ALL FROM DB) */
+/* LOAD MARKETS */
 fetch(API + "/api/markets")
   .then(res => res.json())
   .then(markets => {
@@ -107,14 +113,13 @@ function publishResult() {
   const result = resultInput.value.trim();
 
   if (!market || !result) {
-    return alert("Market aur result dono bharo");
+    alert("Market aur result dono bharo");
+    return;
   }
 
   fetch(API + "/api/results/publish", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ market, result })
   })
   .then(res => res.json())
@@ -125,13 +130,13 @@ function publishResult() {
     }
 
     resultInput.value = "";
-    loadResults();
     updatePreview();
+    loadResultsByDate(resultDate.value);
   });
 }
 
-/* LOAD RESULTS TABLE (ALL MARKETS + BLANK RESULT) */
-function loadResults() {
+/* LOAD RESULTS DATE-WISE */
+function loadResultsByDate(selectedDate) {
   Promise.all([
     fetch(API + "/api/markets").then(res => res.json()),
     fetch(API + "/api/results").then(res => res.json())
@@ -141,20 +146,34 @@ function loadResults() {
     tbody.innerHTML = "";
 
     markets.forEach(market => {
-      const r = results.find(x => x.market === market.name);
+      const r = results.find(x => {
+        const d = new Date(x.date).toISOString().split("T")[0];
+        return x.market === market.name && d === selectedDate;
+      });
 
       tbody.innerHTML += `
         <tr>
           <td>${market.name}</td>
-          <td>${r ? r.result : "-"}</td>
-          <td>${r ? new Date(r.date).toLocaleString() : "-"}</td>
+          <td>${r ? r.result : "--"}</td>
+          <td>${r ? new Date(r.date).toLocaleString() : "--"}</td>
         </tr>
       `;
     });
   });
 }
 
-loadResults();
+/* DATE PICKER DEFAULT = TODAY */
+const resultDate = document.getElementById("resultDate");
+const today = new Date().toISOString().split("T")[0];
+resultDate.value = today;
+
+/* INITIAL LOAD */
+loadResultsByDate(today);
+
+/* ON DATE CHANGE */
+resultDate.addEventListener("change", () => {
+  loadResultsByDate(resultDate.value);
+});
 </script>
 
 </body>
