@@ -9,7 +9,12 @@
 
 <header class="topbar">
   <div class="brand">SUPER <span>D</span></div>
-  <button class="back" onclick="goBack()">⬅ Back</button>
+
+  <div class="top-actions">
+    <!-- 📅 DATE PICKER -->
+    <input type="date" id="betDate">
+    <button class="back" onclick="goBack()">⬅ Back</button>
+  </div>
 </header>
 
 <div class="page">
@@ -29,6 +34,23 @@
     <div class="grid jodi-grid" id="jodiGrid"></div>
   </section>
 
+  <!-- ================= BET LOG ================= -->
+  <section class="section">
+    <h2>📋 Bet Logs (Selected Date)</h2>
+    <table class="bet-table">
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Type</th>
+          <th>Number</th>
+          <th>Amount</th>
+          <th>Time</th>
+        </tr>
+      </thead>
+      <tbody id="betLog"></tbody>
+    </table>
+  </section>
+
 </div>
 
 <script>
@@ -38,10 +60,16 @@ const marketName = decodeURIComponent(params.get("market"));
 
 document.getElementById("marketTitle").innerText = marketName;
 
-/* ================= INIT GRIDS ================= */
 const akharGrid = document.getElementById("akharGrid");
 const jodiGrid = document.getElementById("jodiGrid");
+const betLog = document.getElementById("betLog");
+const betDateInput = document.getElementById("betDate");
 
+/* ================= DEFAULT DATE = TODAY ================= */
+const today = new Date().toISOString().split("T")[0];
+betDateInput.value = today;
+
+/* ================= INIT GRIDS ================= */
 for (let i = 0; i <= 9; i++) {
   akharGrid.innerHTML += `
     <div class="cell">
@@ -61,40 +89,55 @@ for (let i = 0; i < 100; i++) {
   `;
 }
 
-/* ================= LOAD BET TOTALS ================= */
+/* ================= LOAD BETS ================= */
 function loadBets() {
+  const selectedDate = betDateInput.value;
+
   fetch(API + "/api/bets?market=" + encodeURIComponent(marketName))
     .then(res => res.json())
-    .then(data => {
+    .then(bets => {
 
-      /* RESET */
+      // reset totals
       for (let i = 0; i <= 9; i++) {
         document.getElementById("akhar-" + i).innerText = "0";
       }
       for (let i = 0; i < 100; i++) {
-        const k = i.toString().padStart(2,"0");
-        document.getElementById("jodi-" + k).innerText = "0";
+        document.getElementById("jodi-" + i.toString().padStart(2,"0")).innerText = "0";
       }
+      betLog.innerHTML = "";
 
-      /* AKHAR TOTALS */
-      if (data.akhar) {
-        Object.keys(data.akhar).forEach(digit => {
-          const el = document.getElementById("akhar-" + digit);
-          if (el) el.innerText = data.akhar[digit];
+      bets
+        .filter(b => {
+          const betDate = new Date(b.date).toISOString().split("T")[0];
+          return betDate === selectedDate;
+        })
+        .forEach(bet => {
+
+          if (bet.gameType === "AKHAR") {
+            const el = document.getElementById("akhar-" + bet.number);
+            el.innerText = parseInt(el.innerText) + bet.amount;
+          }
+
+          if (bet.gameType === "JODI") {
+            const el = document.getElementById("jodi-" + bet.number);
+            el.innerText = parseInt(el.innerText) + bet.amount;
+          }
+
+          betLog.innerHTML += `
+            <tr>
+              <td>${bet.username}</td>
+              <td>${bet.gameType}</td>
+              <td>${bet.number}</td>
+              <td>₹ ${bet.amount}</td>
+              <td>${new Date(bet.date).toLocaleTimeString()}</td>
+            </tr>
+          `;
         });
-      }
-
-      /* JODI TOTALS */
-      if (data.jodi) {
-        Object.keys(data.jodi).forEach(digit => {
-          const el = document.getElementById("jodi-" + digit);
-          if (el) el.innerText = data.jodi[digit];
-        });
-      }
-
-    })
-    .catch(err => console.error("BET FETCH ERROR", err));
+    });
 }
+
+/* ================= EVENTS ================= */
+betDateInput.addEventListener("change", loadBets);
 
 /* AUTO REFRESH */
 loadBets();
