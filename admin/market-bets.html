@@ -29,23 +29,6 @@
     <div class="grid jodi-grid" id="jodiGrid"></div>
   </section>
 
-  <!-- ================= BET LOG ================= -->
-  <section class="section">
-    <h2>📋 Bet Logs (Current Market Window)</h2>
-    <table class="bet-table">
-      <thead>
-        <tr>
-          <th>User</th>
-          <th>Type</th>
-          <th>Number</th>
-          <th>Amount</th>
-          <th>Time</th>
-        </tr>
-      </thead>
-      <tbody id="betLog"></tbody>
-    </table>
-  </section>
-
 </div>
 
 <script>
@@ -58,7 +41,6 @@ document.getElementById("marketTitle").innerText = marketName;
 /* ================= INIT GRIDS ================= */
 const akharGrid = document.getElementById("akharGrid");
 const jodiGrid = document.getElementById("jodiGrid");
-const betLog = document.getElementById("betLog");
 
 for (let i = 0; i <= 9; i++) {
   akharGrid.innerHTML += `
@@ -79,47 +61,39 @@ for (let i = 0; i < 100; i++) {
   `;
 }
 
-/* ================= LOAD BETS ================= */
+/* ================= LOAD BET TOTALS ================= */
 function loadBets() {
   fetch(API + "/api/bets?market=" + encodeURIComponent(marketName))
     .then(res => res.json())
-    .then(bets => {
+    .then(data => {
 
-      // reset totals
+      /* RESET */
       for (let i = 0; i <= 9; i++) {
         document.getElementById("akhar-" + i).innerText = "0";
       }
       for (let i = 0; i < 100; i++) {
-        document.getElementById("jodi-" + i.toString().padStart(2,"0")).innerText = "0";
+        const k = i.toString().padStart(2,"0");
+        document.getElementById("jodi-" + k).innerText = "0";
       }
-      betLog.innerHTML = "";
 
-      bets.forEach(bet => {
+      /* AKHAR TOTALS */
+      if (data.akhar) {
+        Object.keys(data.akhar).forEach(digit => {
+          const el = document.getElementById("akhar-" + digit);
+          if (el) el.innerText = data.akhar[digit];
+        });
+      }
 
-        // totals
-        if (bet.gameType === "AKHAR") {
-          const el = document.getElementById("akhar-" + bet.number);
-          el.innerText = parseInt(el.innerText) + bet.amount;
-        }
+      /* JODI TOTALS */
+      if (data.jodi) {
+        Object.keys(data.jodi).forEach(digit => {
+          const el = document.getElementById("jodi-" + digit);
+          if (el) el.innerText = data.jodi[digit];
+        });
+      }
 
-        if (bet.gameType === "JODI") {
-          const el = document.getElementById("jodi-" + bet.number);
-          el.innerText = parseInt(el.innerText) + bet.amount;
-        }
-
-        // log row
-        betLog.innerHTML += `
-          <tr>
-            <td>${bet.username}</td>
-            <td>${bet.gameType}</td>
-            <td>${bet.number}</td>
-            <td>₹ ${bet.amount}</td>
-            <td>${new Date(bet.date).toLocaleTimeString()}</td>
-          </tr>
-        `;
-      });
-
-    });
+    })
+    .catch(err => console.error("BET FETCH ERROR", err));
 }
 
 /* AUTO REFRESH */
