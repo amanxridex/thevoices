@@ -1,0 +1,98 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", sans-serif;
+}
+
+body {
+  background: radial-gradient(circle at top, #111, #000);
+  color: white;
+  min-height: 100vh;
+}
+
+/* TOPBAR */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 30px;
+  background: linear-gradient(to right, #000, #111);
+  border-bottom: 1px solid #222;
+}
+
+.brand {
+  font-size: 26px;
+  letter-spacing: 3px;
+  font-weight: bold;
+}
+
+.brand span {
+  color: gold;
+}
+
+.logout {
+  background: gold;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* PAGE */
+.page {
+  padding: 40px;
+}
+
+.page h1 {
+  font-size: 30px;
+  margin-bottom: 6px;
+}
+
+.page p {
+  color: #aaa;
+  margin-bottom: 30px;
+}
+
+/* MARKET LIST */
+.market-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.market-row {
+  background: linear-gradient(145deg, #111, #000);
+  border: 1px solid #222;
+  border-radius: 14px;
+  padding: 18px 22px;
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  align-items: center;
+  box-shadow: 0 10px 25px rgba(0,0,0,.6);
+}
+
+.market-name {
+  font-size: 18px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.market-time {
+  color: #aaa;
+  font-size: 14px;
+}
+
+.market-row button {
+  background: linear-gradient(to right, gold, #ffb300);
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.market-row button:hover {
+  transform: scale(1.05);
+}

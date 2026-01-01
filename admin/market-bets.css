@@ -1,0 +1,123 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", sans-serif;
+}
+
+body {
+  background: radial-gradient(circle at top, #111, #000);
+  color: white;
+}
+
+/* TOPBAR */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 30px;
+  background: linear-gradient(to right, #000, #111);
+  border-bottom: 1px solid #222;
+}
+
+.brand {
+  font-size: 26px;
+  font-weight: bold;
+  letter-spacing: 3px;
+}
+.brand span { color: gold; }
+
+.back {
+  background: gold;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* PAGE */
+.page {
+  padding: 35px;
+}
+
+.page h1 {
+  font-size: 32px;
+}
+.subtitle {
+  color: #aaa;
+  margin-bottom: 30px;
+}
+
+/* SECTIONS */
+.section {
+  margin-bottom: 40px;
+}
+.section h2 {
+  margin-bottom: 15px;
+  color: gold;
+}
+
+/* GRID */
+.grid {
+  display: grid;
+  gap: 12px;
+}
+
+.akhar-grid {
+  grid-template-columns: repeat(10, 1fr);
+}
+
+.jodi-grid {
+  grid-template-columns: repeat(10, 1fr);
+}
+
+.cell {
+  background: linear-gradient(145deg, #111, #000);
+  border: 1px solid #222;
+  border-radius: 10px;
+  padding: 12px;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(0,0,0,.6);
+}
+
+.cell.small {
+  padding: 8px;
+}
+
+.cell .num {
+  font-size: 16px;
+  display: block;
+  color: #aaa;
+}
+
+.cell .amt {
+  font-size: 18px;
+  font-weight: bold;
+  color: gold;
+}
+
+/* TABLE */
+.bet-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: linear-gradient(145deg, #111, #000);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.bet-table th,
+.bet-table td {
+  padding: 12px;
+  border-bottom: 1px solid #222;
+  text-align: center;
+}
+
+.bet-table th {
+  color: gold;
+  font-size: 14px;
+}
+
+.bet-table td {
+  font-size: 14px;
+}

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SUPER D • User Bets</title>
+  <link rel="stylesheet" href="userbets.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">SUPER <span>D</span></div>
+  <button class="logout" onclick="goBack()">⬅ Back</button>
+</header>
+
+<div class="page">
+  <h1>📈 User Bets Control</h1>
+  <p>Choose a market to see live bets</p>
+
+  <div class="market-list" id="marketList">
+    <p class="loading">Loading markets...</p>
+  </div>
+</div>
+
+<script>
+const API = "https://matka-backend-4fy1.onrender.com";
+
+function goBack() {
+  location.href = "dashboard.html";
+}
+
+/* LOAD MARKETS */
+fetch(API + "/api/markets")
+  .then(res => res.json())
+  .then(markets => {
+    const list = document.getElementById("marketList");
+    list.innerHTML = "";
+
+    markets.forEach(m => {
+      const row = document.createElement("div");
+      row.className = "market-row";
+
+      row.innerHTML = `
+        <div class="market-name">${m.name}</div>
+        <div class="market-time">
+          ${m.openTime} - ${m.closeTime}
+        </div>
+        <button onclick="openMarket('${encodeURIComponent(m.name)}')">
+          SEE BETS
+        </button>
+      `;
+
+      list.appendChild(row);
+    });
+  });
+
+function openMarket(market) {
+  location.href = `market-bets.html?market=${market}`;
+}
+</script>
+
+</body>
+</html>

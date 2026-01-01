@@ -7,13 +7,11 @@
 </head>
 <body>
 
-<!-- TOP BAR -->
 <header class="topbar">
   <div class="brand">SUPER <span>D</span></div>
   <button class="logout" onclick="logout()">Logout</button>
 </header>
 
-<!-- LAYOUT -->
 <div class="layout">
 
   <!-- SIDEBAR -->
@@ -24,6 +22,7 @@
       <li onclick="go('markets.html')">🎯 Markets</li>
       <li onclick="go('results.html')">📊 Results</li>
       <li onclick="go('users.html')">💰 User Wallets</li>
+      <li onclick="go('userbets.html')">📈 User Bets</li>
     </ul>
   </aside>
 
@@ -33,6 +32,7 @@
     <p>Manage SUPER D Matka system from here</p>
 
     <div class="cards">
+
       <div class="card">
         <h2>Sub Admins</h2>
         <p>Create & manage sub admins</p>
@@ -56,6 +56,14 @@
         <p>Add / Deduct balance</p>
         <button onclick="go('users.html')">Open</button>
       </div>
+
+      <!-- 🔥 NEW CARD -->
+      <div class="card highlight">
+        <h2>User Bets</h2>
+        <p>Live market bets (Akhar / Jodi)</p>
+        <button onclick="go('userbets.html')">Open</button>
+      </div>
+
     </div>
   </main>
 

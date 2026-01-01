@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SUPER D • Market Bets</title>
+  <link rel="stylesheet" href="market-bets.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">SUPER <span>D</span></div>
+  <button class="back" onclick="goBack()">⬅ Back</button>
+</header>
+
+<div class="page">
+
+  <h1 id="marketTitle">Market Bets</h1>
+  <p class="subtitle">Live bet summary (Akhar & Jodi)</p>
+
+  <!-- ================= AKHAR ================= -->
+  <section class="section">
+    <h2>🎯 AKHAR (0 - 9)</h2>
+    <div class="grid akhar-grid" id="akharGrid"></div>
+  </section>
+
+  <!-- ================= JODI ================= -->
+  <section class="section">
+    <h2>🎲 JODI (00 - 99)</h2>
+    <div class="grid jodi-grid" id="jodiGrid"></div>
+  </section>
+
+  <!-- ================= BET LOG ================= -->
+  <section class="section">
+    <h2>📋 Bet Logs (Current Market Window)</h2>
+    <table class="bet-table">
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Type</th>
+          <th>Number</th>
+          <th>Amount</th>
+          <th>Time</th>
+        </tr>
+      </thead>
+      <tbody id="betLog"></tbody>
+    </table>
+  </section>
+
+</div>
+
+<script>
+const API = "https://matka-backend-4fy1.onrender.com";
+const params = new URLSearchParams(window.location.search);
+const marketName = decodeURIComponent(params.get("market"));
+
+document.getElementById("marketTitle").innerText = marketName;
+
+/* ================= INIT GRIDS ================= */
+const akharGrid = document.getElementById("akharGrid");
+const jodiGrid = document.getElementById("jodiGrid");
+const betLog = document.getElementById("betLog");
+
+for (let i = 0; i <= 9; i++) {
+  akharGrid.innerHTML += `
+    <div class="cell">
+      <span class="num">${i}</span>
+      <span class="amt" id="akhar-${i}">0</span>
+    </div>
+  `;
+}
+
+for (let i = 0; i < 100; i++) {
+  const num = i.toString().padStart(2, "0");
+  jodiGrid.innerHTML += `
+    <div class="cell small">
+      <span class="num">${num}</span>
+      <span class="amt" id="jodi-${num}">0</span>
+    </div>
+  `;
+}
+
+/* ================= LOAD BETS ================= */
+function loadBets() {
+  fetch(API + "/api/bets?market=" + encodeURIComponent(marketName))
+    .then(res => res.json())
+    .then(bets => {
+
+      // reset totals
+      for (let i = 0; i <= 9; i++) {
+        document.getElementById("akhar-" + i).innerText = "0";
+      }
+      for (let i = 0; i < 100; i++) {
+        document.getElementById("jodi-" + i.toString().padStart(2,"0")).innerText = "0";
+      }
+      betLog.innerHTML = "";
+
+      bets.forEach(bet => {
+
+        // totals
+        if (bet.gameType === "AKHAR") {
+          const el = document.getElementById("akhar-" + bet.number);
+          el.innerText = parseInt(el.innerText) + bet.amount;
+        }
+
+        if (bet.gameType === "JODI") {
+          const el = document.getElementById("jodi-" + bet.number);
+          el.innerText = parseInt(el.innerText) + bet.amount;
+        }
+
+        // log row
+        betLog.innerHTML += `
+          <tr>
+            <td>${bet.username}</td>
+            <td>${bet.gameType}</td>
+            <td>${bet.number}</td>
+            <td>₹ ${bet.amount}</td>
+            <td>${new Date(bet.date).toLocaleTimeString()}</td>
+          </tr>
+        `;
+      });
+
+    });
+}
+
+/* AUTO REFRESH */
+loadBets();
+setInterval(loadBets, 5000);
+
+function goBack() {
+  history.back();
+}
+</script>
+
+</body>
+</html>
