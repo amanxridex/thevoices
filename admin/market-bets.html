@@ -11,7 +11,6 @@
   <div class="brand">SUPER <span>D</span></div>
 
   <div class="top-actions">
-    <!-- DATE PICKER -->
     <input type="date" id="betDate">
     <button class="back" onclick="goBack()">⬅ Back</button>
   </div>
@@ -22,19 +21,19 @@
   <h1 id="marketTitle">Market Bets</h1>
   <p class="subtitle">Live bet summary (Akhar & Jodi)</p>
 
-  <!-- ================= AKHAR ================= -->
+  <!-- AKHAR -->
   <section class="section">
     <h2>🎯 AKHAR (0 - 9)</h2>
     <div class="grid akhar-grid" id="akharGrid"></div>
   </section>
 
-  <!-- ================= JODI ================= -->
+  <!-- JODI -->
   <section class="section">
     <h2>🎲 JODI (00 - 99)</h2>
     <div class="grid jodi-grid" id="jodiGrid"></div>
   </section>
 
-  <!-- ================= BET LOG ================= -->
+  <!-- BET LOG -->
   <section class="section">
     <h2>📋 Bet Logs (Selected Date)</h2>
     <table class="bet-table">
@@ -65,20 +64,19 @@ const jodiGrid  = document.getElementById("jodiGrid");
 const betLog    = document.getElementById("betLog");
 const betDateInput = document.getElementById("betDate");
 
-/* ================= IST SAFE DATE ================= */
-function getLocalDate(dateStr) {
-  const d = new Date(dateStr);
-  const yyyy = d.getFullYear();
-  const mm = String(d.getMonth() + 1).padStart(2, "0");
-  const dd = String(d.getDate()).padStart(2, "0");
-  return `${yyyy}-${mm}-${dd}`;
+/* IST SAFE DATE */
+function toYMD(date) {
+  const d = new Date(date);
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const dayոթ = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
 }
 
-/* ================= DEFAULT DATE = TODAY ================= */
-const today = getLocalDate(new Date());
-betDateInput.value = today;
+/* DEFAULT DATE = TODAY */
+betDateInput.value = toYMD(new Date());
 
-/* ================= INIT AKHAR ================= */
+/* INIT AKHAR */
 for (let i = 0; i <= 9; i++) {
   akharGrid.innerHTML += `
     <div class="cell">
@@ -88,7 +86,7 @@ for (let i = 0; i <= 9; i++) {
   `;
 }
 
-/* ================= INIT JODI ================= */
+/* INIT JODI */
 for (let i = 0; i < 100; i++) {
   const num = i.toString().padStart(2, "0");
   jodiGrid.innerHTML += `
@@ -99,18 +97,22 @@ for (let i = 0; i < 100; i++) {
   `;
 }
 
-/* ================= LOAD BETS ================= */
+/* LOAD BETS */
 function loadBets() {
   const selectedDate = betDateInput.value;
 
-  fetch(API + "/api/bets?market=" + encodeURIComponent(marketName))
+  fetch(
+    API + "/api/bets?market=" + encodeURIComponent(marketName) + "&_=" + Date.now(),
+    { cache: "no-store" }
+  )
     .then(res => res.json())
     .then(resData => {
 
-      // ✅ API safe handling (array OR { logs })
-      const bets = Array.isArray(resData) ? resData : (resData.logs || []);
+      const records = Array.isArray(resData)
+        ? resData
+        : (resData.logs || []);
 
-      // reset totals
+      // reset
       for (let i = 0; i <= 9; i++) {
         document.getElementById("akhar-" + i).innerText = "0";
       }
@@ -119,40 +121,40 @@ function loadBets() {
       }
       betLog.innerHTML = "";
 
-      bets
-        .filter(b => getLocalDate(b.date) === selectedDate)
-        .forEach(bet => {
+      records.forEach(entry => {
+        if (toYMD(entry.date) !== selectedDate) return;
 
-          if (bet.gameType === "AKHAR") {
-            const el = document.getElementById("akhar-" + bet.number);
-            el.innerText = parseInt(el.innerText) + bet.amount;
+        entry.bets.forEach(b => {
+
+          if (entry.gameType === "AKHAR") {
+            const el = document.getElementById("akhar-" + b.digit);
+            el.innerText = parseInt(el.innerText) + b.amount;
           }
 
-          if (bet.gameType === "JODI") {
-            const el = document.getElementById("jodi-" + bet.number);
-            el.innerText = parseInt(el.innerText) + bet.amount;
+          if (entry.gameType === "JODI") {
+            const el = document.getElementById("jodi-" + b.digit);
+            el.innerText = parseInt(el.innerText) + b.amount;
           }
 
           betLog.innerHTML += `
             <tr>
-              <td>${bet.username || "-"}</td>
-              <td>${bet.gameType}</td>
-              <td>${bet.number}</td>
-              <td>₹ ${bet.amount}</td>
-              <td>${new Date(bet.date).toLocaleTimeString()}</td>
+              <td>${entry.createdBy || "-"}</td>
+              <td>${entry.gameType}</td>
+              <td>${b.digit}</td>
+              <td>₹ ${b.amount}</td>
+              <td>${new Date(entry.date).toLocaleTimeString()}</td>
             </tr>
           `;
         });
+      });
     })
-    .catch(err => {
-      console.error("BET FETCH ERROR:", err);
-    });
+    .catch(err => console.error("BET FETCH ERROR:", err));
 }
 
-/* ================= EVENTS ================= */
+/* EVENTS */
 betDateInput.addEventListener("change", loadBets);
 
-/* AUTO REFRESH */
+/* AUTO */
 loadBets();
 setInterval(loadBets, 5000);
 
