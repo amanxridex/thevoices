@@ -17,6 +17,18 @@
   <h1 class="title">🎯 Market Control Room</h1>
   <p class="subtitle">Open, close & dominate the game</p>
 
+  <!-- 🔥 CREATE NEW MARKET -->
+  <div class="create-box">
+    <h2>➕ Create New Market</h2>
+
+    <div class="create-form">
+      <input id="newName" placeholder="Market Name">
+      <input id="newOpen" type="time">
+      <input id="newClose" type="time">
+      <button onclick="createMarket()">CREATE</button>
+    </div>
+  </div>
+
   <!-- MARKET GRID -->
   <div class="market-grid" id="marketGrid">
     <p style="color:#aaa">Loading markets...</p>
@@ -50,45 +62,71 @@ function logout() {
 }
 
 /* LOAD MARKETS */
-fetch(API + "/api/markets", {
-  headers: {
-    "Authorization": "Bearer " + localStorage.getItem("adminToken")
-  }
-})
-.then(res => res.json())
-.then(markets => {
-  const grid = document.getElementById("marketGrid");
-  grid.innerHTML = "";
+function loadMarkets() {
+  fetch(API + "/api/markets", {
+    headers: {
+      "Authorization": "Bearer " + localStorage.getItem("adminToken")
+    }
+  })
+  .then(res => res.json())
+  .then(markets => {
+    const grid = document.getElementById("marketGrid");
+    grid.innerHTML = "";
 
-  markets.forEach(m => {
-    const isOpen = m.status === "OPEN";
+    markets.forEach(m => {
+      const isOpen = m.status === "OPEN";
 
-    const card = document.createElement("div");
-    card.className = `market-card ${isOpen ? "open" : "closed"}`;
+      const card = document.createElement("div");
+      card.className = `market-card ${isOpen ? "open" : "closed"}`;
 
-    card.innerHTML = `
-      <div class="market-name">${m.name}</div>
-      <div class="market-time">${m.openTime} – ${m.closeTime}</div>
+      card.innerHTML = `
+        <div class="market-name">${m.name}</div>
+        <div class="market-time">${m.openTime} – ${m.closeTime}</div>
 
-      <div class="status ${isOpen ? "open" : "closed"}">
-        ${isOpen ? "LIVE 🔥" : "CLOSED"}
-      </div>
+        <div class="status ${isOpen ? "open" : "closed"}">
+          ${isOpen ? "LIVE 🔥" : "CLOSED"}
+        </div>
 
-      <button class="action edit" onclick="editMarket(
-        '${m._id}',
-        '${m.name}',
-        '${m.openTime}',
-        '${m.closeTime}'
-      )">EDIT</button>
-    `;
+        <button class="action edit" onclick="editMarket(
+          '${m._id}',
+          '${m.name}',
+          '${m.openTime}',
+          '${m.closeTime}'
+        )">EDIT</button>
+      `;
 
-    grid.appendChild(card);
+      grid.appendChild(card);
+    });
   });
-})
-.catch(() => {
-  document.getElementById("marketGrid").innerHTML =
-    "<p style='color:red'>Server not reachable</p>";
-});
+}
+loadMarkets();
+
+/* CREATE MARKET */
+function createMarket() {
+  const name = newName.value.trim();
+  const openTime = newOpen.value;
+  const closeTime = newClose.value;
+
+  if (!name || !openTime || !closeTime) {
+    alert("Fill all fields");
+    return;
+  }
+
+  fetch(API + "/admin/market", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + localStorage.getItem("adminToken")
+    },
+    body: JSON.stringify({ name, openTime, closeTime })
+  })
+  .then(() => {
+    newName.value = "";
+    newOpen.value = "";
+    newClose.value = "";
+    loadMarkets();
+  });
+}
 
 /* EDIT */
 function editMarket(id, name, openTime, closeTime) {

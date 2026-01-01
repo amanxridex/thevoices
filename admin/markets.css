@@ -134,3 +134,66 @@ body {
   border: 1px solid gold;
   box-shadow: 0 0 25px rgba(255,215,0,0.25);
 }
+
+/* ===== CREATE MARKET BOX ===== */
+.create-box {
+  background: linear-gradient(145deg, #111, #000);
+  border: 1px solid gold;
+  border-radius: 18px;
+  padding: 22px;
+  margin-bottom: 40px;
+  box-shadow: 0 0 25px rgba(255,215,0,0.25);
+}
+
+.create-box h2 {
+  color: gold;
+  margin-bottom: 16px;
+  letter-spacing: 1px;
+}
+
+.create-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr auto;
+  gap: 14px;
+}
+
+.create-form input {
+  background: #0b0b0b;
+  border: 1px solid #333;
+  color: white;
+  padding: 10px 12px;
+  border-radius: 8px;
+}
+
+.create-form input:focus {
+  outline: none;
+  border-color: gold;
+  box-shadow: 0 0 10px rgba(255,215,0,0.4);
+}
+
+.create-form button {
+  background: gold;
+  color: black;
+  border: none;
+  padding: 10px 22px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  letter-spacing: 1px;
+}
+
+.create-form button:hover {
+  box-shadow: 0 0 18px gold;
+  transform: scale(1.05);
+}
+
+/* GRID PUSH DOWN */
+.market-grid {
+  margin-top: 10px;
+}
+
+/* EDIT BUTTON */
+.action.edit {
+  background: linear-gradient(to right, gold, #ffb300);
+  color: black;
+}
