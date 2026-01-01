@@ -10,7 +10,7 @@
 <header class="topbar">
   <div class="brand">SUPER <span>D</span></div>
 
-  <!-- 🔥 DATE PICKER + BACK -->
+  <!-- DATE PICKER + BACK -->
   <div class="top-actions">
     <input type="date" id="betDate">
     <button class="back" onclick="goBack()">⬅ Back</button>
@@ -22,16 +22,34 @@
   <h1 id="marketTitle">Market Bets</h1>
   <p class="subtitle">Live bet summary (Akhar & Jodi)</p>
 
-  <!-- ================= AKHAR ================= -->
+  <!-- AKHAR -->
   <section class="section">
     <h2>🎯 AKHAR (0 - 9)</h2>
     <div class="grid akhar-grid" id="akharGrid"></div>
   </section>
 
-  <!-- ================= JODI ================= -->
+  <!-- JODI -->
   <section class="section">
     <h2>🎲 JODI (00 - 99)</h2>
     <div class="grid jodi-grid" id="jodiGrid"></div>
+  </section>
+
+  <!-- BET TABLE -->
+  <section class="section">
+    <h2>📋 Bet Details (Selected Date)</h2>
+
+    <table class="bet-table">
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Type</th>
+          <th>Number</th>
+          <th>Amount</th>
+          <th>Time</th>
+        </tr>
+      </thead>
+      <tbody id="betTableBody"></tbody>
+    </table>
   </section>
 
 </div>
@@ -46,18 +64,16 @@ document.getElementById("marketTitle").innerText = marketName;
 const akharGrid = document.getElementById("akharGrid");
 const jodiGrid  = document.getElementById("jodiGrid");
 const betDateInput = document.getElementById("betDate");
+const betTableBody = document.getElementById("betTableBody");
 
-/* ================= DEFAULT DATE = TODAY ================= */
+/* ===== TODAY DATE (YYYY-MM-DD) ===== */
 function todayYMD() {
   const d = new Date();
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${y}-${m}-${day}`;
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
 }
 betDateInput.value = todayYMD();
 
-/* ================= INIT GRIDS ================= */
+/* ===== INIT AKHAR GRID ===== */
 for (let i = 0; i <= 9; i++) {
   akharGrid.innerHTML += `
     <div class="cell">
@@ -67,6 +83,7 @@ for (let i = 0; i <= 9; i++) {
   `;
 }
 
+/* ===== INIT JODI GRID ===== */
 for (let i = 0; i < 100; i++) {
   const num = i.toString().padStart(2, "0");
   jodiGrid.innerHTML += `
@@ -77,7 +94,7 @@ for (let i = 0; i < 100; i++) {
   `;
 }
 
-/* ================= LOAD BET TOTALS (DATE WISE) ================= */
+/* ===== LOAD BETS (DATE WISE) ===== */
 function loadBets() {
   const selectedDate = betDateInput.value;
 
@@ -88,35 +105,52 @@ function loadBets() {
     .then(res => res.json())
     .then(data => {
 
-      /* RESET */
+      /* RESET GRID */
       for (let i = 0; i <= 9; i++) {
         document.getElementById("akhar-" + i).innerText = "0";
       }
       for (let i = 0; i < 100; i++) {
-        const k = i.toString().padStart(2,"0");
-        document.getElementById("jodi-" + k).innerText = "0";
+        document.getElementById("jodi-" + i.toString().padStart(2,"0")).innerText = "0";
       }
 
-      /* AKHAR TOTALS */
+      /* RESET TABLE */
+      betTableBody.innerHTML = "";
+
+      /* FILL AKHAR */
       if (data.akhar) {
-        Object.keys(data.akhar).forEach(digit => {
+        Object.entries(data.akhar).forEach(([digit, amount]) => {
           const el = document.getElementById("akhar-" + digit);
-          if (el) el.innerText = data.akhar[digit];
+          if (el) el.innerText = amount;
         });
       }
 
-      /* JODI TOTALS */
+      /* FILL JODI */
       if (data.jodi) {
-        Object.keys(data.jodi).forEach(digit => {
+        Object.entries(data.jodi).forEach(([digit, amount]) => {
           const el = document.getElementById("jodi-" + digit);
-          if (el) el.innerText = data.jodi[digit];
+          if (el) el.innerText = amount;
+        });
+      }
+
+      /* FILL TABLE */
+      if (data.logs) {
+        data.logs.forEach(log => {
+          betTableBody.innerHTML += `
+            <tr>
+              <td>${log.username}</td>
+              <td>${log.gameType}</td>
+              <td>${log.number}</td>
+              <td>₹ ${log.amount}</td>
+              <td>${new Date(log.time).toLocaleTimeString()}</td>
+            </tr>
+          `;
         });
       }
     })
     .catch(err => console.error("BET FETCH ERROR", err));
 }
 
-/* ================= EVENTS ================= */
+/* EVENTS */
 betDateInput.addEventListener("change", loadBets);
 
 /* AUTO REFRESH */
