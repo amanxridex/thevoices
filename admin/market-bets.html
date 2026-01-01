@@ -11,6 +11,7 @@
   <div class="brand">SUPER <span>D</span></div>
 
   <div class="top-actions">
+    <!-- DATE PICKER -->
     <input type="date" id="betDate">
     <button class="back" onclick="goBack()">⬅ Back</button>
   </div>
@@ -21,19 +22,19 @@
   <h1 id="marketTitle">Market Bets</h1>
   <p class="subtitle">Live bet summary (Akhar & Jodi)</p>
 
-  <!-- AKHAR -->
+  <!-- ================= AKHAR ================= -->
   <section class="section">
     <h2>🎯 AKHAR (0 - 9)</h2>
     <div class="grid akhar-grid" id="akharGrid"></div>
   </section>
 
-  <!-- JODI -->
+  <!-- ================= JODI ================= -->
   <section class="section">
     <h2>🎲 JODI (00 - 99)</h2>
     <div class="grid jodi-grid" id="jodiGrid"></div>
   </section>
 
-  <!-- BET LOG -->
+  <!-- ================= BET LOG ================= -->
   <section class="section">
     <h2>📋 Bet Logs (Selected Date)</h2>
     <table class="bet-table">
@@ -60,15 +61,24 @@ const marketName = decodeURIComponent(params.get("market"));
 document.getElementById("marketTitle").innerText = marketName;
 
 const akharGrid = document.getElementById("akharGrid");
-const jodiGrid = document.getElementById("jodiGrid");
-const betLog = document.getElementById("betLog");
+const jodiGrid  = document.getElementById("jodiGrid");
+const betLog    = document.getElementById("betLog");
 const betDateInput = document.getElementById("betDate");
 
-/* DEFAULT DATE = TODAY */
-const today = new Date().toISOString().split("T")[0];
+/* ================= IST SAFE DATE ================= */
+function getLocalDate(dateStr) {
+  const d = new Date(dateStr);
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  return `${yyyy}-${mm}-${dd}`;
+}
+
+/* ================= DEFAULT DATE = TODAY ================= */
+const today = getLocalDate(new Date());
 betDateInput.value = today;
 
-/* INIT AKHAR */
+/* ================= INIT AKHAR ================= */
 for (let i = 0; i <= 9; i++) {
   akharGrid.innerHTML += `
     <div class="cell">
@@ -78,7 +88,7 @@ for (let i = 0; i <= 9; i++) {
   `;
 }
 
-/* INIT JODI */
+/* ================= INIT JODI ================= */
 for (let i = 0; i < 100; i++) {
   const num = i.toString().padStart(2, "0");
   jodiGrid.innerHTML += `
@@ -89,15 +99,16 @@ for (let i = 0; i < 100; i++) {
   `;
 }
 
-/* LOAD BETS */
+/* ================= LOAD BETS ================= */
 function loadBets() {
   const selectedDate = betDateInput.value;
 
   fetch(API + "/api/bets?market=" + encodeURIComponent(marketName))
     .then(res => res.json())
-    .then(data => {
+    .then(resData => {
 
-      const bets = data.logs || [];
+      // ✅ API safe handling (array OR { logs })
+      const bets = Array.isArray(resData) ? resData : (resData.logs || []);
 
       // reset totals
       for (let i = 0; i <= 9; i++) {
@@ -109,10 +120,7 @@ function loadBets() {
       betLog.innerHTML = "";
 
       bets
-        .filter(b => {
-          const d = new Date(b.date).toISOString().split("T")[0];
-          return d === selectedDate;
-        })
+        .filter(b => getLocalDate(b.date) === selectedDate)
         .forEach(bet => {
 
           if (bet.gameType === "AKHAR") {
@@ -127,7 +135,7 @@ function loadBets() {
 
           betLog.innerHTML += `
             <tr>
-              <td>${bet.username}</td>
+              <td>${bet.username || "-"}</td>
               <td>${bet.gameType}</td>
               <td>${bet.number}</td>
               <td>₹ ${bet.amount}</td>
@@ -141,7 +149,7 @@ function loadBets() {
     });
 }
 
-/* EVENTS */
+/* ================= EVENTS ================= */
 betDateInput.addEventListener("change", loadBets);
 
 /* AUTO REFRESH */
