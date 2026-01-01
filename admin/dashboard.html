@@ -4,9 +4,11 @@
   <meta charset="UTF-8">
   <title>SUPER D • Admin Panel</title>
   <link rel="stylesheet" href="dashboard.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
+<!-- 🔥 TOP BAR -->
 <header class="topbar">
   <div class="brand">SUPER <span>D</span></div>
   <button class="logout" onclick="logout()">Logout</button>
@@ -14,7 +16,7 @@
 
 <div class="layout">
 
-  <!-- SIDEBAR -->
+  <!-- 🔥 SIDEBAR -->
   <aside class="sidebar">
     <h3>ADMIN PANEL</h3>
     <ul>
@@ -22,51 +24,53 @@
       <li onclick="go('markets.html')">🎯 Markets</li>
       <li onclick="go('results.html')">📊 Results</li>
       <li onclick="go('users.html')">💰 User Wallets</li>
-      <li onclick="go('userbets.html')">📈 User Bets</li>
+      <li class="active" onclick="go('userbets.html')">📈 User Bets</li>
     </ul>
   </aside>
 
-  <!-- MAIN -->
+  <!-- 🔥 MAIN CONTENT -->
   <main class="content">
-    <h1>Welcome, Admin 👑</h1>
-    <p>Manage SUPER D Matka system from here</p>
+
+    <div class="hero">
+      <h1>WELCOME, ADMIN <span>👑</span></h1>
+      <p>Control the SUPER D Matka Empire</p>
+    </div>
 
     <div class="cards">
 
-      <div class="card">
+      <div class="card glow-purple" onclick="go('subadmins.html')">
         <h2>Sub Admins</h2>
         <p>Create & manage sub admins</p>
-        <button onclick="go('subadmins.html')">Open</button>
+        <span class="open">OPEN</span>
       </div>
 
-      <div class="card">
+      <div class="card glow-red" onclick="go('markets.html')">
         <h2>Markets</h2>
         <p>Open / Close markets</p>
-        <button onclick="go('markets.html')">Open</button>
+        <span class="open">OPEN</span>
       </div>
 
-      <div class="card">
+      <div class="card glow-blue" onclick="go('results.html')">
         <h2>Results</h2>
         <p>Declare & edit results</p>
-        <button onclick="go('results.html')">Open</button>
+        <span class="open">OPEN</span>
       </div>
 
-      <div class="card">
+      <div class="card glow-green" onclick="go('users.html')">
         <h2>User Wallets</h2>
         <p>Add / Deduct balance</p>
-        <button onclick="go('users.html')">Open</button>
+        <span class="open">OPEN</span>
       </div>
 
-      <!-- 🔥 NEW CARD -->
-      <div class="card highlight">
+      <div class="card glow-gold king" onclick="go('userbets.html')">
         <h2>User Bets</h2>
-        <p>Live market bets (Akhar / Jodi)</p>
-        <button onclick="go('userbets.html')">Open</button>
+        <p>Live Akhar / Jodi Tracking</p>
+        <span class="open">ENTER</span>
       </div>
 
     </div>
-  </main>
 
+  </main>
 </div>
 
 <script>
