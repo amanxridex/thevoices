@@ -58,7 +58,7 @@
 </div>
 <!-- 🔥 APP WRAPPER END -->
 
-<!-- ================= SCRIPTS ================= -->
+<!-- ================= SCRIPT ================= -->
 <script>
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -102,9 +102,18 @@ document.addEventListener("DOMContentLoaded", () => {
     markets.forEach(market => {
       const isOpen = market.status === "OPEN";
 
-      // 🔥 find result for this market
-      const r = results.find(x => x.market === market.name);
-      const resultText = r ? r.result : "--";
+      // 🔥 get latest result for this market (any date)
+      const marketResults = results
+        .filter(r => r.market === market.name)
+        .sort((a, b) => new Date(b.date) - new Date(a.date));
+
+      const latestResult = marketResults[0];
+
+      // ✅ FINAL RULE
+      let resultText = "-----";
+      if (!isOpen && latestResult) {
+        resultText = latestResult.result;
+      }
 
       const card = document.createElement("div");
       card.className = "market-card " + (isOpen ? "live" : "closed");
