@@ -36,20 +36,34 @@
 </div>
 
 <!-- EDIT MODAL -->
-<div id="editModal" class="modal" style="display:none">
+<div id="editModal" class="modal">
   <div class="modal-box">
-    <h3>Edit Market</h3>
+    <h3>✏️ Edit Market</h3>
 
-    <input id="editName" placeholder="Market Name">
-    <input id="editOpen" type="time">
-    <input id="editClose" type="time">
+    <div class="modal-field">
+      <label>Market Name</label>
+      <input id="editName" placeholder="Market Name">
+    </div>
+
+    <div class="modal-row">
+      <div class="modal-field">
+        <label>Open Time</label>
+        <input id="editOpen" type="time">
+      </div>
+
+      <div class="modal-field">
+        <label>Close Time</label>
+        <input id="editClose" type="time">
+      </div>
+    </div>
 
     <div class="modal-actions">
-      <button onclick="saveMarket()">Save</button>
-      <button onclick="closeModal()">Cancel</button>
+      <button class="btn-save" onclick="saveMarket()">Save</button>
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
     </div>
   </div>
 </div>
+
 
 <script>
 const API = "https://matka-backend-4fy1.onrender.com";
