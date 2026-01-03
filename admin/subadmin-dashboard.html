@@ -225,8 +225,9 @@ function loadTransactions(id) {
     if (!user || !user.transactions) return;
 
     user.transactions.forEach(t => {
-      const sign = t.type === "ADD" ? "+" : "-";
-      const cls = t.type === "ADD" ? "plus" : "minus";
+      const isCredit = (t.type === "ADD" || t.type === "WIN");
+      const sign = isCredit ? "+" : "-";
+      const cls = isCredit ? "plus" : "minus";
 
       ul.innerHTML += `
         <li class="${cls}">
