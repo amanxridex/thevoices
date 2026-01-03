@@ -36,15 +36,15 @@
   <div class="stats-grid">
     <div class="stat-card green">
       <span>Overall P/L</span>
-      <h2 id="lifePL">₹ 0</h2>
+      <h2 id="lifePL">₹ 0.00</h2>
     </div>
     <div class="stat-card blue">
       <span>Total Bet</span>
-      <h2 id="totalBet">₹ 0</h2>
+      <h2 id="totalBet">₹ 0.00</h2>
     </div>
     <div class="stat-card gold">
       <span>Total Win</span>
-      <h2 id="totalWin">₹ 0</h2>
+      <h2 id="totalWin">₹ 0.00</h2>
     </div>
   </div>
 
@@ -60,7 +60,9 @@
           <th>P / L</th>
         </tr>
       </thead>
-      <tbody id="marketTable"></tbody>
+      <tbody id="marketTable">
+        <tr><td colspan="4" style="opacity:.5">No data</td></tr>
+      </tbody>
     </table>
   </div>
 
@@ -76,11 +78,13 @@
           <th>P / L</th>
         </tr>
       </thead>
-      <tbody id="gameTable"></tbody>
+      <tbody id="gameTable">
+        <tr><td colspan="4" style="opacity:.5">No data</td></tr>
+      </tbody>
     </table>
   </div>
 
-  <!-- NUMBER RISK -->
+  <!-- NUMBER TABLE -->
   <div class="card danger">
     <h2>🔥 Number Wise Liability</h2>
     <table>
@@ -92,7 +96,9 @@
           <th>Possible Payout</th>
         </tr>
       </thead>
-      <tbody id="numberTable"></tbody>
+      <tbody id="numberTable">
+        <tr><td colspan="4" style="opacity:.5">No data</td></tr>
+      </tbody>
     </table>
   </div>
 
@@ -108,7 +114,9 @@
           <th>Net</th>
         </tr>
       </thead>
-      <tbody id="userTable"></tbody>
+      <tbody id="userTable">
+        <tr><td colspan="4" style="opacity:.5">No data</td></tr>
+      </tbody>
     </table>
   </div>
 
@@ -121,7 +129,19 @@ const PAYOUT = { AKHAR: 9.5, JODI: 95 };
 
 const marketSelect = document.getElementById("marketSelect");
 
-function money(n){ return "₹ " + Number(n || 0).toFixed(2); }
+const lifePL = document.getElementById("lifePL");
+const totalBet = document.getElementById("totalBet");
+const totalWin = document.getElementById("totalWin");
+
+const marketTable = document.getElementById("marketTable");
+const gameTable = document.getElementById("gameTable");
+const numberTable = document.getElementById("numberTable");
+const userTable = document.getElementById("userTable");
+
+function money(n){
+  return "₹ " + Number(n || 0).toFixed(2);
+}
+
 function loadAnalytics() {
   fetch(`${API}/subadmin/analytics?market=${marketSelect.value}&t=${Date.now()}`, {
     headers: {
@@ -129,70 +149,93 @@ function loadAnalytics() {
       "Cache-Control": "no-cache"
     }
   })
-  
   .then(res => res.json())
   .then(data => {
-    if (!data.success) return;
 
-    // OVERALL
-    lifePL.innerText = money(data.overall.pl);
-    totalBet.innerText = money(data.overall.bet);
-    totalWin.innerText = money(data.overall.win);
+    if (!data || !data.success) {
+      console.warn("Analytics empty");
+      return;
+    }
 
-    // MARKET
+    /* OVERALL */
+    lifePL.innerText = money(data.overall?.pl);
+    totalBet.innerText = money(data.overall?.bet);
+    totalWin.innerText = money(data.overall?.win);
+
+    /* MARKET */
     marketTable.innerHTML = "";
-    Object.entries(data.markets).forEach(([m,v])=>{
-      const pl = v.bet - v.win;
-      marketTable.innerHTML += `
-        <tr>
-          <td>${m}</td>
-          <td>${money(v.bet)}</td>
-          <td>${money(v.win)}</td>
-          <td class="${pl>=0?'profit':'loss'}">${money(pl)}</td>
-        </tr>`;
-    });
-
-    // GAME
-    gameTable.innerHTML = "";
-    Object.entries(data.games).forEach(([g,v])=>{
-      const pl = v.bet - v.win;
-      gameTable.innerHTML += `
-        <tr>
-          <td>${g}</td>
-          <td>${money(v.bet)}</td>
-          <td>${money(v.win)}</td>
-          <td class="${pl>=0?'profit':'loss'}">${money(pl)}</td>
-        </tr>`;
-    });
-
-    // NUMBERS
-    numberTable.innerHTML = "";
-    Object.values(data.numbers).forEach(n=>{
-      const payout = n.bet * PAYOUT[n.game];
-      numberTable.innerHTML += `
-        <tr>
-          <td>${n.number}</td>
-          <td>${n.game}</td>
-          <td>${money(n.bet)}</td>
-          <td>${money(payout)}</td>
-        </tr>`;
-    });
-
-    // USERS
-    userTable.innerHTML = "";
-    Object.entries(data.users)
-      .sort((a,b)=>b[1].win-a[1].win)
-      .slice(0,10)
-      .forEach(([u,v])=>{
-        const net = v.win - v.bet;
-        userTable.innerHTML += `
+    if (data.markets && Object.keys(data.markets).length) {
+      Object.entries(data.markets).forEach(([m,v])=>{
+        const pl = (v.bet||0) - (v.win||0);
+        marketTable.innerHTML += `
           <tr>
-            <td>${u}</td>
+            <td>${m}</td>
             <td>${money(v.bet)}</td>
             <td>${money(v.win)}</td>
-            <td class="${net>=0?'loss':'profit'}">${money(net)}</td>
+            <td class="${pl>=0?'profit':'loss'}">${money(pl)}</td>
           </tr>`;
       });
+    } else {
+      marketTable.innerHTML = `<tr><td colspan="4" style="opacity:.5">No data</td></tr>`;
+    }
+
+    /* GAME */
+    gameTable.innerHTML = "";
+    if (data.games && Object.keys(data.games).length) {
+      Object.entries(data.games).forEach(([g,v])=>{
+        const pl = (v.bet||0) - (v.win||0);
+        gameTable.innerHTML += `
+          <tr>
+            <td>${g}</td>
+            <td>${money(v.bet)}</td>
+            <td>${money(v.win)}</td>
+            <td class="${pl>=0?'profit':'loss'}">${money(pl)}</td>
+          </tr>`;
+      });
+    } else {
+      gameTable.innerHTML = `<tr><td colspan="4" style="opacity:.5">No data</td></tr>`;
+    }
+
+    /* NUMBERS */
+    numberTable.innerHTML = "";
+    if (data.numbers && Object.keys(data.numbers).length) {
+      Object.values(data.numbers).forEach(n=>{
+        const payout = (n.bet||0) * (PAYOUT[n.game]||0);
+        numberTable.innerHTML += `
+          <tr>
+            <td>${n.number}</td>
+            <td>${n.game}</td>
+            <td>${money(n.bet)}</td>
+            <td>${money(payout)}</td>
+          </tr>`;
+      });
+    } else {
+      numberTable.innerHTML = `<tr><td colspan="4" style="opacity:.5">No data</td></tr>`;
+    }
+
+    /* USERS */
+    userTable.innerHTML = "";
+    if (data.users && Object.keys(data.users).length) {
+      Object.entries(data.users)
+        .sort((a,b)=>(b[1].win||0)-(a[1].win||0))
+        .slice(0,10)
+        .forEach(([u,v])=>{
+          const net = (v.win||0) - (v.bet||0);
+          userTable.innerHTML += `
+            <tr>
+              <td>${u}</td>
+              <td>${money(v.bet)}</td>
+              <td>${money(v.win)}</td>
+              <td class="${net>=0?'loss':'profit'}">${money(net)}</td>
+            </tr>`;
+        });
+    } else {
+      userTable.innerHTML = `<tr><td colspan="4" style="opacity:.5">No data</td></tr>`;
+    }
+
+  })
+  .catch(err => {
+    console.error("Analytics error:", err);
   });
 }
 
