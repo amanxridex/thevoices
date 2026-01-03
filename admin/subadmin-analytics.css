@@ -162,3 +162,56 @@ td {
   border-radius: 6px;
   cursor: pointer;
 }
+
+/* 🔥 FORCE 4-COLUMN ALIGNMENT FOR ALL ANALYTICS TABLES */
+
+.card table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed; /* 👈 MOST IMPORTANT */
+}
+
+.card table thead tr,
+.card table tbody tr {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr; /* 👈 4 equal columns */
+  align-items: center;
+}
+
+.card table th,
+.card table td {
+  padding: 12px 10px;
+  text-align: left;
+  font-size: 14px;
+  color: #ddd;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card table thead th {
+  color: #aaa;
+  font-weight: 600;
+  border-bottom: 1px solid #222;
+}
+
+.card table tbody tr {
+  border-bottom: 1px solid #1f1f1f;
+}
+
+/* PROFIT / LOSS COLORS */
+.profit {
+  color: #2ecc71;
+  font-weight: 600;
+}
+
+.loss {
+  color: #ff4d4d;
+  font-weight: 600;
+}
+
+/* NUMBER WISE DANGER CARD SPECIAL */
+.card.danger table thead tr,
+.card.danger table tbody tr {
+  grid-template-columns: 1fr 1fr 1fr 1.2fr;
+}
