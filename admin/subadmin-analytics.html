@@ -122,11 +122,14 @@ const PAYOUT = { AKHAR: 9.5, JODI: 95 };
 const marketSelect = document.getElementById("marketSelect");
 
 function money(n){ return "₹ " + Number(n || 0).toFixed(2); }
-
 function loadAnalytics() {
-  fetch(`${API}/subadmin/analytics?market=${marketSelect.value}`, {
-    headers: { Authorization: "Bearer " + token }
+  fetch(`${API}/subadmin/analytics?market=${marketSelect.value}&t=${Date.now()}`, {
+    headers: {
+      Authorization: "Bearer " + token,
+      "Cache-Control": "no-cache"
+    }
   })
+  
   .then(res => res.json())
   .then(data => {
     if (!data.success) return;
