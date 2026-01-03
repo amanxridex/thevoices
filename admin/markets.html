@@ -17,7 +17,7 @@
   <h1 class="title">🎯 Market Control Room</h1>
   <p class="subtitle">Open, close & dominate the game</p>
 
-  <!-- 🔥 CREATE NEW MARKET -->
+  <!-- CREATE NEW MARKET -->
   <div class="create-box">
     <h2>➕ Create New Market</h2>
 
@@ -65,7 +65,7 @@ function logout() {
 function loadMarkets() {
   fetch(API + "/api/markets", {
     headers: {
-      "Authorization": "Bearer " + localStorage.getItem("adminToken")
+      Authorization: "Bearer " + localStorage.getItem("adminToken")
     }
   })
   .then(res => res.json())
@@ -76,32 +76,32 @@ function loadMarkets() {
     markets.forEach(m => {
       const isOpen = m.status === "OPEN";
 
-      const card = document.createElement("div");
-      card.className = `market-card ${isOpen ? "open" : "closed"}`;
+      grid.innerHTML += `
+        <div class="market-card ${isOpen ? "open" : "closed"}">
+          <div class="market-name">${m.name}</div>
+          <div class="market-time">${m.openTime} – ${m.closeTime}</div>
 
-      card.innerHTML = `
-        <div class="market-name">${m.name}</div>
-        <div class="market-time">${m.openTime} – ${m.closeTime}</div>
+          <div class="status ${isOpen ? "open" : "closed"}">
+            ${isOpen ? "LIVE 🔥" : "CLOSED"}
+          </div>
 
-        <div class="status ${isOpen ? "open" : "closed"}">
-          ${isOpen ? "LIVE 🔥" : "CLOSED"}
+          <button class="action edit"
+            onclick="editMarket(
+              '${m._id}',
+              '${m.name}',
+              '${m.openTime}',
+              '${m.closeTime}'
+            )">
+            EDIT
+          </button>
         </div>
-
-        <button class="action edit" onclick="editMarket(
-          '${m._id}',
-          '${m.name}',
-          '${m.openTime}',
-          '${m.closeTime}'
-        )">EDIT</button>
       `;
-
-      grid.appendChild(card);
     });
   });
 }
 loadMarkets();
 
-/* CREATE MARKET */
+/* CREATE MARKET ✅ */
 function createMarket() {
   const name = newName.value.trim();
   const openTime = newOpen.value;
@@ -112,20 +112,22 @@ function createMarket() {
     return;
   }
 
-  fetch(API + "/admin/market", {
+  fetch(API + "/api/markets/add", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": "Bearer " + localStorage.getItem("adminToken")
+      Authorization: "Bearer " + localStorage.getItem("adminToken")
     },
     body: JSON.stringify({ name, openTime, closeTime })
   })
+  .then(res => res.json())
   .then(() => {
     newName.value = "";
     newOpen.value = "";
     newClose.value = "";
-    loadMarkets();
-  });
+    loadMarkets(); // refresh list
+  })
+  .catch(() => alert("Create failed"));
 }
 
 /* EDIT */
@@ -137,20 +139,23 @@ function editMarket(id, name, openTime, closeTime) {
   document.getElementById("editModal").style.display = "flex";
 }
 
-/* SAVE */
+/* SAVE (route banana padega backend me agar nahi hai) */
 function saveMarket() {
-  fetch(API + "/admin/market/" + currentMarketId, {
+  fetch(API + "/api/markets/" + currentMarketId, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": "Bearer " + localStorage.getItem("adminToken")
+      Authorization: "Bearer " + localStorage.getItem("adminToken")
     },
     body: JSON.stringify({
       name: editName.value,
       openTime: editOpen.value,
       closeTime: editClose.value
     })
-  }).then(() => location.reload());
+  }).then(() => {
+    closeModal();
+    loadMarkets();
+  });
 }
 
 /* CLOSE MODAL */
