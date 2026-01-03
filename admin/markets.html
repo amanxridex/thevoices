@@ -1,207 +1,207 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>SUPER D • Markets Control</title>
-  <link rel="stylesheet" href="markets.css">
-</head>
-<body>
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>SUPER D • Markets Control</title>
+    <link rel="stylesheet" href="markets.css">
+  </head>
+  <body>
 
-<!-- TOP BAR -->
-<header class="topbar">
-  <div class="logo">SUPER <span>D</span></div>
-  <button class="logout" onclick="logout()">Logout</button>
-</header>
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="logo">SUPER <span>D</span></div>
+    <button class="logout" onclick="logout()">Logout</button>
+  </header>
 
-<div class="page">
-  <h1 class="title">🎯 Market Control Room</h1>
-  <p class="subtitle">Open, close & dominate the game</p>
+  <div class="page">
+    <h1 class="title">🎯 Market Control Room</h1>
+    <p class="subtitle">Open, close & dominate the game</p>
 
-  <!-- CREATE NEW MARKET -->
-  <div class="create-box">
-    <h2>➕ Create New Market</h2>
+    <!-- CREATE NEW MARKET -->
+    <div class="create-box">
+      <h2>➕ Create New Market</h2>
 
-    <div class="create-form">
-      <input id="newName" placeholder="Market Name">
-      <input id="newOpen" type="time">
-      <input id="newClose" type="time">
-      <button onclick="createMarket()">CREATE</button>
-    </div>
-  </div>
-
-  <!-- MARKET GRID -->
-  <div class="market-grid" id="marketGrid">
-    <p style="color:#aaa">Loading markets...</p>
-  </div>
-</div>
-
-<!-- EDIT MODAL -->
-<div id="editModal" class="modal">
-  <div class="modal-box">
-    <h3>✏️ Edit Market</h3>
-
-    <div class="modal-field">
-      <label>Market Name</label>
-      <input id="editName" placeholder="Market Name">
-    </div>
-
-    <div class="modal-row">
-      <div class="modal-field">
-        <label>Open Time</label>
-        <input id="editOpen" type="time">
-      </div>
-
-      <div class="modal-field">
-        <label>Close Time</label>
-        <input id="editClose" type="time">
+      <div class="create-form">
+        <input id="newName" placeholder="Market Name">
+        <input id="newOpen" type="time">
+        <input id="newClose" type="time">
+        <button onclick="createMarket()">CREATE</button>
       </div>
     </div>
 
-    <div class="modal-actions">
-      <button class="btn-delete" onclick="deleteMarket()">Delete</button>
-      <button class="btn-save" onclick="saveMarket()">Save</button>
-      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+    <!-- MARKET GRID -->
+    <div class="market-grid" id="marketGrid">
+      <p style="color:#aaa">Loading markets...</p>
     </div>
   </div>
-</div>
 
+  <!-- EDIT MODAL -->
+  <div id="editModal" class="modal">
+    <div class="modal-box">
+      <h3>✏️ Edit Market</h3>
 
-<script>
-const API = "https://matka-backend-4fy1.onrender.com";
-let currentMarketId = null;
+      <div class="modal-field">
+        <label>Market Name</label>
+        <input id="editName" placeholder="Market Name">
+      </div>
 
-/* LOGOUT */
-function logout() {
-  localStorage.removeItem("adminToken");
-  location.href = "login.html";
-}
-
-/* LOAD MARKETS */
-function loadMarkets() {
-  fetch(API + "/api/markets", {
-    headers: {
-      Authorization: "Bearer " + localStorage.getItem("adminToken")
-    }
-  })
-  .then(res => res.json())
-  .then(markets => {
-    const grid = document.getElementById("marketGrid");
-    grid.innerHTML = "";
-
-    markets.forEach(m => {
-      const isOpen = m.status === "OPEN";
-
-      grid.innerHTML += `
-        <div class="market-card ${isOpen ? "open" : "closed"}">
-          <div class="market-name">${m.name}</div>
-          <div class="market-time">${m.openTime} – ${m.closeTime}</div>
-
-          <div class="status ${isOpen ? "open" : "closed"}">
-            ${isOpen ? "LIVE 🔥" : "CLOSED"}
-          </div>
-
-          <button class="action edit"
-            onclick="editMarket(
-              '${m._id}',
-              '${m.name}',
-              '${m.openTime}',
-              '${m.closeTime}'
-            )">
-            EDIT
-          </button>
+      <div class="modal-row">
+        <div class="modal-field">
+          <label>Open Time</label>
+          <input id="editOpen" type="time">
         </div>
-      `;
-    });
-  });
-}
-loadMarkets();
 
-/* CREATE MARKET ✅ */
-function createMarket() {
-  const name = newName.value.trim();
-  const openTime = newOpen.value;
-  const closeTime = newClose.value;
+        <div class="modal-field">
+          <label>Close Time</label>
+          <input id="editClose" type="time">
+        </div>
+      </div>
 
-  if (!name || !openTime || !closeTime) {
-    alert("Fill all fields");
-    return;
+      <div class="modal-actions">
+        <button class="btn-delete" onclick="deleteMarket()">Delete</button>
+        <button class="btn-save" onclick="saveMarket()">Save</button>
+        <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+
+  <script>
+  const API = "https://matka-backend-4fy1.onrender.com";
+  let currentMarketId = null;
+
+  /* LOGOUT */
+  function logout() {
+    localStorage.removeItem("adminToken");
+    location.href = "login.html";
   }
 
-  fetch(API + "/api/markets/add", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + localStorage.getItem("adminToken")
-    },
-    body: JSON.stringify({ name, openTime, closeTime })
-  })
-  .then(res => res.json())
-  .then(() => {
-    newName.value = "";
-    newOpen.value = "";
-    newClose.value = "";
-    loadMarkets(); // refresh list
-  })
-  .catch(() => alert("Create failed"));
-}
-
-/* EDIT */
-function editMarket(id, name, openTime, closeTime) {
-  currentMarketId = id;
-  editName.value = name;
-  editOpen.value = openTime;
-  editClose.value = closeTime;
-  document.getElementById("editModal").style.display = "flex";
-}
-
-/* SAVE (route banana padega backend me agar nahi hai) */
-function saveMarket() {
-  fetch(API + "/api/markets/" + currentMarketId, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + localStorage.getItem("adminToken")
-    },
-    body: JSON.stringify({
-      name: editName.value,
-      openTime: editOpen.value,
-      closeTime: editClose.value
+  /* LOAD MARKETS */
+  function loadMarkets() {
+    fetch(API + "/api/markets", {
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("adminToken")
+      }
     })
-  }).then(() => {
-    closeModal();
-    loadMarkets();
-  });
-}
+    .then(res => res.json())
+    .then(markets => {
+      const grid = document.getElementById("marketGrid");
+      grid.innerHTML = "";
 
-function deleteMarket() {
-  const ok = confirm(
-    "⚠️ Are you sure?\n\nThis market will be permanently deleted.\nThis action cannot be undone."
-  );
+      markets.forEach(m => {
+        const isOpen = m.status === "OPEN";
 
-  if (!ok) return;
+        grid.innerHTML += `
+          <div class="market-card ${isOpen ? "open" : "closed"}">
+            <div class="market-name">${m.name}</div>
+            <div class="market-time">${m.openTime} – ${m.closeTime}</div>
 
-  fetch(API + "/api/markets/" + currentMarketId, {
-    method: "DELETE",
-    headers: {
-      Authorization: "Bearer " + localStorage.getItem("adminToken")
+            <div class="status ${isOpen ? "open" : "closed"}">
+              ${isOpen ? "LIVE 🔥" : "CLOSED"}
+            </div>
+
+            <button class="action edit"
+              onclick="editMarket(
+                '${m._id}',
+                '${m.name}',
+                '${m.openTime}',
+                '${m.closeTime}'
+              )">
+              EDIT
+            </button>
+          </div>
+        `;
+      });
+    });
+  }
+  loadMarkets();
+
+  /* CREATE MARKET ✅ */
+  function createMarket() {
+    const name = newName.value.trim();
+    const openTime = newOpen.value;
+    const closeTime = newClose.value;
+
+    if (!name || !openTime || !closeTime) {
+      alert("Fill all fields");
+      return;
     }
-  })
-  .then(res => res.json())
-  .then(() => {
-    closeModal();
-    loadMarkets();
-  })
-  .catch(err => {
-    console.error(err);
-    alert("Delete failed");
-  });
-}
 
-/* CLOSE MODAL */
-function closeModal() {
-  document.getElementById("editModal").style.display = "none";
-}
-</script>
+    fetch(API + "/api/markets/add", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("adminToken")
+      },
+      body: JSON.stringify({ name, openTime, closeTime })
+    })
+    .then(res => res.json())
+    .then(() => {
+      newName.value = "";
+      newOpen.value = "";
+      newClose.value = "";
+      loadMarkets(); // refresh list
+    })
+    .catch(() => alert("Create failed"));
+  }
 
-</body>
-</html>
+  /* EDIT */
+  function editMarket(id, name, openTime, closeTime) {
+    currentMarketId = id;
+    editName.value = name;
+    editOpen.value = openTime;
+    editClose.value = closeTime;
+    document.getElementById("editModal").style.display = "flex";
+  }
+
+  /* SAVE (route banana padega backend me agar nahi hai) */
+  function saveMarket() {
+    fetch(API + "/api/markets/" + currentMarketId, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("adminToken")
+      },
+      body: JSON.stringify({
+        name: editName.value,
+        openTime: editOpen.value,
+        closeTime: editClose.value
+      })
+    }).then(() => {
+      closeModal();
+      loadMarkets();
+    });
+  }
+
+  function deleteMarket() {
+    const ok = confirm(
+      "⚠️ Are you sure?\n\nThis market will be permanently deleted.\nThis action cannot be undone."
+    );
+
+    if (!ok) return;
+
+    fetch(API + "/api/markets/" + currentMarketId, {
+      method: "DELETE",
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("adminToken")
+      }
+    })
+    .then(res => res.json())
+    .then(() => {
+      closeModal();
+      loadMarkets();
+    })
+    .catch(err => {
+      console.error(err);
+      alert("Delete failed");
+    });
+  }
+
+  /* CLOSE MODAL */
+  function closeModal() {
+    document.getElementById("editModal").style.display = "none";
+  }
+  </script>
+
+  </body>
+  </html>

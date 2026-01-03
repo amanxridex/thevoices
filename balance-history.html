@@ -84,10 +84,12 @@ fetch(API + "/subadmin/users/transactions", {
   }
 
   txns.forEach(t => {
+    const isCredit = (t.type === "ADD" || t.type === "WIN");
+
     tbody.innerHTML += `
-      <tr class="${t.type === "ADD" ? "add" : "deduct"}">
+      <tr class="${isCredit ? "add" : "deduct"}">
         <td>${t.type}</td>
-        <td>${t.type === "ADD" ? "+" : "-"}₹ ${t.amount}</td>
+        <td>${isCredit ? "+" : "-"}₹ ${t.amount}</td>
         <td>${new Date(t.date).toLocaleString()}</td>
       </tr>
     `;
