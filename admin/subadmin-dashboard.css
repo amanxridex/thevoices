@@ -364,3 +364,28 @@ td button {
   background: #d60000;
 }
 
+.analytics-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+}
+
+.analytics-card p {
+  color: #aaa;
+  font-size: 14px;
+}
+
+.analytics-btn {
+  background: #ff3b3b;
+  border: none;
+  color: #fff;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.analytics-btn:hover {
+  background: #ff1f1f;
+}

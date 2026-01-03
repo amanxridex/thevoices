@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SUPER D • Sub Admin Analytics</title>
+  <link rel="stylesheet" href="subadmin-analytics.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="logo">SUPER <span>D</span></div>
+  <div class="right">
+    <span>📊 Analytics Panel</span>
+    <button onclick="history.back()" class="back-btn">← Back</button>
+  </div>
+</header>
+
+<div class="page">
+
+  <h1 class="title">📈 Profit / Loss & Risk Analytics</h1>
+  <p class="subtitle">Complete control over money flow & exposure</p>
+
+  <!-- MARKET FILTER -->
+<div class="market-filter">
+  <label>📍 Select Market</label>
+  <select id="marketSelect">
+    <option value="all">All Markets (Overall)</option>
+    <option value="madhur">Madhur Morning</option>
+    <option value="gali">Gali</option>
+    <option value="disawar">Disawar</option>
+    <option value="faridabad">Faridabad</option>
+  </select>
+</div>
+
+
+  <!-- OVERALL P/L -->
+  <div class="stats-grid">
+    <div class="stat-card green">
+      <span>Today P/L</span>
+      <h2 id="todayPL">₹ 0</h2>
+    </div>
+    <div class="stat-card blue">
+      <span>This Month P/L</span>
+      <h2 id="monthPL">₹ 0</h2>
+    </div>
+    <div class="stat-card gold">
+      <span>Lifetime P/L</span>
+      <h2 id="lifePL">₹ 0</h2>
+    </div>
+  </div>
+
+  <!-- MARKET WISE -->
+  <div class="card">
+    <h2>🏪 Market Wise Profit / Loss</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Market</th>
+          <th>Total Bet</th>
+          <th>Total Win</th>
+          <th>P / L</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Madhur Morning</td>
+          <td>₹ 12,500</td>
+          <td>₹ 8,700</td>
+          <td class="profit">+ ₹ 3,800</td>
+          <td>🟢</td>
+        </tr>
+        <tr>
+          <td>Gali</td>
+          <td>₹ 4,000</td>
+          <td>₹ 7,600</td>
+          <td class="loss">- ₹ 3,600</td>
+          <td>🔴</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- GAME TYPE -->
+  <div class="card">
+    <h2>🎮 Game Type Exposure</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Game</th>
+          <th>Total Bet</th>
+          <th>Total Win</th>
+          <th>P / L</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>AKHAR</td>
+          <td>₹ 3,200</td>
+          <td>₹ 1,400</td>
+          <td class="profit">+ ₹ 1,800</td>
+        </tr>
+        <tr>
+          <td>JODI</td>
+          <td>₹ 9,000</td>
+          <td>₹ 11,000</td>
+          <td class="loss">- ₹ 2,000</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- NUMBER WISE RISK -->
+  <div class="card danger">
+    <h2>🔥 Number Wise Liability (If Result Comes)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Number</th>
+          <th>Game</th>
+          <th>Total Bet</th>
+          <th>Possible Payout</th>
+          <th>Risk</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>9</td>
+          <td>AKHAR</td>
+          <td>₹ 500</td>
+          <td>₹ 4,750</td>
+          <td class="medium">MEDIUM</td>
+        </tr>
+        <tr>
+          <td>59</td>
+          <td>JODI</td>
+          <td>₹ 200</td>
+          <td>₹ 19,000</td>
+          <td class="high">HIGH</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- TOP USERS -->
+  <div class="card">
+    <h2>👤 Top Winning Users</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Total Bet</th>
+          <th>Total Win</th>
+          <th>Net</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>gautam</td>
+          <td>₹ 2,500</td>
+          <td>₹ 9,500</td>
+          <td class="loss">+ ₹ 7,000</td>
+        </tr>
+        <tr>
+          <td>aman</td>
+          <td>₹ 1,200</td>
+          <td>₹ 4,000</td>
+          <td class="loss">+ ₹ 2,800</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SIMULATOR -->
+  <div class="card simulator">
+    <h2>🧠 Result Impact Simulator</h2>
+    <div class="sim-grid">
+      <select>
+        <option>Select Market</option>
+        <option>Madhur Morning</option>
+        <option>Gali</option>
+      </select>
+      <select>
+        <option>Select Number</option>
+        <option>9</option>
+        <option>59</option>
+      </select>
+      <button>Simulate Result</button>
+    </div>
+
+    <div class="sim-result">
+      <p>Result: <b>59</b></p>
+      <p>Total Payout: <b>₹ 19,000</b></p>
+      <p class="loss">Profit / Loss: <b>- ₹ 8,200</b></p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const API = "https://matka-backend-4fy1.onrender.com";
+const token = localStorage.getItem("subToken");
+
+const marketSelect = document.getElementById("marketSelect");
+
+function loadAnalytics() {
+  fetch(`${API}/subadmin/analytics?market=${marketSelect.value}`, {
+    headers: {
+      Authorization: "Bearer " + token
+    }
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (!data.success) return;
+
+    document.getElementById("todayPL").innerText = "₹ " + data.overall.pl;
+    document.getElementById("monthPL").innerText = "₹ " + data.overall.pl;
+    document.getElementById("lifePL").innerText = "₹ " + data.overall.pl;
+
+    // 🔥 NEXT: tables populate (market / game / number / users)
+    console.log("LIVE ANALYTICS:", data);
+  });
+}
+
+marketSelect.addEventListener("change", loadAnalytics);
+loadAnalytics();
+</script>
+
+
+</body>
+</html>

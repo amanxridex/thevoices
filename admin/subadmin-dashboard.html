@@ -37,35 +37,51 @@
     </div>
   </div>
 
-  <div class="main-grid">
+<!-- TOP GRID : CREATE + ANALYTICS -->
+<div class="main-grid">
 
-    <!-- CREATE USER -->
-    <div class="card create-card">
-      <h2>Create User</h2>
-      <input type="text" id="newUser" placeholder="Username">
-      <input type="password" id="newPass" placeholder="Password">
-      <button onclick="createUser()">Create User</button>
-    </div>
+  <!-- CREATE USER -->
+  <div class="card create-card">
+    <h2>Create User</h2>
+    <input type="text" id="newUser" placeholder="Username">
+    <input type="password" id="newPass" placeholder="Password">
+    <button onclick="createUser()">Create User</button>
+  </div>
 
-    <!-- USER LIST -->
-    <div class="card list-card">
-      <h2>User List</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>User</th>
-            <th>Balance</th>
-            <th>Actions</th>
-            <th>Suspend</th>
-          </tr>
-        </thead>
-        <tbody id="userTable"></tbody>
-      </table>
-    </div>
-
+  <!-- ANALYTICS -->
+  <div class="card analytics-card">
+    <h2>📊 Analytics</h2>
+    <p>Check profit, loss & risk analysis</p>
+    <button class="analytics-btn" onclick="openAnalytics()">
+      Check Profit & Loss
+    </button>
   </div>
 
 </div>
+
+<!-- 👇 FULL WIDTH USER LIST -->
+<div class="card list-card full-width">
+  <h2>User List</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>User</th>
+        <th>Balance</th>
+        <th>Actions</th>
+        <th>Suspend</th>
+      </tr>
+    </thead>
+    <tbody id="userTable"></tbody>
+  </table>
+</div>
+
+
+<script>
+function openAnalytics() {
+  window.location.href = "subadmin-analytics.html";
+}
+</script>
+
 
 <script>
 const API = "https://matka-backend-4fy1.onrender.com";
