@@ -1,18 +1,12 @@
-/* =====================================
-   SUPER D – SUPERADMIN P&L DASHBOARD
-   FINAL pl.js (PRODUCTION READY)
-===================================== */
-
 const API = "https://matka-backend-4fy1.onrender.com";
 
 document.addEventListener("DOMContentLoaded", () => {
-  loadSubAdminSummary();
+  loadTopSummary();        // REAL BETTING P&L
+  loadSubAdminSummary();  // SETTLEMENT VIEW
   loadSubAdminTable();
 });
 
-/* -------------------------------------
-   AUTH HEADER (ADMIN JWT)
-------------------------------------- */
+/* ---------------- AUTH HEADER ---------------- */
 function authHeader() {
   const token = localStorage.getItem("adminToken");
   return {
@@ -21,102 +15,98 @@ function authHeader() {
   };
 }
 
-/* -------------------------------------
-   1. TOP SUMMARY + SUBADMIN OVERVIEW
-------------------------------------- */
+/* =====================================
+   1. TOP SUMMARY (REAL BETTING P&L)
+===================================== */
+async function loadTopSummary() {
+  try {
+    const res = await fetch(`${API}/admin/pl/summary`, {
+      headers: authHeader()
+    });
+
+    if (!res.ok) throw new Error("Top summary failed");
+
+    const data = await res.json();
+
+    document.querySelector(".stats .card.profit h2").innerText =
+      `₹ ${fmt(data.totalProfit)}`;
+
+    document.querySelector(".stats .card.loss h2").innerText =
+      `₹ ${fmt(data.totalLoss)}`;
+
+    document.querySelector(".stats .card.neutral h2").innerText =
+      `₹ ${fmt(data.netPL)}`;
+
+    document.querySelector(".stats .card.neutral span").innerText =
+      "LIVE BETTING P/L";
+
+  } catch (err) {
+    console.error("TOP SUMMARY ERROR:", err);
+  }
+}
+
+/* =====================================
+   2. SUBADMIN SUMMARY (SETTLEMENT)
+===================================== */
 async function loadSubAdminSummary() {
   try {
     const res = await fetch(`${API}/admin/subadmin-stats`, {
       headers: authHeader()
     });
 
-    if (!res.ok) throw new Error("Summary API failed");
-
     const data = await res.json();
     const subs = data.subAdmins || [];
 
-    let totalProfit = 0;
-    let totalLoss = 0;
+    let total = 0;
+    subs.forEach(sa => total += sa.balance || 0);
 
-    subs.forEach(sa => {
-      if (sa.balance >= 0) totalProfit += sa.balance;
-      else totalLoss += Math.abs(sa.balance);
-    });
-
-    const netPL = totalProfit - totalLoss;
-
-    /* ===== TOP CARDS ===== */
-    document.querySelector(".card.profit h2").innerText =
-      `₹ ${fmt(totalProfit)}`;
-
-    document.querySelector(".card.loss h2").innerText =
-      `₹ ${fmt(totalLoss)}`;
-
-    document.querySelector(".card.neutral h2").innerText =
-      `₹ ${fmt(netPL)}`;
-
-    document.querySelector(".risk small").innerText =
-      "Based on SubAdmin settlements";
-
-    /* ===== SUBADMIN SUMMARY ===== */
     document.querySelector(
       ".subadmin-summary .card.profit h2"
     ).innerText = subs.length;
 
     document.querySelector(
       ".subadmin-summary .card.neutral h2"
-    ).innerText = `₹ ${fmt(netPL)}`;
+    ).innerText = `₹ ${fmt(total)}`;
 
-    if (subs.length > 0) {
-      const worst = subs.reduce((a, b) =>
-        a.balance < b.balance ? a : b
-      );
-      const best = subs.reduce((a, b) =>
-        a.balance > b.balance ? a : b
-      );
+    const worst = subs.reduce((a, b) => a.balance < b.balance ? a : b, subs[0]);
+    const best  = subs.reduce((a, b) => a.balance > b.balance ? a : b, subs[0]);
 
-      document.querySelector(
-        ".subadmin-summary .card.loss h2"
-      ).innerText = `₹ ${fmt(worst.balance)}`;
+    document.querySelector(
+      ".subadmin-summary .card.loss h2"
+    ).innerText = `₹ ${fmt(worst.balance)}`;
 
-      document.querySelector(
-        ".subadmin-summary .card.loss span"
-      ).innerText = `SubAdmin • ${worst.username}`;
+    document.querySelector(
+      ".subadmin-summary .card.loss span"
+    ).innerText = `SubAdmin • ${worst.username}`;
 
-      document.querySelector(
-        ".subadmin-summary .card.profit:last-child h2"
-      ).innerText = `₹ ${fmt(best.balance)}`;
+    document.querySelector(
+      ".subadmin-summary .card.profit:last-child h2"
+    ).innerText = `₹ ${fmt(best.balance)}`;
 
-      document.querySelector(
-        ".subadmin-summary .card.profit:last-child span"
-      ).innerText = `SubAdmin • ${best.username}`;
-    }
+    document.querySelector(
+      ".subadmin-summary .card.profit:last-child span"
+    ).innerText = `SubAdmin • ${best.username}`;
 
   } catch (err) {
-    console.error("SUMMARY LOAD ERROR:", err);
+    console.error("SUBADMIN SUMMARY ERROR:", err);
   }
 }
 
-/* -------------------------------------
-   2. SUBADMIN TABLE
-------------------------------------- */
+/* =====================================
+   3. SUBADMIN TABLE (SETTLEMENT)
+===================================== */
 async function loadSubAdminTable() {
   try {
     const res = await fetch(`${API}/admin/subadmins`, {
       headers: authHeader()
     });
 
-    if (!res.ok) throw new Error("SubAdmin list API failed");
-
     const subs = await res.json();
-
     const table = document.querySelector(
       ".subadmin-section .table-card table"
     );
 
-    table
-      .querySelectorAll("tr:not(:first-child)")
-      .forEach(r => r.remove());
+    table.querySelectorAll("tr:not(:first-child)").forEach(r => r.remove());
 
     subs.forEach(sa => {
       const risk =
@@ -133,7 +123,6 @@ async function loadSubAdminTable() {
         </td>
         <td class="${risk.toLowerCase()}">${risk}</td>
       `;
-
       table.appendChild(tr);
     });
 
@@ -142,9 +131,7 @@ async function loadSubAdminTable() {
   }
 }
 
-/* -------------------------------------
-   UTILS
-------------------------------------- */
+/* ---------------- UTILS ---------------- */
 function fmt(n) {
   return Number(n || 0).toLocaleString("en-IN");
 }
