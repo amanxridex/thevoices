@@ -36,7 +36,10 @@ async function loadTopSummary() {
   try {
     const res = await fetch(
       `${API}/admin/pl/summary${selectedDate()}`,
-      { headers: authHeader() }
+      {
+        headers: authHeader(),
+        cache: "no-store"
+      }
     );
 
     if (!res.ok) throw new Error("Top summary failed");
@@ -150,8 +153,12 @@ async function loadBreakdown() {
   try {
     const res = await fetch(
       `${API}/admin/pl/breakdown${selectedDate()}`,
-      { headers: authHeader() }
+      {
+        headers: authHeader(),
+        cache: "no-store"
+      }
     );
+
 
     if (!res.ok) throw new Error("Breakdown API failed");
 
