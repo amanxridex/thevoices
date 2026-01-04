@@ -1,21 +1,28 @@
 const API = "https://matka-backend-4fy1.onrender.com";
 
+/* ===============================
+   DOM READY
+================================ */
 document.addEventListener("DOMContentLoaded", () => {
-  loadTopSummary();        // REAL BETTING P&L
-  loadSubAdminSummary();  // SETTLEMENT VIEW
+  loadTopSummary();        // default (no date)
+  loadSubAdminSummary();
   loadSubAdminTable();
   loadBreakdown();
-  const dateInput = document.getElementById("pl-date");
 
-if (dateInput) {
-  dateInput.addEventListener("change", () => {
-    loadTopSummary();
-    loadBreakdown();
-  });
-}
+  // ✅ APPLY DATE BUTTON (ONLY CONTROL)
+  const applyBtn = document.getElementById("applyDate");
+  if (applyBtn) {
+    applyBtn.addEventListener("click", () => {
+      console.log("APPLY DATE:", selectedDate());
+      loadTopSummary();
+      loadBreakdown();
+    });
+  }
 });
 
-/* ---------------- AUTH HEADER ---------------- */
+/* ===============================
+   AUTH HEADER
+================================ */
 function authHeader() {
   const token = localStorage.getItem("adminToken");
   return {
@@ -24,13 +31,17 @@ function authHeader() {
   };
 }
 
+/* ===============================
+   DATE HANDLER (YYYY-MM-DD)
+================================ */
 function selectedDate() {
   const d = document.getElementById("pl-date")?.value;
+  // input[type=date] already gives YYYY-MM-DD ✅
   return d ? `?date=${d}` : "";
 }
 
 /* =====================================
-   1. TOP SUMMARY (REAL BETTING P&L)
+   1. TOP SUMMARY (REAL BETTING P/L)
 ===================================== */
 async function loadTopSummary() {
   try {
@@ -64,12 +75,13 @@ async function loadTopSummary() {
 }
 
 /* =====================================
-   2. SUBADMIN SUMMARY (SETTLEMENT)
+   2. SUBADMIN SUMMARY (SETTLEMENT VIEW)
 ===================================== */
 async function loadSubAdminSummary() {
   try {
     const res = await fetch(`${API}/admin/subadmin-stats`, {
-      headers: authHeader()
+      headers: authHeader(),
+      cache: "no-store"
     });
 
     const data = await res.json();
@@ -86,8 +98,10 @@ async function loadSubAdminSummary() {
       ".subadmin-summary .card.neutral h2"
     ).innerText = `₹ ${fmt(total)}`;
 
-    const worst = subs.reduce((a, b) => a.balance < b.balance ? a : b, subs[0]);
-    const best  = subs.reduce((a, b) => a.balance > b.balance ? a : b, subs[0]);
+    if (!subs.length) return;
+
+    const worst = subs.reduce((a, b) => a.balance < b.balance ? a : b);
+    const best  = subs.reduce((a, b) => a.balance > b.balance ? a : b);
 
     document.querySelector(
       ".subadmin-summary .card.loss h2"
@@ -116,7 +130,8 @@ async function loadSubAdminSummary() {
 async function loadSubAdminTable() {
   try {
     const res = await fetch(`${API}/admin/subadmins`, {
-      headers: authHeader()
+      headers: authHeader(),
+      cache: "no-store"
     });
 
     const subs = await res.json();
@@ -149,6 +164,9 @@ async function loadSubAdminTable() {
   }
 }
 
+/* =====================================
+   4. GLOBAL BREAKDOWN (MARKET / GAME / NUMBER)
+===================================== */
 async function loadBreakdown() {
   try {
     const res = await fetch(
@@ -158,7 +176,6 @@ async function loadBreakdown() {
         cache: "no-store"
       }
     );
-
 
     if (!res.ok) throw new Error("Breakdown API failed");
 
@@ -170,7 +187,7 @@ async function loadBreakdown() {
     );
     marketTable.querySelectorAll("tr:not(:first-child)").forEach(r => r.remove());
 
-    Object.entries(data.markets).forEach(([name, m]) => {
+    Object.entries(data.markets || {}).forEach(([name, m]) => {
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td>${name}</td>
@@ -189,7 +206,7 @@ async function loadBreakdown() {
     );
     gameTable.querySelectorAll("tr:not(:first-child)").forEach(r => r.remove());
 
-    Object.entries(data.games).forEach(([game, g]) => {
+    Object.entries(data.games || {}).forEach(([game, g]) => {
       const exposure =
         g.bet > 5000 ? "HIGH" :
         g.bet > 2000 ? "MEDIUM" : "LOW";
@@ -204,12 +221,10 @@ async function loadBreakdown() {
     });
 
     /* ---------- HIGH RISK NUMBERS ---------- */
-    const numTable = document.querySelector(
-      ".table-card.danger table"
-    );
+    const numTable = document.querySelector(".table-card.danger table");
     numTable.querySelectorAll("tr:not(:first-child)").forEach(r => r.remove());
 
-    Object.values(data.numbers)
+    Object.values(data.numbers || {})
       .sort((a, b) => b.bet - a.bet)
       .slice(0, 5)
       .forEach(n => {
@@ -227,7 +242,9 @@ async function loadBreakdown() {
   }
 }
 
-/* ---------------- UTILS ---------------- */
+/* ===============================
+   UTILS
+================================ */
 function fmt(n) {
   return Number(n || 0).toLocaleString("en-IN");
 }
