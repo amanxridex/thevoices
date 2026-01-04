@@ -451,3 +451,26 @@ body {
     opacity: .4;
   }
 }
+
+/* ===== FIX BLUE LINK + UNDERLINE (MOBILE ONLY) ===== */
+@media (max-width: 768px) {
+
+  .menu a {
+    color: #aaa !important;
+    text-decoration: none !important;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .menu a:visited,
+  .menu a:active,
+  .menu a:hover {
+    color: #aaa !important;
+    text-decoration: none !important;
+  }
+
+  .menu a.active {
+    color: #ffd700 !important;
+    text-decoration: none !important;
+  }
+}
