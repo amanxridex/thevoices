@@ -199,6 +199,7 @@ body {
 .glow-red:hover    { box-shadow: 0 0 28px #ef4444; }
 .glow-blue:hover   { box-shadow: 0 0 28px #3b82f6; }
 .glow-green:hover  { box-shadow: 0 0 28px #22c55e; }
+.glow-orange:hover  { box-shadow: 0 0 28px #fb5000; }
 .glow-gold:hover   { box-shadow: 0 0 40px gold; }
 
 /* ================= ANIMATIONS ================= */
