@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadTopSummary();        // REAL BETTING P&L
   loadSubAdminSummary();  // SETTLEMENT VIEW
   loadSubAdminTable();
+  loadBreakdown();
 });
 
 /* ---------------- AUTH HEADER ---------------- */
@@ -128,6 +129,78 @@ async function loadSubAdminTable() {
 
   } catch (err) {
     console.error("SUBADMIN TABLE ERROR:", err);
+  }
+}
+
+async function loadBreakdown() {
+  try {
+    const res = await fetch(`${API}/admin/pl/breakdown`, {
+      headers: authHeader()
+    });
+    if (!res.ok) throw new Error("Breakdown API failed");
+
+    const data = await res.json();
+
+    /* ---------- MARKET TABLE ---------- */
+    const marketTable = document.querySelector(
+      ".tables .table-card:first-child table"
+    );
+    marketTable.querySelectorAll("tr:not(:first-child)").forEach(r => r.remove());
+
+    Object.entries(data.markets).forEach(([name, m]) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${name}</td>
+        <td>₹ ${fmt(m.bet)}</td>
+        <td>₹ ${fmt(m.win)}</td>
+        <td class="${m.pl >= 0 ? "profit" : "loss"}">
+          ₹ ${fmt(m.pl)}
+        </td>
+      `;
+      marketTable.appendChild(tr);
+    });
+
+    /* ---------- GAME TABLE ---------- */
+    const gameTable = document.querySelector(
+      ".tables .table-card:nth-child(2) table"
+    );
+    gameTable.querySelectorAll("tr:not(:first-child)").forEach(r => r.remove());
+
+    Object.entries(data.games).forEach(([game, g]) => {
+      const exposure =
+        g.bet > 5000 ? "HIGH" :
+        g.bet > 2000 ? "MEDIUM" : "LOW";
+
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${game}</td>
+        <td>₹ ${fmt(g.bet)}</td>
+        <td class="${exposure.toLowerCase()}">${exposure}</td>
+      `;
+      gameTable.appendChild(tr);
+    });
+
+    /* ---------- HIGH RISK NUMBERS ---------- */
+    const numTable = document.querySelector(
+      ".table-card.danger table"
+    );
+    numTable.querySelectorAll("tr:not(:first-child)").forEach(r => r.remove());
+
+    Object.values(data.numbers)
+      .sort((a, b) => b.bet - a.bet)
+      .slice(0, 5)
+      .forEach(n => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${n.number}</td>
+          <td>${n.game}</td>
+          <td>₹ ${fmt(n.bet)}</td>
+        `;
+        numTable.appendChild(tr);
+      });
+
+  } catch (err) {
+    console.error("BREAKDOWN LOAD ERROR:", err);
   }
 }
 
