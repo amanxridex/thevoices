@@ -5,6 +5,14 @@ document.addEventListener("DOMContentLoaded", () => {
   loadSubAdminSummary();  // SETTLEMENT VIEW
   loadSubAdminTable();
   loadBreakdown();
+  const dateInput = document.getElementById("pl-date");
+
+if (dateInput) {
+  dateInput.addEventListener("change", () => {
+    loadTopSummary();
+    loadBreakdown();
+  });
+}
 });
 
 /* ---------------- AUTH HEADER ---------------- */
@@ -16,14 +24,20 @@ function authHeader() {
   };
 }
 
+function selectedDate() {
+  const d = document.getElementById("pl-date")?.value;
+  return d ? `?date=${d}` : "";
+}
+
 /* =====================================
    1. TOP SUMMARY (REAL BETTING P&L)
 ===================================== */
 async function loadTopSummary() {
   try {
-    const res = await fetch(`${API}/admin/pl/summary`, {
-      headers: authHeader()
-    });
+    const res = await fetch(
+      `${API}/admin/pl/summary${selectedDate()}`,
+      { headers: authHeader() }
+    );
 
     if (!res.ok) throw new Error("Top summary failed");
 
@@ -134,9 +148,11 @@ async function loadSubAdminTable() {
 
 async function loadBreakdown() {
   try {
-    const res = await fetch(`${API}/admin/pl/breakdown`, {
-      headers: authHeader()
-    });
+    const res = await fetch(
+      `${API}/admin/pl/breakdown${selectedDate()}`,
+      { headers: authHeader() }
+    );
+
     if (!res.ok) throw new Error("Breakdown API failed");
 
     const data = await res.json();
