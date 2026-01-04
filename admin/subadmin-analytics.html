@@ -20,17 +20,23 @@
   <h1 class="title">📈 Profit / Loss & Risk Analytics</h1>
   <p class="subtitle">Complete control over money flow & exposure</p>
 
-  <!-- MARKET FILTER -->
-  <div class="market-filter">
+  <!-- FILTER BAR -->
+<div class="market-filter" style="display:flex;gap:20px;align-items:end">
+
+  <div>
     <label>📍 Select Market</label>
     <select id="marketSelect">
       <option value="all">All Markets (Overall)</option>
-      <option value="Madhur Morning">Madhur Morning</option>
-      <option value="Gali">Gali</option>
-      <option value="Disawar">Disawar</option>
-      <option value="Faridabad">Faridabad</option>
     </select>
   </div>
+
+  <div>
+    <label>📅 Select Date</label>
+    <input type="date" id="dateSelect">
+  </div>
+
+</div>
+
 
   <!-- OVERALL -->
   <div class="stats-grid">
@@ -128,6 +134,7 @@ const token = localStorage.getItem("subToken");
 const PAYOUT = { AKHAR: 9.5, JODI: 95 };
 
 const marketSelect = document.getElementById("marketSelect");
+const dateSelect = document.getElementById("dateSelect");
 
 const lifePL = document.getElementById("lifePL");
 const totalBet = document.getElementById("totalBet");
@@ -142,106 +149,112 @@ function money(n){
   return "₹ " + Number(n || 0).toFixed(2);
 }
 
+/* ===============================
+   LOAD ANALYTICS
+   =============================== */
 function loadAnalytics() {
-  fetch(`${API}/subadmin/analytics?market=${marketSelect.value}&t=${Date.now()}`, {
+  const market = marketSelect.value;
+  const date = dateSelect.value;
+
+  let url = `${API}/subadmin/analytics?market=${market}`;
+  if (date) url += `&date=${date}`;
+
+  fetch(url, {
     headers: {
-      Authorization: "Bearer " + token,
-      "Cache-Control": "no-cache"
+      Authorization: "Bearer " + token
     }
   })
   .then(res => res.json())
   .then(data => {
-
-    if (!data || !data.success) {
-      console.warn("Analytics empty");
-      return;
-    }
+    if (!data.success) return;
 
     /* OVERALL */
-    lifePL.innerText = money(data.overall?.pl);
-    totalBet.innerText = money(data.overall?.bet);
-    totalWin.innerText = money(data.overall?.win);
+    lifePL.innerText = money(data.overall.pl);
+    totalBet.innerText = money(data.overall.bet);
+    totalWin.innerText = money(data.overall.win);
 
     /* MARKET */
     marketTable.innerHTML = "";
-    if (data.markets && Object.keys(data.markets).length) {
-      Object.entries(data.markets).forEach(([m,v])=>{
-        const pl = (v.bet||0) - (v.win||0);
-        marketTable.innerHTML += `
-          <tr>
-            <td>${m}</td>
-            <td>${money(v.bet)}</td>
-            <td>${money(v.win)}</td>
-            <td class="${pl>=0?'profit':'loss'}">${money(pl)}</td>
-          </tr>`;
-      });
-    } else {
-      marketTable.innerHTML = `<tr><td colspan="4" style="opacity:.5">No data</td></tr>`;
-    }
+    Object.entries(data.markets || {}).forEach(([m,v])=>{
+      const pl = v.bet - v.win;
+      marketTable.innerHTML += `
+        <tr>
+          <td>${m}</td>
+          <td>${money(v.bet)}</td>
+          <td>${money(v.win)}</td>
+          <td class="${pl>=0?'profit':'loss'}">${money(pl)}</td>
+        </tr>`;
+    });
 
     /* GAME */
     gameTable.innerHTML = "";
-    if (data.games && Object.keys(data.games).length) {
-      Object.entries(data.games).forEach(([g,v])=>{
-        const pl = (v.bet||0) - (v.win||0);
-        gameTable.innerHTML += `
-          <tr>
-            <td>${g}</td>
-            <td>${money(v.bet)}</td>
-            <td>${money(v.win)}</td>
-            <td class="${pl>=0?'profit':'loss'}">${money(pl)}</td>
-          </tr>`;
-      });
-    } else {
-      gameTable.innerHTML = `<tr><td colspan="4" style="opacity:.5">No data</td></tr>`;
-    }
+    Object.entries(data.games || {}).forEach(([g,v])=>{
+      const pl = v.bet - v.win;
+      gameTable.innerHTML += `
+        <tr>
+          <td>${g}</td>
+          <td>${money(v.bet)}</td>
+          <td>${money(v.win)}</td>
+          <td class="${pl>=0?'profit':'loss'}">${money(pl)}</td>
+        </tr>`;
+    });
 
     /* NUMBERS */
     numberTable.innerHTML = "";
-    if (data.numbers && Object.keys(data.numbers).length) {
-      Object.values(data.numbers).forEach(n=>{
-        const payout = (n.bet||0) * (PAYOUT[n.game]||0);
-        numberTable.innerHTML += `
-          <tr>
-            <td>${n.number}</td>
-            <td>${n.game}</td>
-            <td>${money(n.bet)}</td>
-            <td>${money(payout)}</td>
-          </tr>`;
-      });
-    } else {
-      numberTable.innerHTML = `<tr><td colspan="4" style="opacity:.5">No data</td></tr>`;
-    }
+    Object.values(data.numbers || {}).forEach(n=>{
+      const payout = n.bet * (PAYOUT[n.game] || 0);
+      numberTable.innerHTML += `
+        <tr>
+          <td>${n.number}</td>
+          <td>${n.game}</td>
+          <td>${money(n.bet)}</td>
+          <td>${money(payout)}</td>
+        </tr>`;
+    });
 
     /* USERS */
     userTable.innerHTML = "";
-    if (data.users && Object.keys(data.users).length) {
-      Object.entries(data.users)
-        .sort((a,b)=>(b[1].win||0)-(a[1].win||0))
-        .slice(0,10)
-        .forEach(([u,v])=>{
-          const net = (v.win||0) - (v.bet||0);
-          userTable.innerHTML += `
-            <tr>
-              <td>${u}</td>
-              <td>${money(v.bet)}</td>
-              <td>${money(v.win)}</td>
-              <td class="${net>=0?'loss':'profit'}">${money(net)}</td>
-            </tr>`;
-        });
-    } else {
-      userTable.innerHTML = `<tr><td colspan="4" style="opacity:.5">No data</td></tr>`;
-    }
+    Object.entries(data.users || {})
+      .sort((a,b)=>b[1].win-a[1].win)
+      .slice(0,10)
+      .forEach(([u,v])=>{
+        const net = v.win - v.bet;
+        userTable.innerHTML += `
+          <tr>
+            <td>${u}</td>
+            <td>${money(v.bet)}</td>
+            <td>${money(v.win)}</td>
+            <td class="${net>=0?'loss':'profit'}">${money(net)}</td>
+          </tr>`;
+      });
+  });
+}
 
+/* ===============================
+   LOAD MARKETS DYNAMICALLY
+   =============================== */
+function loadMarkets() {
+  fetch(`${API}/subadmin/analytics/markets`, {
+    headers: { Authorization: "Bearer " + token }
   })
-  .catch(err => {
-    console.error("Analytics error:", err);
+  .then(res => res.json())
+  .then(data => {
+    data.markets.forEach(m => {
+      const opt = document.createElement("option");
+      opt.value = m;
+      opt.innerText = m;
+      marketSelect.appendChild(opt);
+    });
   });
 }
 
 marketSelect.addEventListener("change", loadAnalytics);
+dateSelect.addEventListener("change", loadAnalytics);
+
+loadMarkets();
 loadAnalytics();
 </script>
+
 
 </body>
 </html>
