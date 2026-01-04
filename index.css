@@ -474,3 +474,12 @@ body {
     text-decoration: none !important;
   }
 }
+
+.disclaimer-bar {
+  position: relative;
+  z-index: 5;
+}
+
+.disclaimer-text {
+  animation: ticker 22s linear infinite;
+}
