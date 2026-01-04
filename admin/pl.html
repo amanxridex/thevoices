@@ -15,9 +15,6 @@
 <section class="filters">
   <select>
     <option>All Markets</option>
-    <option>MADHUR MORNING</option>
-    <option>Gali</option>
-    <option>Faridabad</option>
   </select>
 
   <input type="date">
@@ -26,23 +23,27 @@
   <button class="export">Export Report</button>
 </section>
 
+<!-- ===============================
+   TOP SUMMARY
+================================ -->
 <section class="stats">
+
   <div class="card profit">
     <h4>Total Profit</h4>
-    <h2>₹ 2,86,700</h2>
-    <span>▲ +12.4%</span>
+    <h2>₹ 0</h2>
+    <span></span>
   </div>
 
   <div class="card loss">
     <h4>Total Loss</h4>
-    <h2>₹ 1,44,200</h2>
-    <span>▼ -6.1%</span>
+    <h2>₹ 0</h2>
+    <span></span>
   </div>
 
   <div class="card neutral">
     <h4>Net P/L</h4>
-    <h2>₹ 1,42,500</h2>
-    <span class="good">SYSTEM HEALTHY</span>
+    <h2>₹ 0</h2>
+    <span class="good">LIVE DATA</span>
   </div>
 
   <div class="card risk">
@@ -50,12 +51,13 @@
     <div class="risk-bar">
       <div class="risk-fill"></div>
     </div>
-    <small>72% Exposure</small>
+    <small>—</small>
   </div>
+
 </section>
 
 <!-- ===============================
-   SUB ADMIN OVERALL ANALYTICS
+   SUB ADMIN OVERVIEW
 ================================ -->
 <section class="subadmin-section">
 
@@ -66,40 +68,28 @@
 
     <div class="card profit">
       <h4>Total SubAdmins</h4>
-      <h2>6</h2>
+      <h2>0</h2>
       <span>Active Controllers</span>
     </div>
 
     <div class="card neutral">
       <h4>Combined Net P/L</h4>
-      <h2>₹ 4,86,300</h2>
+      <h2>₹ 0</h2>
       <span class="good">ALL SUBADMINS</span>
     </div>
 
     <div class="card loss">
       <h4>Highest Loss SubAdmin</h4>
-      <h2>₹ -74,000</h2>
-      <span>SubAdmin • Ravi</span>
+      <h2>₹ 0</h2>
+      <span>—</span>
     </div>
 
     <div class="card profit">
       <h4>Top Profit SubAdmin</h4>
-      <h2>₹ +1,45,800</h2>
-      <span>SubAdmin • Aman</span>
+      <h2>₹ 0</h2>
+      <span>—</span>
     </div>
 
-  </div>
-
-  <!-- FILTER -->
-  <div class="subadmin-filter">
-    <label>🎯 View Individual SubAdmin</label>
-    <select>
-      <option>All SubAdmins (Combined)</option>
-      <option>Aman</option>
-      <option>Ravi</option>
-      <option>Kunal</option>
-      <option>Rohit</option>
-    </select>
   </div>
 
   <!-- SUBADMIN TABLE -->
@@ -114,65 +104,37 @@
         <th>Net P/L</th>
         <th>Risk</th>
       </tr>
-
-      <tr>
-        <td>Aman</td>
-        <td>₹ 3,20,000</td>
-        <td>₹ 4,65,800</td>
-        <td class="profit">₹ +1,45,800</td>
-        <td class="low">LOW</td>
-      </tr>
-
-      <tr>
-        <td>Ravi</td>
-        <td>₹ 2,10,000</td>
-        <td>₹ 1,36,000</td>
-        <td class="loss">₹ -74,000</td>
-        <td class="high">HIGH</td>
-      </tr>
-
-      <tr>
-        <td>Kunal</td>
-        <td>₹ 1,90,000</td>
-        <td>₹ 2,15,000</td>
-        <td class="profit">₹ +25,000</td>
-        <td class="medium">MEDIUM</td>
-      </tr>
-
+      <!-- rows injected by pl.js -->
     </table>
-  </div>
-
-  <!-- ALERT -->
-  <div class="alerts danger">
-    <h3>🚨 SubAdmin Risk Alerts</h3>
-    <ul>
-      <li>Ravi running at continuous loss</li>
-      <li>High exposure detected under Ravi</li>
-      <li>Monitor Kunal – profit volatility high</li>
-    </ul>
   </div>
 
 </section>
 
-
+<!-- ===============================
+   OPTIONAL SECTIONS (STATIC FOR NOW)
+================================ -->
 <section class="tables">
 
   <div class="table-card">
     <h3>Market Wise P/L</h3>
     <table>
-      <tr><th>Market</th><th>Bet</th><th>Win</th><th>P/L</th></tr>
-      <tr><td>MADHUR MORNING</td><td>₹ 1,01,400</td><td>₹ 99,450</td><td class="profit">₹ +1,950</td></tr>
-      <tr><td>Gali</td><td>₹ 55,000</td><td>₹ 72,000</td><td class="loss">₹ -17,000</td></tr>
-      <tr><td>Faridabad</td><td>₹ 84,000</td><td>₹ 60,000</td><td class="profit">₹ +24,000</td></tr>
+      <tr>
+        <th>Market</th>
+        <th>Bet</th>
+        <th>Win</th>
+        <th>P/L</th>
+      </tr>
     </table>
   </div>
 
   <div class="table-card">
     <h3>Game Type Exposure</h3>
     <table>
-      <tr><th>Game</th><th>Total Bet</th><th>Exposure</th></tr>
-      <tr><td>AKHAR</td><td>₹ 1,20,000</td><td class="high">HIGH</td></tr>
-      <tr><td>JODI</td><td>₹ 80,000</td><td class="medium">MEDIUM</td></tr>
+      <tr>
+        <th>Game</th>
+        <th>Total Bet</th>
+        <th>Exposure</th>
+      </tr>
     </table>
   </div>
 
@@ -183,18 +145,18 @@
   <div class="table-card danger">
     <h3>🔥 High Risk Numbers</h3>
     <table>
-      <tr><th>Number</th><th>Game</th><th>Total Bet</th></tr>
-      <tr><td>2</td><td>AKHAR</td><td>₹ 55,000</td></tr>
-      <tr><td>7</td><td>AKHAR</td><td>₹ 48,000</td></tr>
+      <tr>
+        <th>Number</th>
+        <th>Game</th>
+        <th>Total Bet</th>
+      </tr>
     </table>
   </div>
 
   <div class="alerts">
     <h3>⚠ Admin Alerts</h3>
     <ul>
-      <li>High exposure on number <b>2</b></li>
-      <li>Gali market running at loss</li>
-      <li>Consider closing JODI temporarily</li>
+      <li>Live monitoring enabled</li>
     </ul>
   </div>
 
