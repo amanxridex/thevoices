@@ -483,3 +483,28 @@ body {
 .disclaimer-text {
   animation: ticker 22s linear infinite;
 }
+
+/* ===============================
+   🚑 DISCLAIMER MOBILE FIX
+   =============================== */
+@media (max-width: 768px) {
+
+  .disclaimer-bar {
+    position: static !important;
+    height: 32px !important;
+    overflow: hidden;
+  }
+
+  .disclaimer-text {
+    position: relative;
+    padding-left: 100%;
+    white-space: nowrap;
+    display: inline-block;
+  }
+
+  /* content ko space do */
+  .market-list {
+    margin-top: 16px;
+    margin-bottom: 96px;
+  }
+}
