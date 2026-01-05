@@ -4,20 +4,19 @@ const API = "https://matka-backend-4fy1.onrender.com";
    DOM READY
 ================================ */
 document.addEventListener("DOMContentLoaded", () => {
-  // initial load (no date)
-  loadTopSummary("");
+  loadTopSummary();
   loadSubAdminSummary();
   loadSubAdminTable();
-  loadBreakdown("");
+  loadBreakdown();
 
-  // ✅ APPLY DATE BUTTON
   const applyBtn = document.getElementById("applyDate");
   if (applyBtn) {
     applyBtn.addEventListener("click", () => {
-      const dateParam = getDateParam();
-      console.log("APPLY DATE:", dateParam || "NO DATE");
-      loadTopSummary(dateParam);
-      loadBreakdown(dateParam);
+      const qp = selectedDate();
+      console.log("APPLY DATE:", qp || "NO DATE");
+
+      loadTopSummary();
+      loadBreakdown();
     });
   }
 });
@@ -34,38 +33,25 @@ function authHeader() {
 }
 
 /* ===============================
-   DATE HANDLER (FIXED)
-   ALWAYS SENDS YYYY-MM-DD
+   DATE HANDLER (HTML ✔)
 ================================ */
-function getDateParam() {
-  const input = document.getElementById("pl-date");
+function selectedDate() {
+  const input = document.getElementById("plDate"); // ✅ FIXED ID
   if (!input || !input.value) return "";
 
-  let v = input.value.trim();
-
-  // if browser gives DD/MM/YYYY
-  if (v.includes("/")) {
-    const [dd, mm, yyyy] = v.split("/");
-    v = `${yyyy}-${mm.padStart(2, "0")}-${dd.padStart(2, "0")}`;
-  }
-
-  return `?date=${v}`;
+  // input[type=date] → YYYY-MM-DD
+  return `?date=${input.value}`;
 }
 
 /* =====================================
-   1. TOP SUMMARY (REAL BETTING P/L)
+   1. TOP SUMMARY
 ===================================== */
-async function loadTopSummary(dateParam = "") {
+async function loadTopSummary() {
   try {
     const res = await fetch(
-      `${API}/admin/pl/summary${dateParam}`,
-      {
-        headers: authHeader(),
-        cache: "no-store"
-      }
+      `${API}/admin/pl/summary${selectedDate()}`,
+      { headers: authHeader(), cache: "no-store" }
     );
-
-    if (!res.ok) throw new Error("Top summary failed");
 
     const data = await res.json();
 
@@ -81,8 +67,8 @@ async function loadTopSummary(dateParam = "") {
     document.querySelector(".stats .card.neutral span").innerText =
       "LIVE BETTING P/L";
 
-  } catch (err) {
-    console.error("TOP SUMMARY ERROR:", err);
+  } catch (e) {
+    console.error("TOP SUMMARY ERROR:", e);
   }
 }
 
@@ -99,12 +85,12 @@ async function loadSubAdminSummary() {
     const data = await res.json();
     const subs = data.subAdmins || [];
 
-    let total = 0;
-    subs.forEach(sa => total += sa.balance || 0);
-
     document.querySelector(
       ".subadmin-summary .card.profit h2"
     ).innerText = subs.length;
+
+    let total = 0;
+    subs.forEach(s => total += s.balance || 0);
 
     document.querySelector(
       ".subadmin-summary .card.neutral h2"
@@ -131,8 +117,8 @@ async function loadSubAdminSummary() {
       ".subadmin-summary .card.profit:last-child span"
     ).innerText = `SubAdmin • ${best.username}`;
 
-  } catch (err) {
-    console.error("SUBADMIN SUMMARY ERROR:", err);
+  } catch (e) {
+    console.error("SUBADMIN SUMMARY ERROR:", e);
   }
 }
 
@@ -147,9 +133,7 @@ async function loadSubAdminTable() {
     });
 
     const subs = await res.json();
-    const table = document.querySelector(
-      ".subadmin-section .table-card table"
-    );
+    const table = document.querySelector(".subadmin-section table");
 
     table.querySelectorAll("tr:not(:first-child)").forEach(r => r.remove());
 
@@ -171,32 +155,26 @@ async function loadSubAdminTable() {
       table.appendChild(tr);
     });
 
-  } catch (err) {
-    console.error("SUBADMIN TABLE ERROR:", err);
+  } catch (e) {
+    console.error("SUBADMIN TABLE ERROR:", e);
   }
 }
 
 /* =====================================
-   4. GLOBAL BREAKDOWN
+   4. BREAKDOWN
 ===================================== */
-async function loadBreakdown(dateParam = "") {
+async function loadBreakdown() {
   try {
     const res = await fetch(
-      `${API}/admin/pl/breakdown${dateParam}`,
-      {
-        headers: authHeader(),
-        cache: "no-store"
-      }
+      `${API}/admin/pl/breakdown${selectedDate()}`,
+      { headers: authHeader(), cache: "no-store" }
     );
-
-    if (!res.ok) throw new Error("Breakdown API failed");
 
     const data = await res.json();
 
-    /* ---------- MARKET TABLE ---------- */
-    const marketTable = document.querySelector(
-      ".tables .table-card:first-child table"
-    );
+    /* MARKET */
+    const marketTable =
+      document.querySelector(".tables .table-card:first-child table");
     marketTable.querySelectorAll("tr:not(:first-child)").forEach(r => r.remove());
 
     Object.entries(data.markets || {}).forEach(([name, m]) => {
@@ -212,28 +190,28 @@ async function loadBreakdown(dateParam = "") {
       marketTable.appendChild(tr);
     });
 
-    /* ---------- GAME TABLE ---------- */
-    const gameTable = document.querySelector(
-      ".tables .table-card:nth-child(2) table"
-    );
+    /* GAME */
+    const gameTable =
+      document.querySelector(".tables .table-card:nth-child(2) table");
     gameTable.querySelectorAll("tr:not(:first-child)").forEach(r => r.remove());
 
-    Object.entries(data.games || {}).forEach(([game, g]) => {
-      const exposure =
-        g.bet > 5000 ? "HIGH" :
-        g.bet > 2000 ? "MEDIUM" : "LOW";
+    Object.entries(data.games || {}).forEach(([g, v]) => {
+      const risk =
+        v.bet > 5000 ? "HIGH" :
+        v.bet > 2000 ? "MEDIUM" : "LOW";
 
       const tr = document.createElement("tr");
       tr.innerHTML = `
-        <td>${game}</td>
-        <td>₹ ${fmt(g.bet)}</td>
-        <td class="${exposure.toLowerCase()}">${exposure}</td>
+        <td>${g}</td>
+        <td>₹ ${fmt(v.bet)}</td>
+        <td class="${risk.toLowerCase()}">${risk}</td>
       `;
       gameTable.appendChild(tr);
     });
 
-    /* ---------- HIGH RISK NUMBERS ---------- */
-    const numTable = document.querySelector(".table-card.danger table");
+    /* NUMBERS */
+    const numTable =
+      document.querySelector(".table-card.danger table");
     numTable.querySelectorAll("tr:not(:first-child)").forEach(r => r.remove());
 
     Object.values(data.numbers || {})
@@ -249,8 +227,8 @@ async function loadBreakdown(dateParam = "") {
         numTable.appendChild(tr);
       });
 
-  } catch (err) {
-    console.error("BREAKDOWN LOAD ERROR:", err);
+  } catch (e) {
+    console.error("BREAKDOWN ERROR:", e);
   }
 }
 
