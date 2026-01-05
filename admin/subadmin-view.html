@@ -11,7 +11,7 @@
   <div class="logo">SUPER <span>D</span></div>
   <div class="header-right">
     <span class="role">Super Admin</span>
-    <button class="back-btn">← Dashboard</button>
+    <button class="back-btn" onclick="history.back()">← Dashboard</button>
   </div>
 </header>
 
@@ -27,27 +27,27 @@
   <section class="grid-4">
     <div class="card">
       <h4>SubAdmin</h4>
-      <h2 id="subadminName">rahul1</h2>
+      <h2 id="subadminName">—</h2>
     </div>
 
     <div class="card">
       <h4>Total Users</h4>
-      <h2>6</h2>
+      <h2 id="totalUsers">—</h2>
     </div>
 
     <div class="card loss">
       <h4>Current Wallet</h4>
-      <h2>₹ -90,077</h2>
+      <h2 id="wallet">—</h2>
       <span>Carry Forward</span>
     </div>
 
     <div class="card danger">
       <h4>Risk Level</h4>
-      <h2>HIGH</h2>
+      <h2 id="risk">—</h2>
     </div>
   </section>
 
-  <!-- PARTNERSHIP CONTROL -->
+  <!-- PARTNERSHIP -->
   <section class="commission-panel">
     <h3>🤝 Partnership Share Control</h3>
 
@@ -61,7 +61,6 @@
       <div class="commission-card variable">
         <h4>Variable Share</h4>
         <h1 id="variablePercent">20%</h1>
-        <button onclick="openModal()">Edit</button>
       </div>
 
       <div class="commission-card total">
@@ -72,7 +71,7 @@
     </div>
   </section>
 
-  <!-- DAILY SETTLEMENT -->
+  <!-- SETTLEMENT -->
   <section class="settlement-panel">
     <h3>📅 Settlement Summary</h3>
     <small id="selectedDateText">Showing: Today</small>
@@ -95,7 +94,6 @@
       </div>
     </div>
 
-    <!-- FINAL DECISION -->
     <div class="card profit" id="finalLine"
       style="margin-top:20px;text-align:center">
       <h4>🧾 Final Settlement</h4>
@@ -106,78 +104,75 @@
 
 </main>
 
-<!-- MODAL -->
-<div class="modal" id="commissionModal">
-  <div class="modal-box">
-    <h3>Edit Variable Share</h3>
-
-    <input type="number" id="newCommission" value="20" min="0" max="50">
-    <p>Allowed Range: 0% – 50%</p>
-
-    <div class="modal-actions">
-      <button onclick="closeModal()">Cancel</button>
-      <button class="save" onclick="saveCommission()">Save</button>
-    </div>
-  </div>
-</div>
-
 <script>
-let fixed = 5;
-let variable = 20;
+const API = "https://matka-backend-4fy1.onrender.com";
+const fixed = 5;
+const variable = 20;
 
-/* DATE APPLY + AUTO SETTLEMENT */
-function applyDate() {
-  const d = document.getElementById("settlementDate").value;
-  if (!d) return alert("Select a date");
+/* AUTH */
+function authHeader() {
+  return {
+    Authorization: "Bearer " + localStorage.getItem("adminToken")
+  };
+}
 
-  document.getElementById("selectedDateText").innerText = "Showing: " + d;
+/* GET SUBADMIN ID */
+const params = new URLSearchParams(window.location.search);
+const subAdminId = params.get("id");
 
-  /* 🔥 DUMMY NET P/L (backend later) */
-  let netPL = Math.random() > 0.5 ? 10000 : -8000;
+/* LOAD SETTLEMENT */
+async function loadSettlement(date = "") {
+  if (!subAdminId) return alert("SubAdmin ID missing");
 
-  const totalShare = fixed + variable;
-  const subShare = Math.round(Math.abs(netPL) * totalShare / 100);
-  const superShare = Math.abs(netPL) - subShare;
+  let url = `${API}/admin/subadmin-settlement?subAdminId=${subAdminId}`;
+  if (date) url += `&date=${date}`;
+
+  console.log("FETCH:", url);
+
+  const res = await fetch(url, { headers: authHeader() });
+  const data = await res.json();
+  console.log("DATA:", data);
+
+  const { overallPL, settlementAmount, direction, subPercent } = data;
+
+  const absPL = Math.abs(overallPL);
+  const superShare = absPL - settlementAmount;
 
   document.getElementById("netPL").innerText =
-    `₹ ${netPL > 0 ? "+" : "-"}${Math.abs(netPL).toLocaleString("en-IN")}`;
+    `₹ ${overallPL >= 0 ? "+" : "-"}${absPL.toLocaleString("en-IN")}`;
 
   document.getElementById("subShare").innerText =
-    `₹ ${netPL > 0 ? "+" : "-"}${subShare.toLocaleString("en-IN")}`;
+    `₹ ${settlementAmount.toLocaleString("en-IN")}`;
 
   document.getElementById("superShare").innerText =
-    `₹ ${netPL > 0 ? "+" : "-"}${superShare.toLocaleString("en-IN")}`;
-
-  const finalText = netPL > 0
-    ? `SuperAdmin ko SubAdmin ko ₹ ${subShare.toLocaleString("en-IN")} dena hai`
-    : `SubAdmin ko SuperAdmin ko ₹ ${subShare.toLocaleString("en-IN")} dena hai`;
-
-  document.getElementById("finalText").innerText = finalText;
+    `₹ ${superShare.toLocaleString("en-IN")}`;
 
   document.getElementById("payText").innerText =
-    netPL > 0 ? "Super pays SubAdmin" : "SubAdmin pays Super";
+    direction === "SUPER_PAYS_SUB"
+      ? "Super pays SubAdmin"
+      : "SubAdmin pays Super";
 
-  console.log("Settlement Date:", d, "NetPL:", netPL);
+  document.getElementById("finalText").innerText =
+    direction === "SUPER_PAYS_SUB"
+      ? `SuperAdmin ko SubAdmin ko ₹ ${settlementAmount.toLocaleString("en-IN")} dena hai`
+      : `SubAdmin ko SuperAdmin ko ₹ ${settlementAmount.toLocaleString("en-IN")} dena hai`;
+
+  document.getElementById("totalPercent").innerText = subPercent + "%";
 }
 
-/* COMMISSION */
-function openModal() {
-  document.getElementById("commissionModal").style.display = "flex";
+/* APPLY DATE */
+function applyDate() {
+  const d = document.getElementById("settlementDate").value;
+  if (!d) return alert("Select date");
+
+  document.getElementById("selectedDateText").innerText = "Showing: " + d;
+  loadSettlement(d);
 }
 
-function closeModal() {
-  document.getElementById("commissionModal").style.display = "none";
-}
-
-function saveCommission() {
-  const v = Number(document.getElementById("newCommission").value);
-  if (v < 0 || v > 50) return alert("Invalid percentage");
-
-  variable = v;
-  document.getElementById("variablePercent").innerText = variable + "%";
-  document.getElementById("totalPercent").innerText = (fixed + variable) + "%";
-  closeModal();
-}
+/* AUTO LOAD TODAY */
+document.addEventListener("DOMContentLoaded", () => {
+  loadSettlement();
+});
 </script>
 
 </body>
