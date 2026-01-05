@@ -124,7 +124,7 @@ const subAdminId = params.get("id");
 async function loadSettlement(date = "") {
   if (!subAdminId) return alert("SubAdmin ID missing");
 
-  let url = `${API}/admin/subadmin-settlement?subAdminId=${subAdminId}`;
+  let url = `${API}/subadmin-settlement?subAdminId=${subAdminId}`;
   if (date) url += `&date=${date}`;
 
   console.log("FETCH:", url);
