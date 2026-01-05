@@ -4,16 +4,20 @@ const API = "https://matka-backend-4fy1.onrender.com";
    DOM READY
 ================================ */
 document.addEventListener("DOMContentLoaded", () => {
-  loadTopSummary();        // default (no date)
+  // initial load (no date)
+  loadTopSummary("");
   loadSubAdminSummary();
   loadSubAdminTable();
-  loadBreakdown();
+  loadBreakdown("");
 
-  // ✅ APPLY DATE BUTTON (ONLY CONTROL)
+  // ✅ APPLY DATE BUTTON
   const applyBtn = document.getElementById("applyDate");
   if (applyBtn) {
     applyBtn.addEventListener("click", () => {
-      console.log("APPLY DATE:", selectedDate());
+      const dateParam = getDateParam();
+      console.log("APPLY DATE:", dateParam || "NO DATE");
+      loadTopSummary(dateParam);
+      loadBreakdown(dateParam);
     });
   }
 });
@@ -30,21 +34,31 @@ function authHeader() {
 }
 
 /* ===============================
-   DATE HANDLER (YYYY-MM-DD)
+   DATE HANDLER (FIXED)
+   ALWAYS SENDS YYYY-MM-DD
 ================================ */
-function selectedDate() {
-  const d = document.getElementById("pl-date")?.value;
-  // input[type=date] already gives YYYY-MM-DD ✅
-  return d ? `?date=${d}` : "";
+function getDateParam() {
+  const input = document.getElementById("pl-date");
+  if (!input || !input.value) return "";
+
+  let v = input.value.trim();
+
+  // if browser gives DD/MM/YYYY
+  if (v.includes("/")) {
+    const [dd, mm, yyyy] = v.split("/");
+    v = `${yyyy}-${mm.padStart(2, "0")}-${dd.padStart(2, "0")}`;
+  }
+
+  return `?date=${v}`;
 }
 
 /* =====================================
    1. TOP SUMMARY (REAL BETTING P/L)
 ===================================== */
-async function loadTopSummary() {
+async function loadTopSummary(dateParam = "") {
   try {
     const res = await fetch(
-      `${API}/admin/pl/summary${selectedDate()}`,
+      `${API}/admin/pl/summary${dateParam}`,
       {
         headers: authHeader(),
         cache: "no-store"
@@ -73,7 +87,7 @@ async function loadTopSummary() {
 }
 
 /* =====================================
-   2. SUBADMIN SUMMARY (SETTLEMENT VIEW)
+   2. SUBADMIN SUMMARY
 ===================================== */
 async function loadSubAdminSummary() {
   try {
@@ -123,7 +137,7 @@ async function loadSubAdminSummary() {
 }
 
 /* =====================================
-   3. SUBADMIN TABLE (SETTLEMENT)
+   3. SUBADMIN TABLE
 ===================================== */
 async function loadSubAdminTable() {
   try {
@@ -163,12 +177,12 @@ async function loadSubAdminTable() {
 }
 
 /* =====================================
-   4. GLOBAL BREAKDOWN (MARKET / GAME / NUMBER)
+   4. GLOBAL BREAKDOWN
 ===================================== */
-async function loadBreakdown() {
+async function loadBreakdown(dateParam = "") {
   try {
     const res = await fetch(
-      `${API}/admin/pl/breakdown${selectedDate()}`,
+      `${API}/admin/pl/breakdown${dateParam}`,
       {
         headers: authHeader(),
         cache: "no-store"
