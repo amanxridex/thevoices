@@ -36,13 +36,13 @@
 
       <div class="commission-card variable">
         <h4>Variable Share</h4>
-        <h1 id="variablePercent">20%</h1>
+        <h1 id="variablePercent">%</h1>
         <button class="edit-btn" onclick="openModal()">Edit</button>
       </div>
 
       <div class="commission-card total">
         <h4>Total Partnership</h4>
-        <h1 id="totalPercent">25%</h1>
+        <h1 id="totalPercent">%</h1>
         <p>Profit & Loss Sharing</p>
       </div>
     </div>
@@ -112,6 +112,13 @@ async function loadSettlement(date = "") {
 
   const absPL = Math.abs(overallPL);
   const superShare = absPL - settlementAmount;
+
+  // 🔥 COMMISSION UI UPDATE
+  document.getElementById("variablePercent").innerText =
+    breakdown.variable + "%";
+
+  document.getElementById("totalPercent").innerText =
+    subPercent + "%";
 
   document.getElementById("netPL").innerText =
     `₹ ${overallPL >= 0 ? "+" : "-"}${absPL.toLocaleString("en-IN")}`;
