@@ -106,10 +106,8 @@
 
 <script>
 const API = "https://matka-backend-4fy1.onrender.com";
-const fixed = 5;
-const variable = 20;
 
-/* AUTH */
+/* AUTH HEADER */
 function authHeader() {
   return {
     Authorization: "Bearer " + localStorage.getItem("adminToken")
@@ -124,7 +122,7 @@ const subAdminId = params.get("id");
 async function loadSettlement(date = "") {
   if (!subAdminId) return alert("SubAdmin ID missing");
 
-  let url = `${API}/subadmin-settlement?subAdminId=${subAdminId}`;
+  let url = `${API}/admin/subadmin-settlement?subAdminId=${subAdminId}`;
   if (date) url += `&date=${date}`;
 
   console.log("FETCH:", url);
