@@ -37,6 +37,7 @@
       <div class="commission-card variable">
         <h4>Variable Share</h4>
         <h1 id="variablePercent">20%</h1>
+        <button class="edit-btn" onclick="openModal()">Edit</button>
       </div>
 
       <div class="commission-card total">
@@ -148,6 +149,54 @@ document.addEventListener("DOMContentLoaded", () => {
   loadSettlement();
 });
 </script>
+
+<script>
+function openModal() {
+  document.getElementById("commissionModal").style.display = "flex";
+}
+
+function closeModal() {
+  document.getElementById("commissionModal").style.display = "none";
+}
+
+async function saveVariable() {
+  const v = Number(document.getElementById("newVariable").value);
+  if (v < 0 || v > 50) return alert("Invalid %");
+
+  const res = await fetch(`${API}/admin/subadmin-commission`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...authHeader()
+    },
+    body: JSON.stringify({
+      subAdminId,
+      variable: v
+    })
+  });
+
+  const data = await res.json();
+  if (!data.success) return alert("Update failed");
+
+  closeModal();
+  loadSettlement(); // 🔥 auto refresh
+}
+</script>
+
+<!-- EDIT VARIABLE MODAL -->
+<div class="modal" id="commissionModal">
+  <div class="modal-box">
+    <h3>Edit Variable Share</h3>
+
+    <input type="number" id="newVariable" min="0" max="50" />
+    <p>Allowed: 0% – 50%</p>
+
+    <div class="modal-actions">
+      <button onclick="closeModal()">Cancel</button>
+      <button class="save" onclick="saveVariable()">Save</button>
+    </div>
+  </div>
+</div>
 
 </body>
 </html>
