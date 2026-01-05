@@ -95,7 +95,12 @@ function loadSubAdmins() {
             <div><strong>${sa.username}</strong></div>
             <div>${sa.users || 0}</div>
             <div>₹ ${sa.balance || 0}</div>
-            <div><button class="action-btn">View</button></div>
+            <div>
+              <button class="action-btn"
+                onclick="window.location.href='/admin/subadmin-view.html?id=${sa._id}'">
+                View
+              </button>
+            </div>
           </div>
         `;
       });
