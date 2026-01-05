@@ -129,8 +129,8 @@ async function loadSettlement(date = "") {
 
   document.getElementById("finalText").innerText =
     direction === "SUPER_PAYS_SUB"
-      ? `SuperAdmin ko SubAdmin ko ₹ ${settlementAmount.toLocaleString("en-IN")} dena hai`
-      : `SubAdmin ko SuperAdmin ko ₹ ${settlementAmount.toLocaleString("en-IN")} dena hai`;
+      ? `SuperAdmin ne SubAdmin ko ₹ ${settlementAmount.toLocaleString("en-IN")} dena hai`
+      : `SubAdmin ne SuperAdmin ko ₹ ${settlementAmount.toLocaleString("en-IN")} dena hai`;
 
   document.getElementById("totalPercent").innerText = subPercent + "%";
 }
