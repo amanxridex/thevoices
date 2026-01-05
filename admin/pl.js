@@ -14,8 +14,6 @@ document.addEventListener("DOMContentLoaded", () => {
   if (applyBtn) {
     applyBtn.addEventListener("click", () => {
       console.log("APPLY DATE:", selectedDate());
-      loadTopSummary();
-      loadBreakdown();
     });
   }
 });
