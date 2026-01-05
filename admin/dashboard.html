@@ -24,7 +24,7 @@
       <li onclick="go('markets.html')">🎯 Markets</li>
       <li onclick="go('results.html')">📊 Results</li>
       <li onclick="go('users.html')">💰 User Wallets</li>
-      <li onclick="go('users.html')">💰 Profit/Loss</li>
+      <li onclick="go('pl.html')">💰 Profit/Loss</li>
       <li class="active" onclick="go('userbets.html')">📈 User Bets</li>
     </ul>
   </aside>
@@ -41,7 +41,7 @@
     <div class="admin-wallet">
       <div class="wallet-left">
         <h4>ADMIN WALLET</h4>
-        <h1>₹ <span id="adminWallet">48,00,000</span></h1>
+        <h1>₹ <span id="adminWallet">--</span></h1>
         <p>Total System Balance</p>
       </div>
 
@@ -49,8 +49,8 @@
         💰
       </div>
     </div>
- 
 
+    <!-- 🔥 DASHBOARD CARDS -->
     <div class="cards">
 
       <div class="card glow-purple" onclick="go('subadmins.html')">
@@ -94,14 +94,56 @@
   </main>
 </div>
 
+<!-- 🔥 SCRIPT -->
 <script>
+const API = "https://matka-backend-4fy1.onrender.com";
+
+/* ================= AUTH ================= */
+function authHeader() {
+  return {
+    Authorization: "Bearer " + localStorage.getItem("adminToken")
+  };
+}
+
+/* ================= LOGOUT ================= */
 function logout() {
   localStorage.removeItem("adminToken");
   location.href = "login.html";
 }
+
+/* ================= NAV ================= */
 function go(page) {
   location.href = page;
 }
+
+/* ================= ADMIN WALLET ================= */
+async function loadAdminWallet() {
+  try {
+    const res = await fetch(API + "/admin/wallet", {
+      headers: authHeader()
+    });
+
+    if (!res.ok) throw new Error("Wallet fetch failed");
+
+    const data = await res.json();
+
+    if (data.success) {
+      document.getElementById("adminWallet").innerText =
+        data.balance.toLocaleString("en-IN");
+    } else {
+      document.getElementById("adminWallet").innerText = "--";
+    }
+
+  } catch (err) {
+    console.error("ADMIN WALLET ERROR:", err);
+    document.getElementById("adminWallet").innerText = "--";
+  }
+}
+
+/* ================= AUTO LOAD ================= */
+document.addEventListener("DOMContentLoaded", () => {
+  loadAdminWallet();
+});
 </script>
 
 </body>
