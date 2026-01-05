@@ -53,86 +53,101 @@
 <script>
 document.addEventListener("DOMContentLoaded", () => {
 
-  /* ================= AUTH ================= */
-  const token = localStorage.getItem("userToken");
-  if (!token) {
-    location.replace("user-login.html");
-    return;
-  }
+  const API = "https://matka-backend-4fy1.onrender.com";
 
-  fetch("https://matka-backend-4fy1.onrender.com/user/me", {
-    headers: { Authorization: "Bearer " + token }
-  })
-  .then(res => {
-    if (!res.ok) {
-      localStorage.removeItem("userToken");
+  /* ================= LOAD USER ================= */
+  function loadUser() {
+    const token = localStorage.getItem("userToken");
+    if (!token) {
       location.replace("user-login.html");
       return;
     }
-    return res.json();
-  })
-  .then(user => {
-    document.getElementById("userName").innerText = user.username;
-    document.getElementById("userBalance").innerText = "₹ " + user.balance;
-  });
 
-  /* ================= MARKETS + RESULTS ================= */
-  const list = document.getElementById("marketList");
-  const today = new Date().toISOString().split("T")[0];
-
-  Promise.all([
-    fetch("https://matka-backend-4fy1.onrender.com/api/markets").then(r => r.json()),
-    fetch("https://matka-backend-4fy1.onrender.com/api/results").then(r => r.json())
-  ])
-  .then(([markets, results]) => {
-
-    list.innerHTML = "";
-
-    markets.forEach(market => {
-
-      const isOpen = market.status === "OPEN";
-
-      // ✅ ONLY TODAY RESULT
-      const todayResult = results.find(r => {
-        const rDate = new Date(r.date).toISOString().split("T")[0];
-        return r.market === market.name && rDate === today;
-      });
-
-      let resultText = "-----";
-      if (!isOpen && todayResult) {
-        resultText = todayResult.result;
+    fetch(API + "/user/me", {
+      headers: { Authorization: "Bearer " + token }
+    })
+    .then(res => {
+      if (!res.ok) {
+        localStorage.removeItem("userToken");
+        location.replace("user-login.html");
+        return;
       }
-
-      const card = document.createElement("div");
-      card.className = "market-card " + (isOpen ? "live" : "closed");
-
-      card.innerHTML = `
-        <div class="time">${market.openTime}</div>
-        <div class="center">
-          <h3>${market.name}</h3>
-          <p class="${isOpen ? "live-text" : "closed-text"}">
-            ${isOpen ? "Betting is Running Now" : "Betting is Closed"}
-          </p>
-          <p class="result">${resultText}</p>
-        </div>
-        <div class="time">
-          Close Time<br>
-          <b>${market.closeTime}</b>
-        </div>
-      `;
-
-      if (isOpen) {
-        card.onclick = () => {
-          location.href = `akhar.html?market=${encodeURIComponent(market.name)}`;
-        };
-      }
-
-      list.appendChild(card);
+      return res.json();
+    })
+    .then(user => {
+      document.getElementById("userName").innerText = user.username;
+      document.getElementById("userBalance").innerText = "₹ " + user.balance;
     });
-  })
-  .catch(() => {
-    list.innerHTML = "<p class='error'>Server not reachable</p>";
-  });
+  }
+
+  /* ================= LOAD MARKETS ================= */
+  function loadMarkets() {
+    const list = document.getElementById("marketList");
+    const today = new Date().toISOString().split("T")[0];
+
+    Promise.all([
+      fetch(API + "/api/markets").then(r => r.json()),
+      fetch(API + "/api/results").then(r => r.json())
+    ])
+    .then(([markets, results]) => {
+
+      list.innerHTML = "";
+
+      markets.forEach(market => {
+
+        const isOpen = market.status === "OPEN";
+
+        const todayResult = results.find(r => {
+          const rDate = new Date(r.date).toISOString().split("T")[0];
+          return r.market === market.name && rDate === today;
+        });
+
+        let resultText = "-----";
+        if (!isOpen && todayResult) {
+          resultText = todayResult.result;
+        }
+
+        const card = document.createElement("div");
+        card.className = "market-card " + (isOpen ? "live" : "closed");
+
+        card.innerHTML = `
+          <div class="time">${market.openTime}</div>
+          <div class="center">
+            <h3>${market.name}</h3>
+            <p class="${isOpen ? "live-text" : "closed-text"}">
+              ${isOpen ? "Betting is Running Now" : "Betting is Closed"}
+            </p>
+            <p class="result">${resultText}</p>
+          </div>
+          <div class="time">
+            Close Time<br>
+            <b>${market.closeTime}</b>
+          </div>
+        `;
+
+        if (isOpen) {
+          card.onclick = () => {
+            location.href = `akhar.html?market=${encodeURIComponent(market.name)}`;
+          };
+        }
+
+        list.appendChild(card);
+      });
+    })
+    .catch(() => {
+      list.innerHTML = "<p class='error'>Server not reachable</p>";
+    });
+  }
+
+  /* ================= INITIAL LOAD ================= */
+  loadUser();
+  loadMarkets();
+
+  /* 🔄 AUTO REFRESH EVERY 3 SECONDS */
+  setInterval(() => {
+    loadUser();
+    loadMarkets();
+  }, 3000);
 
   /* ================= LOGOUT ================= */
   document.getElementById("logoutBtn").onclick = () => {
