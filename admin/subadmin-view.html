@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SUPER D • SubAdmin Partnership</title>
+  <link rel="stylesheet" href="subadmin-view.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="logo">SUPER <span>D</span></div>
+  <div class="header-right">
+    <span class="role">Super Admin</span>
+    <button class="back-btn">← Dashboard</button>
+  </div>
+</header>
+
+<main class="wrapper">
+
+  <!-- DATE FILTER -->
+  <section class="filters" style="margin-bottom:25px;display:flex;gap:12px;">
+    <input type="date" id="settlementDate">
+    <button class="back-btn" onclick="applyDate()">Apply Date</button>
+  </section>
+
+  <!-- SUBADMIN OVERVIEW -->
+  <section class="grid-4">
+    <div class="card">
+      <h4>SubAdmin</h4>
+      <h2 id="subadminName">rahul1</h2>
+    </div>
+
+    <div class="card">
+      <h4>Total Users</h4>
+      <h2>6</h2>
+    </div>
+
+    <div class="card loss">
+      <h4>Current Wallet</h4>
+      <h2>₹ -90,077</h2>
+      <span>Carry Forward</span>
+    </div>
+
+    <div class="card danger">
+      <h4>Risk Level</h4>
+      <h2>HIGH</h2>
+    </div>
+  </section>
+
+  <!-- PARTNERSHIP CONTROL -->
+  <section class="commission-panel">
+    <h3>🤝 Partnership Share Control</h3>
+
+    <div class="commission-grid">
+      <div class="commission-card fixed">
+        <h4>Fixed Share</h4>
+        <h1>5%</h1>
+        <p>System Locked</p>
+      </div>
+
+      <div class="commission-card variable">
+        <h4>Variable Share</h4>
+        <h1 id="variablePercent">20%</h1>
+        <button onclick="openModal()">Edit</button>
+      </div>
+
+      <div class="commission-card total">
+        <h4>Total Partnership</h4>
+        <h1 id="totalPercent">25%</h1>
+        <p>Profit & Loss Sharing</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- DAILY SETTLEMENT -->
+  <section class="settlement-panel">
+    <h3>📅 Settlement Summary</h3>
+    <small id="selectedDateText">Showing: Today</small>
+
+    <div class="grid-3" style="margin-top:14px;">
+      <div class="card profit">
+        <h4>Net P/L (System)</h4>
+        <h2 id="netPL">₹ 0</h2>
+      </div>
+
+      <div class="card profit">
+        <h4>SubAdmin Share</h4>
+        <h2 id="subShare">₹ 0</h2>
+        <span id="payText">—</span>
+      </div>
+
+      <div class="card neutral">
+        <h4>SuperAdmin Share</h4>
+        <h2 id="superShare">₹ 0</h2>
+      </div>
+    </div>
+
+    <!-- FINAL DECISION -->
+    <div class="card profit" id="finalLine"
+      style="margin-top:20px;text-align:center">
+      <h4>🧾 Final Settlement</h4>
+      <h2 id="finalText">—</h2>
+      <span>Date-wise settlement</span>
+    </div>
+  </section>
+
+</main>
+
+<!-- MODAL -->
+<div class="modal" id="commissionModal">
+  <div class="modal-box">
+    <h3>Edit Variable Share</h3>
+
+    <input type="number" id="newCommission" value="20" min="0" max="50">
+    <p>Allowed Range: 0% – 50%</p>
+
+    <div class="modal-actions">
+      <button onclick="closeModal()">Cancel</button>
+      <button class="save" onclick="saveCommission()">Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let fixed = 5;
+let variable = 20;
+
+/* DATE APPLY + AUTO SETTLEMENT */
+function applyDate() {
+  const d = document.getElementById("settlementDate").value;
+  if (!d) return alert("Select a date");
+
+  document.getElementById("selectedDateText").innerText = "Showing: " + d;
+
+  /* 🔥 DUMMY NET P/L (backend later) */
+  let netPL = Math.random() > 0.5 ? 10000 : -8000;
+
+  const totalShare = fixed + variable;
+  const subShare = Math.round(Math.abs(netPL) * totalShare / 100);
+  const superShare = Math.abs(netPL) - subShare;
+
+  document.getElementById("netPL").innerText =
+    `₹ ${netPL > 0 ? "+" : "-"}${Math.abs(netPL).toLocaleString("en-IN")}`;
+
+  document.getElementById("subShare").innerText =
+    `₹ ${netPL > 0 ? "+" : "-"}${subShare.toLocaleString("en-IN")}`;
+
+  document.getElementById("superShare").innerText =
+    `₹ ${netPL > 0 ? "+" : "-"}${superShare.toLocaleString("en-IN")}`;
+
+  const finalText = netPL > 0
+    ? `SuperAdmin ko SubAdmin ko ₹ ${subShare.toLocaleString("en-IN")} dena hai`
+    : `SubAdmin ko SuperAdmin ko ₹ ${subShare.toLocaleString("en-IN")} dena hai`;
+
+  document.getElementById("finalText").innerText = finalText;
+
+  document.getElementById("payText").innerText =
+    netPL > 0 ? "Super pays SubAdmin" : "SubAdmin pays Super";
+
+  console.log("Settlement Date:", d, "NetPL:", netPL);
+}
+
+/* COMMISSION */
+function openModal() {
+  document.getElementById("commissionModal").style.display = "flex";
+}
+
+function closeModal() {
+  document.getElementById("commissionModal").style.display = "none";
+}
+
+function saveCommission() {
+  const v = Number(document.getElementById("newCommission").value);
+  if (v < 0 || v > 50) return alert("Invalid percentage");
+
+  variable = v;
+  document.getElementById("variablePercent").innerText = variable + "%";
+  document.getElementById("totalPercent").innerText = (fixed + variable) + "%";
+  closeModal();
+}
+</script>
+
+</body>
+</html>
