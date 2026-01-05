@@ -97,7 +97,7 @@ function loadSubAdmins() {
             <div>₹ ${sa.balance || 0}</div>
             <div>
               <button class="action-btn"
-                onclick="window.location.href='/subadmin-view.html?id=${sa._id}'">
+                onclick="window.location.href='/admin/subadmin-view.html?id=${sa._id}'">
                 View
               </button>
             </div>
