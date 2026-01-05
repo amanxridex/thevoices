@@ -114,8 +114,11 @@ async function loadSettlement(date = "") {
   const superShare = absPL - settlementAmount;
 
   // 🔥 COMMISSION UI UPDATE
+  const FIXED = 5;
+  const variablePercent = subPercent - FIXED;
+
   document.getElementById("variablePercent").innerText =
-    breakdown.variable + "%";
+    variablePercent + "%";
 
   document.getElementById("totalPercent").innerText =
     subPercent + "%";
